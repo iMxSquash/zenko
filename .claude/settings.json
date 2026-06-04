@@ -15,12 +15,7 @@
       "Bash(DROP TABLE *)",
       "Bash(truncate *)"
     ],
-    "ask": [
-      "Bash(git commit *)",
-      "Bash(git push *)",
-      "Bash(npm install *)",
-      "Bash(npm i *)"
-    ],
+    "ask": ["Bash(git commit *)", "Bash(git push *)", "Bash(npm install *)", "Bash(npm i *)"],
     "allow": [
       "Read(./**)",
       "Write(./src/**)",

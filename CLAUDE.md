@@ -154,6 +154,13 @@ Toujours suivre ce cycle, sans exception :
   - Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `style`, `perf`, `ci`.
   - Exemple : `feat(forum): add real-time message subscription`
 - **Pas de mention Co-Authored-By** : ne jamais ajouter `Co-Authored-By: Claude` dans les messages de commit.
+- **Avant tout commit**, les quatre checks suivants doivent passer sans erreur :
+  ```bash
+  npm run lint        # Biome
+  npm run type-check  # tsc --noEmit
+  npm run format      # Biome format
+  npm run test        # Vitest
+  ```
 
 ## Commandes
 

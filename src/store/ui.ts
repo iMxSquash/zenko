@@ -1,16 +1,16 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 interface UIState {
   // Navigation
-  sidebarOpen: boolean
-  setSidebarOpen: (open: boolean) => void
-  toggleSidebar: () => void
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
 
   // Voice
-  micActive: boolean
-  setMicActive: (active: boolean) => void
-  muted: boolean
-  toggleMute: () => void
+  micActive: boolean;
+  setMicActive: (active: boolean) => void;
+  muted: boolean;
+  toggleMute: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -22,4 +22,4 @@ export const useUIStore = create<UIState>((set) => ({
   setMicActive: (active) => set({ micActive: active }),
   muted: false,
   toggleMute: () => set((s) => ({ muted: !s.muted })),
-}))
+}));
