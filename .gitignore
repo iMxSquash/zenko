@@ -68,3 +68,4 @@ desktop.ini
 *.local
 *.tmp
 *.bak
+.vercel
