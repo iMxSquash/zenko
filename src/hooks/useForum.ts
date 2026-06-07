@@ -135,6 +135,7 @@ export function useAddReply() {
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['forum', 'threads', variables.threadId] });
+      queryClient.invalidateQueries({ queryKey: ['forum', 'threads'], exact: true });
     },
   });
 }
