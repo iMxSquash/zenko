@@ -1,4 +1,13 @@
 export type ForumUserRole = 'parent' | 'prof' | 'expert';
+
+export interface Fiche {
+  slug: string;
+  title: string;
+  description: string;
+  category: ResourceCategory;
+  author: string;
+  authorAvatarUrl?: string;
+}
 export type ResourceCategory = 'TSA' | 'TDAH' | 'DYS' | 'TDI';
 
 export interface ForumAuthor {
