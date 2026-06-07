@@ -1,6 +1,6 @@
 import type { ForumUserRole, ResourceCategory } from '@/types';
 import { describe, expect, it } from 'vitest';
-import { CATEGORIES, CATEGORY_CAPSULE_BG, ROLE_CAPSULE_BG, ROLE_LABELS } from './forum';
+import { CATEGORIES, ROLE_CAPSULE_BG, ROLE_LABELS } from './forum';
 
 const ALL_ROLES: ForumUserRole[] = ['parent', 'prof', 'expert'];
 const ALL_CATEGORIES: ResourceCategory[] = ['TSA', 'TDAH', 'DYS', 'TDI'];
@@ -29,20 +29,6 @@ describe('ROLE_CAPSULE_BG', () => {
   it('retourne des classes Tailwind non vides', () => {
     for (const role of ALL_ROLES) {
       expect(ROLE_CAPSULE_BG[role].trim()).not.toBe('');
-    }
-  });
-});
-
-describe('CATEGORY_CAPSULE_BG', () => {
-  it('couvre toutes les catégories', () => {
-    for (const cat of ALL_CATEGORIES) {
-      expect(CATEGORY_CAPSULE_BG[cat]).toBeDefined();
-    }
-  });
-
-  it('retourne des classes Tailwind non vides', () => {
-    for (const cat of ALL_CATEGORIES) {
-      expect(CATEGORY_CAPSULE_BG[cat].trim()).not.toBe('');
     }
   });
 });

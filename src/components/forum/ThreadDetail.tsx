@@ -1,6 +1,7 @@
 import { Capsule } from '@/components/ui';
 import { useAddReply, useForumThread } from '@/hooks/useForum';
-import { CATEGORY_CAPSULE_BG, ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
+import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
+import { ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
 import { formatDate } from '@/lib/utils';
 import type { ForumReply, ForumUserRole } from '@/types';
 import { Link } from '@tanstack/react-router';

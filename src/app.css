@@ -43,6 +43,13 @@
   --color-rose-25: #fde8ef;
   --color-vert-25: #c7f2dc;
   --color-bleu-25: #cfe7f5;
+  --color-jaune-50: #fdeb83;
+
+  /* === Colors — fiche covers (75%) === */
+  --color-orange-75: #f4924a;
+  --color-jaune-75: #fcd234;
+  --color-vert-75: #58d796;
+  --color-bleu-75: #5ab8e2;
 
   /* === Font sizes === */
   --text-display-xl: 4.5rem;

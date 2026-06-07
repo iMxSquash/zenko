@@ -1,6 +1,7 @@
 import { Button, Capsule, SearchInput } from '@/components/ui';
 import { useCreateThread, useForumThreads } from '@/hooks/useForum';
-import { CATEGORIES, CATEGORY_CAPSULE_BG, ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
+import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
+import { CATEGORIES, ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
 import { cn, formatDate } from '@/lib/utils';
 import type { ForumThread, ForumUserRole, ResourceCategory } from '@/types';
 import { Link, useNavigate } from '@tanstack/react-router';
