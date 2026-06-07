@@ -15,12 +15,15 @@ export function SearchInput({ value, onChange, placeholder, className }: SearchI
         className
       )}
     >
-      <span className="text-[16px] font-medium text-text-primary">⌕</span>
+      <span aria-hidden="true" className="text-[16px] font-medium text-text-primary">
+        ⌕
+      </span>
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={placeholder ?? 'Rechercher'}
         className="flex-1 bg-transparent text-body-sm text-text-primary placeholder:text-text-muted outline-none"
       />
     </div>
