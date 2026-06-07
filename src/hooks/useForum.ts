@@ -84,9 +84,15 @@ export function useCreateThread() {
       authorName: string;
       authorRole: ForumUserRole;
     }) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('Utilisateur non authentifié');
+
       const { data, error } = await supabase
         .from('forum_threads')
         .insert({
+          user_id: user.id,
           title: input.title,
           content: input.content,
           category: input.category,
@@ -113,8 +119,14 @@ export function useAddReply() {
       authorName: string;
       authorRole: ForumUserRole;
     }) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('Utilisateur non authentifié');
+
       const { error } = await supabase.from('forum_replies').insert({
         thread_id: input.threadId,
+        user_id: user.id,
         content: input.content,
         author_name: input.authorName,
         author_role: input.authorRole,
