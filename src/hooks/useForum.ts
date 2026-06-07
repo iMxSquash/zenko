@@ -52,7 +52,8 @@ export function useForumThreads() {
         .from('forum_threads')
         .select('*, forum_replies(*)')
         .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: true, referencedTable: 'forum_replies' });
       if (error) throw error;
       return (data as DbThread[]).map(mapThread);
     },
@@ -67,6 +68,7 @@ export function useForumThread(threadId: string) {
         .from('forum_threads')
         .select('*, forum_replies(*)')
         .eq('id', threadId)
+        .order('created_at', { ascending: true, referencedTable: 'forum_replies' })
         .single();
       if (error) throw error;
       return mapThread(data as DbThread);
