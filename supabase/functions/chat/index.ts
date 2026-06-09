@@ -71,8 +71,27 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { messages } = await req.json();
+    const body = await req.json();
+    const { messages } = body;
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response(JSON.stringify({ error: '"messages" doit être un tableau non vide.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const lastContent: string = messages.at(-1)?.content ?? '';
+
+    if (!lastContent) {
+      return new Response(
+        JSON.stringify({ error: 'Le dernier message ne contient pas de contenu.' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     // 1. Embedding de la question
     const embedRes = await fetch(`${supabaseUrl}/functions/v1/embed`, {
