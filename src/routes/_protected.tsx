@@ -1,5 +1,6 @@
-import { supabase } from '@/lib/supabase/client';
-import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
+// import { supabase } from '@/lib/supabase/client';
+// import { redirect } from '@tanstack/react-router';
+import { Outlet, createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_protected')({
   // beforeLoad: async () => {
