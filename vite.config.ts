@@ -60,7 +60,7 @@ export default defineConfig({
           'vendor-router': ['@tanstack/react-router'],
           'vendor-query': ['@tanstack/react-query'],
           'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-ai': ['ai', '@ai-sdk/react', '@ai-sdk/anthropic'],
+          'vendor-ai': ['ai', '@ai-sdk/react', '@ai-sdk/google'],
         },
       },
     },
