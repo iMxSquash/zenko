@@ -125,11 +125,20 @@ Deno.serve(async (req) => {
       .map((d) => `[${d.metadata?.title ?? d.source_id}]\n${d.content}`)
       .join('\n\n---\n\n');
 
-    const sources = matchedDocs.map((d) => ({
-      source_type: d.source_type,
-      source_id: d.source_id,
-      title: d.metadata?.title ?? d.source_id,
-    }));
+    const sources = matchedDocs.map((d) => {
+      if (d.source_type === 'forum_reply') {
+        return {
+          source_type: d.source_type,
+          source_id: d.metadata?.thread_id ?? d.source_id,
+          title: d.metadata?.thread_title ?? 'Discussion du forum',
+        };
+      }
+      return {
+        source_type: d.source_type,
+        source_id: d.source_id,
+        title: d.metadata?.title ?? d.source_id,
+      };
+    });
 
     // 4. Stream Gemini avec annotation des sources
     const google = createGoogleGenerativeAI({ apiKey: requireEnv('GEMINI_API_KEY') });
