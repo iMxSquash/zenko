@@ -20,6 +20,17 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
+  // Réservé aux appels internes depuis les triggers DB (supabase_functions.http_request).
+  // On vérifie que l'appelant présente bien la service_role key.
+  const serviceKey = requireEnv('SUPABASE_SERVICE_ROLE_KEY');
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${serviceKey}`) {
+    return new Response(JSON.stringify({ error: 'Non autorisé' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const { source_type, source_id, content, metadata } = await req.json();
 
@@ -31,7 +42,6 @@ Deno.serve(async (req) => {
     }
 
     const supabaseUrl = requireEnv('SUPABASE_URL');
-    const serviceKey = requireEnv('SUPABASE_SERVICE_ROLE_KEY');
 
     // Générer l'embedding via /embed
     const embedRes = await fetch(`${supabaseUrl}/functions/v1/embed`, {
