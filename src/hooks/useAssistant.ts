@@ -31,9 +31,10 @@ export function useAssistant(sessionId?: string) {
         .from('chat_sessions')
         .insert({ title, user_id: session.user.id })
         .select('id')
-        .single();
+        .single<Pick<ChatSession, 'id'>>();
       if (error) throw error;
-      return data as ChatSession;
+      if (!data) throw new Error('Création de la session impossible');
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chat_sessions'] });
