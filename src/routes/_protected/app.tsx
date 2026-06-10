@@ -14,6 +14,7 @@ const FEATURES = [
     icon: '📚',
     bg: '#cfe7f5',
     color: '#176a99',
+    to: '/bibliotheque',
   },
   {
     id: 'forum',
@@ -22,6 +23,7 @@ const FEATURES = [
     icon: '💬',
     bg: '#fde8ef',
     color: '#b05c7a',
+    to: '/forum',
   },
   {
     id: 'assistant',
@@ -30,6 +32,7 @@ const FEATURES = [
     icon: '🎤',
     bg: '#c7f2dc',
     color: '#1a7a4a',
+    to: '/assistant',
   },
   {
     id: 'profil',
@@ -38,6 +41,7 @@ const FEATURES = [
     icon: '✨',
     bg: '#fce2d2',
     color: '#a03f0e',
+    to: '/onboarding',
   },
 ] as const;
 
@@ -83,6 +87,7 @@ function AppPage() {
             <button
               key={f.id}
               type="button"
+              onClick={() => navigate({ to: f.to })}
               className="rounded-2xl p-5 text-left transition-transform hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: f.bg }}
             >
