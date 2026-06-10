@@ -2,7 +2,7 @@ import { useAssistant } from '@/hooks/useAssistant';
 import { cn } from '@/lib/utils';
 import type { AssistantSource } from '@/types';
 import type { Message } from '@ai-sdk/react';
-import { SendHorizonal, Volume2, VolumeX } from 'lucide-react';
+import { SendHorizontal, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { MicButton } from './MicButton';
 import { SourceList } from './SourceList';
@@ -90,7 +90,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
           aria-label="Envoyer"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand text-white transition-opacity disabled:opacity-40"
         >
-          <SendHorizonal size={16} />
+          <SendHorizontal size={16} />
         </button>
 
         <button
