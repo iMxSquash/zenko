@@ -1,6 +1,6 @@
 import { signOut } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
-import type { ForumUserRole, Profile } from '@/types';
+import type { ForumUserRole, Profile, PublicProfile } from '@/types';
 
 type ProfileRow = {
   id: string;
@@ -14,6 +14,8 @@ type ProfileRow = {
   twitter_url: string | null;
   doctolib_url: string | null;
 };
+
+type PublicProfileRow = Omit<ProfileRow, 'email'>;
 
 function toProfile(row: ProfileRow): Profile {
   return {
@@ -30,10 +32,34 @@ function toProfile(row: ProfileRow): Profile {
   };
 }
 
+function toPublicProfile(row: PublicProfileRow): PublicProfile {
+  return {
+    id: row.id,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    avatarUrl: row.avatar_url,
+    role: row.role,
+    linkedinUrl: row.linkedin_url,
+    instagramUrl: row.instagram_url,
+    twitterUrl: row.twitter_url,
+    doctolibUrl: row.doctolib_url,
+  };
+}
+
 export async function getProfile(userId: string): Promise<Profile> {
   const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
   if (error) throw error;
   return toProfile(data as ProfileRow);
+}
+
+export async function getPublicProfile(userId: string): Promise<PublicProfile> {
+  const { data, error } = await supabase
+    .from('public_profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  if (error) throw error;
+  return toPublicProfile(data as PublicProfileRow);
 }
 
 export type ProfileUpdate = Partial<{

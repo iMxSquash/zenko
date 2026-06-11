@@ -4,19 +4,25 @@ import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
 import { formatDate } from '@/lib/utils';
 import { Link } from '@tanstack/react-router';
 
-export function ProfileForumActivity() {
-  const { data, isLoading, error } = useUserForumActivity();
+interface ProfileForumActivityProps {
+  userId?: string;
+}
+
+export function ProfileForumActivity({ userId }: ProfileForumActivityProps = {}) {
+  const { data, isLoading, error } = useUserForumActivity(userId);
 
   return (
     <section className="flex flex-col gap-4 rounded-card-lg border border-border bg-surface p-6 shadow-[0px_4px_16px_0px_rgba(23,23,20,0.05)]">
       <h2 className="text-h3 font-bold text-text-primary">Participations au forum</h2>
 
       {isLoading && <p className="text-body-sm text-text-secondary">Chargement…</p>}
-      {error && <p className="text-body-sm text-danger">Impossible de charger votre activité.</p>}
+      {error && <p className="text-body-sm text-danger">Impossible de charger l'activité.</p>}
 
       {data && data.threads.length === 0 && data.replies.length === 0 && (
         <p className="text-body-sm text-text-secondary">
-          Vous n'avez pas encore participé au forum.
+          {userId
+            ? "Cet utilisateur n'a pas encore participé au forum."
+            : "Vous n'avez pas encore participé au forum."}
         </p>
       )}
 

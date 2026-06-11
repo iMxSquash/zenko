@@ -2,6 +2,7 @@ import {
   type ProfileUpdate,
   deleteAccount,
   getProfile,
+  getPublicProfile,
   updateProfile,
   updateRole,
 } from '@/lib/profile/profile';
@@ -17,6 +18,14 @@ export function useProfile() {
     queryKey: ['profile', user?.id],
     queryFn: () => getProfile(user?.id ?? ''),
     enabled: !!user,
+  });
+}
+
+export function usePublicProfile(userId: string) {
+  return useQuery({
+    queryKey: ['profile', 'public', userId],
+    queryFn: () => getPublicProfile(userId),
+    enabled: !!userId,
   });
 }
 

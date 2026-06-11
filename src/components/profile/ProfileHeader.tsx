@@ -1,14 +1,15 @@
 import { Button } from '@/components/ui';
-import type { Profile } from '@/types';
+import type { Profile, PublicProfile } from '@/types';
 import { Link } from '@tanstack/react-router';
 import { Instagram, Linkedin, Stethoscope, Twitter } from 'lucide-react';
 
 interface ProfileHeaderProps {
-  profile: Profile;
+  profile: Profile | PublicProfile;
+  editable?: boolean;
 }
 
 const SOCIAL_LINKS: Array<{
-  key: keyof Pick<Profile, 'linkedinUrl' | 'instagramUrl' | 'twitterUrl' | 'doctolibUrl'>;
+  key: keyof Pick<PublicProfile, 'linkedinUrl' | 'instagramUrl' | 'twitterUrl' | 'doctolibUrl'>;
   label: string;
   icon: typeof Linkedin;
   expertOnly?: boolean;
@@ -19,7 +20,7 @@ const SOCIAL_LINKS: Array<{
   { key: 'doctolibUrl', label: 'Doctolib', icon: Stethoscope, expertOnly: true },
 ];
 
-export function ProfileHeader({ profile }: ProfileHeaderProps) {
+export function ProfileHeader({ profile, editable = true }: ProfileHeaderProps) {
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
 
   const links = SOCIAL_LINKS.filter(
@@ -41,13 +42,17 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           )}
           <div className="flex flex-col gap-1">
             <p className="text-h3 font-bold text-text-primary">{fullName || 'Profil'}</p>
-            <p className="text-body-sm text-text-secondary">{profile.email}</p>
+            {'email' in profile && (
+              <p className="text-body-sm text-text-secondary">{profile.email}</p>
+            )}
           </div>
         </div>
 
-        <Link to="/profile/edit">
-          <Button variant="outline">Modifier le profil</Button>
-        </Link>
+        {editable && (
+          <Link to="/profile/edit">
+            <Button variant="outline">Modifier le profil</Button>
+          </Link>
+        )}
       </div>
 
       {links.length > 0 && (

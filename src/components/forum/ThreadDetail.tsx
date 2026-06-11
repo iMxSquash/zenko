@@ -11,9 +11,13 @@ function ReplyCard({ reply }: { reply: ForumReply }) {
   return (
     <div className="flex flex-col gap-2.5 rounded-search border border-border bg-background p-4">
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className="text-body-sm font-semibold leading-5 text-text-primary">
+        <Link
+          to="/profile/$userId"
+          params={{ userId: reply.author.userId }}
+          className="text-body-sm font-semibold leading-5 text-text-primary hover:underline"
+        >
           {reply.author.name}
-        </span>
+        </Link>
         <Capsule className={ROLE_CAPSULE_BG[reply.author.role]}>
           {ROLE_LABELS[reply.author.role]}
         </Capsule>
@@ -197,7 +201,14 @@ export function ThreadDetail({ threadId }: ThreadDetailProps) {
             {thread.title}
           </h1>
           <p className="text-body-sm font-normal leading-5 text-text-muted">
-            {thread.author.name} · {formatDate(thread.createdAt, true)}
+            <Link
+              to="/profile/$userId"
+              params={{ userId: thread.author.userId }}
+              className="hover:underline"
+            >
+              {thread.author.name}
+            </Link>{' '}
+            · {formatDate(thread.createdAt, true)}
           </p>
         </div>
         <p className="text-body-sm font-normal leading-5 text-text-secondary">{thread.content}</p>

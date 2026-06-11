@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 type DbReply = {
   id: string;
+  user_id: string;
   content: string;
   author_name: string;
   author_role: ForumUserRole;
@@ -13,6 +14,7 @@ type DbReply = {
 
 type DbThread = {
   id: string;
+  user_id: string;
   title: string;
   content: string;
   category: ResourceCategory;
@@ -27,7 +29,7 @@ function mapReply(r: DbReply): ForumReply {
   return {
     id: r.id,
     content: r.content,
-    author: { name: r.author_name, role: r.author_role },
+    author: { userId: r.user_id, name: r.author_name, role: r.author_role },
     createdAt: r.created_at,
   };
 }
@@ -38,7 +40,7 @@ function mapThread(t: DbThread): ForumThread {
     title: t.title,
     content: t.content,
     category: t.category,
-    author: { name: t.author_name, role: t.author_role },
+    author: { userId: t.user_id, name: t.author_name, role: t.author_role },
     isPinned: t.is_pinned,
     createdAt: t.created_at,
     replies: (t.forum_replies ?? []).map(mapReply),
@@ -163,24 +165,25 @@ export interface UserForumActivity {
   replies: UserReplyActivity[];
 }
 
-export function useUserForumActivity() {
+export function useUserForumActivity(userId?: string) {
   const { user } = useAuth();
+  const targetUserId = userId ?? user?.id;
 
   return useQuery({
-    queryKey: ['forum', 'activity', user?.id],
+    queryKey: ['forum', 'activity', targetUserId],
     queryFn: async (): Promise<UserForumActivity> => {
-      if (!user) throw new Error('Utilisateur non authentifié');
+      if (!targetUserId) throw new Error('Utilisateur non authentifié');
 
       const [threadsResult, repliesResult] = await Promise.all([
         supabase
           .from('forum_threads')
           .select('id, title, category, created_at')
-          .eq('user_id', user.id)
+          .eq('user_id', targetUserId)
           .order('created_at', { ascending: false }),
         supabase
           .from('forum_replies')
           .select('id, thread_id, content, created_at')
-          .eq('user_id', user.id)
+          .eq('user_id', targetUserId)
           .order('created_at', { ascending: false }),
       ]);
       if (threadsResult.error) throw threadsResult.error;
@@ -213,6 +216,6 @@ export function useUserForumActivity() {
         })),
       };
     },
-    enabled: !!user,
+    enabled: !!targetUserId,
   });
 }
