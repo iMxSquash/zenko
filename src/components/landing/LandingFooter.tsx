@@ -40,10 +40,10 @@ export function LandingFooter() {
 
       {/* Bottom bar */}
       <div className="flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
-        <p className="text-[12px] opacity-50">
+        <p className="text-label opacity-50">
           © 2026 ZENKO — Conçu par Alem Agency. L&apos;humain d&apos;abord.
         </p>
-        <p className="text-[12px] opacity-50">Mentions légales • RGPD • Cookies</p>
+        <p className="text-label opacity-50">Mentions légales • RGPD • Cookies</p>
       </div>
     </footer>
   );

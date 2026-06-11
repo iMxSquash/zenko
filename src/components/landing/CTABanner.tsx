@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 export function CTABanner() {
   return (
     <section className="flex flex-col items-center justify-center gap-8 bg-brand px-8 py-20 text-center md:px-16">
-      <h2 className="text-[40px] font-bold leading-[52px] tracking-display text-white md:text-display-md">
+      <h2 className="text-[40px] font-bold leading-13 tracking-display text-white md:text-display-md">
         Prêt à briser l&apos;isolement ?
       </h2>
       <p className="max-w-2xl text-body-lg leading-7 text-white/80">

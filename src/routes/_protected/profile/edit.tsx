@@ -22,7 +22,7 @@ function ProfileEditPage() {
       <AppSidebar />
 
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex max-w-[640px] flex-col gap-6 px-8 py-6">
+        <div className="mx-auto flex max-w-160 flex-col gap-6 px-8 py-6">
           <h1 className="text-[32px] font-bold tracking-[-0.01em] text-text-primary">
             Modifier mon profil
           </h1>
