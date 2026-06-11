@@ -1,11 +1,10 @@
 import { useAssistant } from '@/hooks/useAssistant';
-import { cn } from '@/lib/utils';
 import type { AssistantSource } from '@/types';
 import type { Message } from '@ai-sdk/react';
 import { SendHorizontal, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { MessageBubble } from './MessageBubble';
 import { MicButton } from './MicButton';
-import { SourceList } from './SourceList';
 import { VoiceStatus } from './VoiceStatus';
 
 interface ChatAssistantProps {
@@ -19,6 +18,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
     handleInputChange,
     handleSubmit,
     status,
+    error,
     isListening,
     startListening,
     stopListening,
@@ -58,6 +58,13 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
                 <span className="animate-bounce [animation-delay:0.1s]">·</span>
                 <span className="animate-bounce [animation-delay:0.2s]">·</span>
               </span>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="flex justify-start">
+            <div className="rounded-card bg-red-50 px-4 py-2.5 text-sm text-red-600">
+              {error.message || 'Une erreur est survenue, veuillez réessayer.'}
             </div>
           </div>
         )}
@@ -113,18 +120,10 @@ function MessageRow({ message }: { message: Message }) {
     : [];
 
   return (
-    <div className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
-      <div className={cn('max-w-[80%]', !isUser && 'w-full max-w-[80%]')}>
-        <div
-          className={cn(
-            'rounded-card px-4 py-2.5 text-sm leading-relaxed',
-            isUser ? 'bg-brand text-white' : 'bg-neutral-100 text-text-primary'
-          )}
-        >
-          {message.content}
-        </div>
-        {!isUser && <SourceList sources={sources} />}
-      </div>
-    </div>
+    <MessageBubble
+      role={message.role === 'user' ? 'user' : 'assistant'}
+      content={message.content}
+      sources={sources}
+    />
   );
 }

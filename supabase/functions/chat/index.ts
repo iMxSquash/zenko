@@ -1,8 +1,8 @@
-// Pipeline RAG complet : embed question → match_documents → streamText Gemini
+// Pipeline RAG complet : embed question → match_documents + recherche par mots-clés → streamText Gemini
 // POST { messages: Message[], conversationId?: string }
 // Retourne un data stream AI SDK avec la réponse et les sources en annotation.
 
-import { createGoogleGenerativeAI } from 'https://esm.sh/@ai-sdk/google@1.0.0';
+import { createGoogleGenerativeAI } from 'https://esm.sh/@ai-sdk/google@1.2.22';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { createDataStreamResponse, streamText } from 'https://esm.sh/ai@4.3.0';
 
@@ -21,9 +21,10 @@ const corsHeaders = {
 const SYSTEM_PROMPT = `Tu es un assistant bienveillant qui aide les familles et professionnels accompagnant des enfants neurodivergents (TSA, TDAH, DYS, TDI).
 
 Règles strictes :
-- Réponds UNIQUEMENT à partir du CONTEXTE fourni ci-dessous.
-- Si la réponse n'est pas dans le contexte, dis-le honnêtement sans inventer.
-- Cite les sources utilisées (titre de la fiche ou sujet de la discussion).
+- Réponds UNIQUEMENT à partir du CONTEXTE fourni ci-dessous, sans inventer d'informations qui n'y figurent pas.
+- Pour une question générale, ne te limite pas à un seul document : synthétise et combine les éléments pertinents de PLUSIEURS sources du contexte pour construire une réponse complète et utile. Une question générale appelle une réponse simple et large, pas un refus.
+- Ne refuse de répondre que si AUCUNE information du contexte n'est en lien avec la question posée.
+- Cite tes sources en reprenant EXACTEMENT le titre entre crochets tel qu'il apparaît dans le CONTEXTE, par exemple : [Gérer les moments de crise liés au TSA]. N'ajoute jamais d'identifiant technique (UUID) ni de texte supplémentaire dans la citation.
 - Ton bienveillant, accessible, adapté aux familles.
 - Ne donne jamais de conseil médical ni de diagnostic.
 - Refuse poliment les questions hors sujet (neurodivergence, accompagnement).
@@ -34,8 +35,10 @@ type MatchedDoc = {
   source_id: string;
   content: string;
   metadata: Record<string, string>;
-  similarity: number;
 };
+
+type VectorMatch = MatchedDoc & { similarity: number };
+type KeywordMatch = MatchedDoc & { rank: number };
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -110,15 +113,39 @@ Deno.serve(async (req) => {
 
     const { embedding } = await embedRes.json();
 
-    // 2. Recherche sémantique top-6
+    // 2. Recherche sémantique (top-6) + recherche par mots-clés (top-6), en parallèle
     const serviceClient = createClient(supabaseUrl, serviceKey);
-    const { data: docs, error: rpcError } = await serviceClient.rpc('match_documents', {
-      query_embedding: embedding,
-      match_count: 6,
-    });
-    if (rpcError) throw rpcError;
 
-    const matchedDocs = (docs ?? []) as MatchedDoc[];
+    const [vectorResult, keywordResult] = await Promise.all([
+      serviceClient.rpc('match_documents', { query_embedding: embedding, match_count: 6 }),
+      serviceClient.rpc('search_documents_by_keyword', {
+        search_query: lastContent,
+        match_count: 6,
+      }),
+    ]);
+
+    if (vectorResult.error) throw vectorResult.error;
+    if (keywordResult.error) console.error('search_documents_by_keyword:', keywordResult.error);
+
+    const vectorDocs = (vectorResult.data ?? []) as VectorMatch[];
+    const keywordDocs = (keywordResult.data ?? []) as KeywordMatch[];
+
+    // match_documents retourne toujours match_count résultats, même peu pertinents :
+    // on écarte les similarités trop faibles pour ne pas diluer le contexte.
+    const SIMILARITY_THRESHOLD = 0.3;
+    const relevantVectorDocs = vectorDocs.filter((d) => d.similarity >= SIMILARITY_THRESHOLD);
+
+    // Fusion par (source_type, source_id) : priorité aux résultats mots-clés,
+    // qui correspondent à une recherche exacte sur la question de l'utilisateur.
+    const seen = new Set<string>();
+    const matchedDocs: MatchedDoc[] = [];
+    for (const doc of [...keywordDocs, ...relevantVectorDocs]) {
+      const key = `${doc.source_type}:${doc.source_id}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      matchedDocs.push(doc);
+    }
+    matchedDocs.length = Math.min(matchedDocs.length, 8);
 
     // 3. Contexte pour le prompt
     const context = matchedDocs
@@ -148,13 +175,24 @@ Deno.serve(async (req) => {
         dataStream.writeMessageAnnotation({ sources });
 
         const result = streamText({
-          model: google('gemini-2.0-flash'),
+          model: google('gemini-2.5-flash-lite'),
           system: `${SYSTEM_PROMPT}\n\n## CONTEXTE\n\n${context}`,
           messages,
-          maxTokens: 1024,
+          maxTokens: 1536,
+          providerOptions: {
+            google: {
+              thinkingConfig: { thinkingBudget: 0 },
+            },
+          },
         });
 
         result.mergeIntoDataStream(dataStream);
+      },
+      onError: (error) => {
+        console.error('Erreur streamText:', error);
+        return error instanceof Error
+          ? error.message
+          : 'Erreur lors de la génération de la réponse.';
       },
       headers: corsHeaders,
     });
