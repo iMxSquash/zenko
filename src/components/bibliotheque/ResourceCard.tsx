@@ -42,6 +42,10 @@ export function ResourceCard({ fiche, className }: ResourceCardProps) {
             {fiche.author}
           </span>
         </div>
+
+        <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+          <span className="text-[12px] font-semibold text-brand">Lire la fiche →</span>
+        </div>
       </div>
     </article>
   );

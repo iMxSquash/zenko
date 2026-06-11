@@ -29,6 +29,14 @@ export interface Fiche {
   category: ResourceCategory;
   author: string;
   authorAvatarUrl?: string;
+  content?: string;
+  readingTimeMinutes?: number;
+}
+
+export interface ReadingProgress {
+  resourceSlug: string;
+  startedAt: string;
+  completedAt: string | null;
 }
 export type ResourceCategory = 'TSA' | 'TDAH' | 'DYS' | 'TDI';
 
