@@ -9,6 +9,7 @@ const buttonVariants = cva(
         primary: 'bg-brand-100 text-[#f4f4f7] hover:opacity-90',
         outline:
           'border border-border-default bg-transparent text-text-primary hover:bg-background',
+        danger: 'bg-danger text-[#f4f4f7] hover:opacity-90',
       },
     },
     defaultVariants: {
