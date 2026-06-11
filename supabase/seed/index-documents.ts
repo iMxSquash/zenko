@@ -78,7 +78,7 @@ async function indexFiches() {
     await upsertDocument({
       source_type: 'fiche',
       source_id: fiche.slug,
-      content: `${fiche.title}\n\n${fiche.description}`,
+      content: `${fiche.title}\n\n${fiche.content ?? fiche.description}`,
       metadata: { title: fiche.title, slug: fiche.slug, category: fiche.category },
     });
     console.log(`✓ fiche : ${fiche.slug}`);
