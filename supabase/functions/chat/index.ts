@@ -1,4 +1,4 @@
-// Pipeline RAG complet : embed question → match_documents → streamText Gemini
+// Pipeline RAG complet : embed question → match_documents + recherche par mots-clés → streamText Gemini
 // POST { messages: Message[], conversationId?: string }
 // Retourne un data stream AI SDK avec la réponse et les sources en annotation.
 
@@ -34,8 +34,10 @@ type MatchedDoc = {
   source_id: string;
   content: string;
   metadata: Record<string, string>;
-  similarity: number;
 };
+
+type VectorMatch = MatchedDoc & { similarity: number };
+type KeywordMatch = MatchedDoc & { rank: number };
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -110,15 +112,33 @@ Deno.serve(async (req) => {
 
     const { embedding } = await embedRes.json();
 
-    // 2. Recherche sémantique top-6
+    // 2. Recherche sémantique (top-6) + recherche par mots-clés (top-6), en parallèle
     const serviceClient = createClient(supabaseUrl, serviceKey);
-    const { data: docs, error: rpcError } = await serviceClient.rpc('match_documents', {
-      query_embedding: embedding,
-      match_count: 6,
-    });
-    if (rpcError) throw rpcError;
 
-    const matchedDocs = (docs ?? []) as MatchedDoc[];
+    const [vectorResult, keywordResult] = await Promise.all([
+      serviceClient.rpc('match_documents', { query_embedding: embedding, match_count: 6 }),
+      serviceClient.rpc('search_documents_by_keyword', {
+        search_query: lastContent,
+        match_count: 6,
+      }),
+    ]);
+
+    if (vectorResult.error) throw vectorResult.error;
+    if (keywordResult.error) console.error('search_documents_by_keyword:', keywordResult.error);
+
+    const vectorDocs = (vectorResult.data ?? []) as VectorMatch[];
+    const keywordDocs = (keywordResult.data ?? []) as KeywordMatch[];
+
+    // Fusion par (source_type, source_id), en gardant la priorité aux résultats sémantiques
+    const seen = new Set<string>();
+    const matchedDocs: MatchedDoc[] = [];
+    for (const doc of [...vectorDocs, ...keywordDocs]) {
+      const key = `${doc.source_type}:${doc.source_id}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      matchedDocs.push(doc);
+    }
+    matchedDocs.length = Math.min(matchedDocs.length, 8);
 
     // 3. Contexte pour le prompt
     const context = matchedDocs
@@ -148,13 +168,17 @@ Deno.serve(async (req) => {
         dataStream.writeMessageAnnotation({ sources });
 
         const result = streamText({
-          model: google('gemini-2.0-flash'),
+          model: google('gemini-2.5-flash-lite'),
           system: `${SYSTEM_PROMPT}\n\n## CONTEXTE\n\n${context}`,
           messages,
           maxTokens: 1024,
         });
 
         result.mergeIntoDataStream(dataStream);
+      },
+      onError: (error) => {
+        console.error('Erreur streamText:', error);
+        return error instanceof Error ? error.message : 'Erreur lors de la génération de la réponse.';
       },
       headers: corsHeaders,
     });

@@ -19,6 +19,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
     handleInputChange,
     handleSubmit,
     status,
+    error,
     isListening,
     startListening,
     stopListening,
@@ -58,6 +59,13 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
                 <span className="animate-bounce [animation-delay:0.1s]">·</span>
                 <span className="animate-bounce [animation-delay:0.2s]">·</span>
               </span>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="flex justify-start">
+            <div className="rounded-card bg-red-50 px-4 py-2.5 text-sm text-red-600">
+              {error.message || "Une erreur est survenue, veuillez réessayer."}
             </div>
           </div>
         )}
