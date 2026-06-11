@@ -1,5 +1,27 @@
 export type ForumUserRole = 'parent' | 'prof' | 'expert';
 
+export interface AssistantSource {
+  source_type: 'fiche' | 'forum_thread' | 'forum_reply';
+  source_id: string;
+  title: string;
+}
+
+export interface ChatSession {
+  id: string;
+  user_id: string;
+  title: string;
+  created_at: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  session_id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  sources: AssistantSource[] | null;
+  created_at: string;
+}
+
 export interface Fiche {
   slug: string;
   title: string;
