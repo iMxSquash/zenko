@@ -1,3 +1,4 @@
+import { signOut } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import type { ForumUserRole, Profile } from '@/types';
 
@@ -57,6 +58,14 @@ export async function updateProfile(userId: string, data: ProfileUpdate): Promis
 
   const { error } = await supabase.from('profiles').update(payload).eq('id', userId);
   if (error) throw error;
+}
+
+export async function deleteAccount(): Promise<void> {
+  const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' });
+  if (error) throw error;
+
+  await signOut();
+  window.location.href = '/';
 }
 
 export async function updateRole(
