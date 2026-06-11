@@ -22,7 +22,7 @@ function ProfileEditPage() {
       <AppSidebar />
 
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex max-w-160 flex-col gap-6 px-8 py-6">
+        <div className="mx-auto flex max-w-5xl flex-col gap-6 px-8 py-6">
           <h1 className="text-[32px] font-bold tracking-[-0.01em] text-text-primary">
             Modifier mon profil
           </h1>
@@ -31,14 +31,14 @@ function ProfileEditPage() {
           {error && <p className="text-body-sm text-danger">Impossible de charger votre profil.</p>}
 
           {profile && user?.email && (
-            <>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <ProfileAvatarSection avatarUrl={profile.avatarUrl} />
               <ProfileIdentitySection profile={profile} email={user.email} />
               <ProfilePasswordSection />
               <ProfileSocialSection profile={profile} />
-              <ProfileRoleSection profile={profile} />
-              <ProfileAccountSection />
-            </>
+              <ProfileRoleSection profile={profile} className="lg:col-span-2" />
+              <ProfileAccountSection className="lg:col-span-2" />
+            </div>
           )}
         </div>
       </main>
