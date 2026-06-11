@@ -1,4 +1,5 @@
 import { useUpdateProfile } from '@/hooks/useProfile';
+import { assertValidSocialUrl } from '@/lib/profile/socialLinks';
 import type { Profile } from '@/types';
 import { EditableTextField } from './EditableTextField';
 
@@ -16,19 +17,28 @@ export function ProfileSocialSection({ profile }: ProfileSocialSectionProps) {
         label="LinkedIn"
         placeholder="https://www.linkedin.com/in/..."
         value={profile.linkedinUrl ?? ''}
-        onSave={(value) => updateProfile.mutateAsync({ linkedinUrl: value })}
+        onSave={async (value) => {
+          assertValidSocialUrl(value, 'linkedin', 'LinkedIn');
+          await updateProfile.mutateAsync({ linkedinUrl: value });
+        }}
       />
       <EditableTextField
         label="Instagram"
         placeholder="https://www.instagram.com/..."
         value={profile.instagramUrl ?? ''}
-        onSave={(value) => updateProfile.mutateAsync({ instagramUrl: value })}
+        onSave={async (value) => {
+          assertValidSocialUrl(value, 'instagram', 'Instagram');
+          await updateProfile.mutateAsync({ instagramUrl: value });
+        }}
       />
       <EditableTextField
         label="Twitter / X"
         placeholder="https://x.com/..."
         value={profile.twitterUrl ?? ''}
-        onSave={(value) => updateProfile.mutateAsync({ twitterUrl: value })}
+        onSave={async (value) => {
+          assertValidSocialUrl(value, 'twitter', 'Twitter / X');
+          await updateProfile.mutateAsync({ twitterUrl: value });
+        }}
       />
       <EditableTextField
         label="Doctolib"
@@ -38,6 +48,7 @@ export function ProfileSocialSection({ profile }: ProfileSocialSectionProps) {
           if (profile.role === 'expert' && !value) {
             throw new Error('Le lien Doctolib est requis pour le rôle expert.');
           }
+          assertValidSocialUrl(value, 'doctolib', 'Doctolib');
           await updateProfile.mutateAsync({ doctolibUrl: value });
         }}
       />
