@@ -1,4 +1,11 @@
-import { type ProfileUpdate, getProfile, updateProfile, updateRole } from '@/lib/profile/profile';
+import {
+  type ProfileUpdate,
+  deleteAccount,
+  getProfile,
+  updateProfile,
+  updateRole,
+} from '@/lib/profile/profile';
+import { updateEmail, updatePassword } from '@/lib/supabase/auth';
 import { useAuth } from '@/lib/supabase/use-auth';
 import type { ForumUserRole } from '@/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -25,6 +32,24 @@ export function useUpdateProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
     },
+  });
+}
+
+export function useUpdateEmail() {
+  return useMutation({
+    mutationFn: (email: string) => updateEmail(email),
+  });
+}
+
+export function useUpdatePassword() {
+  return useMutation({
+    mutationFn: (password: string) => updatePassword(password),
+  });
+}
+
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: deleteAccount,
   });
 }
 

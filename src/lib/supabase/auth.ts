@@ -22,3 +22,13 @@ export async function getSession() {
   if (error) throw error;
   return data.session;
 }
+
+export async function updateEmail(email: string) {
+  const { error } = await supabase.auth.updateUser({ email });
+  if (error) throw error;
+}
+
+export async function updatePassword(password: string) {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw error;
+}
