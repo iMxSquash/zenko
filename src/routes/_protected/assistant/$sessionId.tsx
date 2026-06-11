@@ -1,6 +1,5 @@
-import { SourceList } from '@/components/assistant/SourceList';
+import { MessageBubble } from '@/components/assistant/MessageBubble';
 import { useChatMessages } from '@/hooks/useAssistant';
-import { cn } from '@/lib/utils';
 import type { AssistantSource } from '@/types';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
@@ -31,24 +30,9 @@ function SessionReplayPage() {
         {error && <p className="text-sm text-danger">Impossible de charger cette session.</p>}
         <div className="flex flex-col gap-4">
           {messages?.map((m) => {
-            const isUser = m.role === 'user';
             const sources: AssistantSource[] = Array.isArray(m.sources) ? m.sources : [];
 
-            return (
-              <div key={m.id} className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
-                <div className={cn('max-w-[80%]', !isUser && 'w-full max-w-[80%]')}>
-                  <div
-                    className={cn(
-                      'rounded-card px-4 py-2.5 text-sm leading-relaxed',
-                      isUser ? 'bg-brand text-white' : 'bg-neutral-100 text-text-primary'
-                    )}
-                  >
-                    {m.content}
-                  </div>
-                  {!isUser && <SourceList sources={sources} />}
-                </div>
-              </div>
-            );
+            return <MessageBubble key={m.id} role={m.role} content={m.content} sources={sources} />;
           })}
         </div>
       </div>
