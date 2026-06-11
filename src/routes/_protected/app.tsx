@@ -41,7 +41,7 @@ const FEATURES = [
     icon: '✨',
     bg: '#fce2d2',
     color: '#a03f0e',
-    to: '/onboarding',
+    to: '/profile',
   },
 ] as const;
 
