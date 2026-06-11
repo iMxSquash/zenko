@@ -4,7 +4,7 @@ import { SearchInput } from '@/components/ui';
 import { useFiches } from '@/hooks/useBibliotheque';
 import { cn } from '@/lib/utils';
 import type { ResourceCategory } from '@/types';
-import { createFileRoute } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/_protected/bibliotheque/')({
@@ -220,11 +220,14 @@ function BibliothequePage() {
             {!isLoading && !error && searchedFiches.length > 0 && (
               <div className="flex flex-wrap gap-5">
                 {searchedFiches.map((fiche) => (
-                  <ResourceCard
+                  <Link
                     key={fiche.slug}
-                    fiche={fiche}
-                    className="min-w-[220px] max-w-[calc(25%-15px)]"
-                  />
+                    to="/bibliotheque/$slug"
+                    params={{ slug: fiche.slug }}
+                    className="min-w-[220px] max-w-[calc(25%-15px)] flex-1 transition-transform hover:-translate-y-0.5"
+                  >
+                    <ResourceCard fiche={fiche} className="h-full" />
+                  </Link>
                 ))}
               </div>
             )}

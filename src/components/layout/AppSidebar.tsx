@@ -1,4 +1,5 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
+import { useInProgressFiches, useSavedFiches } from '@/hooks/useBibliotheque';
 import { signOut } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -29,16 +30,10 @@ function getInitials(name: string) {
     .slice(0, 2);
 }
 
-const NAV_ITEMS = [
-  { icon: '◉', label: 'Tableau de bord', to: '/app' as const },
-  { icon: '♥', label: 'Mes élèves', to: null, badge: 3 },
-  { icon: '✉', label: 'Conversations', to: null, badge: 5 },
-  { icon: '✦', label: 'Ressources', to: '/bibliotheque' as const },
-  { icon: '★', label: 'Spécialistes', to: null },
-] as const;
-
 export function AppSidebar() {
   const { data: user } = useCurrentUser();
+  const { data: inProgressFiches = [] } = useInProgressFiches();
+  const { data: savedFiches = [] } = useSavedFiches();
   const navigate = useNavigate();
 
   const displayName = (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? '';
@@ -59,39 +54,82 @@ export function AppSidebar() {
         <ZenkoLogo width={110} />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1">
-        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-          Menu
-        </p>
+      <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
+        {/* Fiches section */}
+        <div className="flex flex-col gap-1">
+          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+            Fiches
+          </p>
 
-        {NAV_ITEMS.map((item) =>
-          item.to ? (
-            <Link
-              key={item.label}
-              to={item.to}
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
-            >
-              <span className="shrink-0 font-bold">{item.icon}</span>
-              <span className="min-w-0 flex-1">{item.label}</span>
-            </Link>
-          ) : (
-            <button
-              key={item.label}
-              type="button"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] font-medium text-text-active transition-colors hover:bg-neutral-100"
-            >
-              <span className="shrink-0 font-bold text-text-secondary">{item.icon}</span>
-              <span className="min-w-0 flex-1 text-left">{item.label}</span>
-              {'badge' in item && item.badge != null && (
-                <span className="shrink-0 rounded-full bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          )
-        )}
+          <Link
+            to="/app"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+          >
+            <span className="min-w-0 flex-1">Tableau de bord</span>
+          </Link>
+
+          <Link
+            to="/en-cours"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+          >
+            <span className="min-w-0 flex-1">En cours…</span>
+            {inProgressFiches.length > 0 && (
+              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-[10px] font-bold text-white">
+                {inProgressFiches.length}
+              </span>
+            )}
+          </Link>
+
+          <Link
+            to="/favoris"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+          >
+            <span className="min-w-0 flex-1">Favoris</span>
+            {savedFiches.length > 0 && (
+              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-[10px] font-bold text-white">
+                {savedFiches.length}
+              </span>
+            )}
+          </Link>
+
+          <Link
+            to="/bibliotheque"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+          >
+            <span className="min-w-0 flex-1">Ressources</span>
+          </Link>
+        </div>
+
+        {/* Forum section */}
+        <div className="flex flex-col gap-1">
+          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+            Forum
+          </p>
+
+          <Link
+            to="/forum"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+          >
+            <span className="min-w-0 flex-1">Populaires</span>
+          </Link>
+
+          <Link
+            to="/forum"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] font-medium text-text-active transition-colors hover:bg-neutral-100"
+          >
+            <span className="min-w-0 flex-1">Explorer</span>
+          </Link>
+        </div>
       </nav>
 
       <button
