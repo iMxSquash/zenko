@@ -42,41 +42,64 @@ export function useAssistant(sessionId?: string) {
   });
 
   const currentSessionIdRef = useRef<string | undefined>(sessionId);
-  const prevMessageCountRef = useRef(0);
+  const persistedUserCountRef = useRef(0);
+  const persistedAssistantIdRef = useRef<string | undefined>(undefined);
 
+  // Persiste le message utilisateur dès son envoi
   // biome-ignore lint/correctness/useExhaustiveDependencies: persist only on new messages
   useEffect(() => {
-    const msgs = chat.messages;
-    if (msgs.length <= prevMessageCountRef.current || !session) return;
-    prevMessageCountRef.current = msgs.length;
+    const userMsgs = chat.messages.filter((m) => m.role === 'user');
+    if (userMsgs.length <= persistedUserCountRef.current || !session) return;
+    persistedUserCountRef.current = userMsgs.length;
 
-    const lastMsg = msgs.at(-1);
-    if (!lastMsg) return;
+    const lastUserMsg = userMsgs.at(-1);
+    if (!lastUserMsg) return;
 
     async function persist() {
-      if (!lastMsg) return;
+      if (!lastUserMsg) return;
 
-      if (!currentSessionIdRef.current && lastMsg.role === 'user') {
-        const created = await createSessionMutation.mutateAsync(lastMsg.content);
+      if (!currentSessionIdRef.current) {
+        const created = await createSessionMutation.mutateAsync(lastUserMsg.content);
         currentSessionIdRef.current = created.id;
       }
-      if (!currentSessionIdRef.current) return;
-
-      const sources: AssistantSource[] | null =
-        lastMsg.role === 'assistant'
-          ? ((lastMsg.annotations?.[0] as { sources?: AssistantSource[] })?.sources ?? null)
-          : null;
 
       await supabase.from('chat_messages').insert({
         session_id: currentSessionIdRef.current,
-        role: lastMsg.role,
-        content: lastMsg.content,
-        sources,
+        role: 'user',
+        content: lastUserMsg.content,
+        sources: null,
       });
     }
 
     persist().catch(console.error);
   }, [chat.messages.length]);
+
+  // Persiste la réponse de l'assistant une fois le streaming terminé
+  // biome-ignore lint/correctness/useExhaustiveDependencies: persist only when streaming finishes
+  useEffect(() => {
+    if (chat.status !== 'ready' || !session) return;
+
+    const lastMsg = chat.messages.at(-1);
+    if (!lastMsg || lastMsg.role !== 'assistant') return;
+    if (persistedAssistantIdRef.current === lastMsg.id) return;
+    if (!currentSessionIdRef.current) return;
+    persistedAssistantIdRef.current = lastMsg.id;
+
+    const sources: AssistantSource[] | null =
+      (lastMsg.annotations?.[0] as { sources?: AssistantSource[] })?.sources ?? null;
+
+    supabase
+      .from('chat_messages')
+      .insert({
+        session_id: currentSessionIdRef.current,
+        role: 'assistant',
+        content: lastMsg.content,
+        sources,
+      })
+      .then(({ error }) => {
+        if (error) console.error(error);
+      });
+  }, [chat.status]);
 
   // Accumulates confirmed speech segments; reset on startListening or submit
   const stableVoiceTextRef = useRef('');
