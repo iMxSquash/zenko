@@ -29,6 +29,14 @@ function getInitials(name: string) {
     .slice(0, 2);
 }
 
+const NAV_ITEMS = [
+  { icon: '◉', label: 'Tableau de bord', to: '/app' as const },
+  { icon: '♥', label: 'Mes élèves', to: null, badge: 3 },
+  { icon: '✉', label: 'Conversations', to: null, badge: 5 },
+  { icon: '✦', label: 'Ressources', to: '/bibliotheque' as const },
+  { icon: '★', label: 'Spécialistes', to: null },
+] as const;
+
 export function AppSidebar() {
   const { data: user } = useCurrentUser();
   const navigate = useNavigate();
@@ -46,81 +54,58 @@ export function AppSidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-[248px] shrink-0 flex-col gap-1 border-r border-border bg-surface px-4 py-6">
-      <div className="px-2 pb-6">
+    <aside className="flex h-screen w-[248px] shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
+      <div className="px-2 pb-6 pt-1">
         <ZenkoLogo width={110} />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-            Fiches
-          </p>
-          <div className="flex flex-col gap-1">
-            <Link
-              to="/bibliotheque"
-              className="flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-medium transition-colors"
-              activeProps={{ className: 'bg-vert-25 text-text-primary' }}
-              inactiveProps={{ className: 'text-text-muted hover:bg-neutral-50' }}
-            >
-              Tableau de bord
-            </Link>
-            <button
-              type="button"
-              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-medium text-text-muted transition-colors hover:bg-neutral-50"
-            >
-              En cours...
-              <span className="rounded-full bg-text-muted px-2 py-0.5 text-[10px] font-bold text-white">
-                0
-              </span>
-            </button>
-            <button
-              type="button"
-              className="flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-medium text-text-muted transition-colors hover:bg-neutral-50"
-            >
-              Fiches enregistrées
-            </button>
-          </div>
-        </div>
+      <nav className="flex flex-1 flex-col gap-1">
+        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+          Menu
+        </p>
 
-        <div className="flex flex-col gap-2">
-          <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-            Forum
-          </p>
-          <div className="flex flex-col gap-1">
+        {NAV_ITEMS.map((item) =>
+          item.to ? (
             <Link
-              to="/forum"
-              className="flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-medium text-text-muted transition-colors hover:bg-neutral-50"
+              key={item.label}
+              to={item.to}
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
             >
-              Populaires
+              <span className="shrink-0 font-bold">{item.icon}</span>
+              <span className="min-w-0 flex-1">{item.label}</span>
             </Link>
-            <Link
-              to="/forum"
-              className="flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-medium text-text-muted transition-colors hover:bg-neutral-50"
+          ) : (
+            <button
+              key={item.label}
+              type="button"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] font-medium text-text-active transition-colors hover:bg-neutral-100"
             >
-              Explorer
-            </Link>
-          </div>
-        </div>
+              <span className="shrink-0 font-bold text-text-secondary">{item.icon}</span>
+              <span className="min-w-0 flex-1 text-left">{item.label}</span>
+              {'badge' in item && item.badge != null && (
+                <span className="shrink-0 rounded-full bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">
+                  {item.badge}
+                </span>
+              )}
+            </button>
+          )
+        )}
       </nav>
 
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2.5 rounded-xl bg-background px-2 py-2.5">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-vert-25">
-            <span className="text-[13px] font-semibold text-[#288d40]">{userInitials}</span>
-          </div>
-          <span className="truncate text-[13px] font-semibold text-text-primary">
-            {displayName}
-          </span>
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="flex w-full items-center gap-2.5 rounded-nav bg-background px-2 py-2.5 transition-colors hover:bg-neutral-100"
+      >
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#e1f4e5]">
+          <span className="text-[13px] font-semibold text-[#288d40]">{userInitials}</span>
         </div>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center rounded-xl bg-[#e04e4e] px-2 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#c94242]"
-        >
-          Se déconnecter
-        </button>
-      </div>
+        <span className="min-w-0 flex-1 truncate text-left text-[13px] font-semibold text-text-primary">
+          {displayName}
+        </span>
+      </button>
     </aside>
   );
 }
