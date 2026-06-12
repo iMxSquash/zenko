@@ -31,7 +31,7 @@ function LoginPage() {
       } else {
         await signInWithPassword(email, password);
       }
-      navigate({ to: '/app' });
+      navigate({ to: '/bibliotheque' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {

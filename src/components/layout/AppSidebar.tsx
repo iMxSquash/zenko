@@ -67,7 +67,7 @@ export function AppSidebar() {
           </p>
 
           <Link
-            to="/app"
+            to="/bibliotheque"
             className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
@@ -102,15 +102,6 @@ export function AppSidebar() {
               </span>
             )}
           </Link>
-
-          <Link
-            to="/bibliotheque"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
-          >
-            <span className="min-w-0 flex-1">Ressources</span>
-          </Link>
         </div>
 
         {/* Forum section */}
@@ -127,12 +118,21 @@ export function AppSidebar() {
           >
             <span className="min-w-0 flex-1">Populaires</span>
           </Link>
+        </div>
+
+        {/* Assistant section */}
+        <div className="flex flex-col gap-1">
+          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+            Assistant
+          </p>
 
           <Link
-            to="/forum"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm font-medium text-text-active transition-colors hover:bg-neutral-100"
+            to="/assistant"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
-            <span className="min-w-0 flex-1">Explorer</span>
+            <span className="min-w-0 flex-1">Assistant vocal</span>
           </Link>
         </div>
       </nav>

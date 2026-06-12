@@ -31,7 +31,7 @@ function OnboardingPage() {
         doctolibUrl: selectedRole === 'expert' ? doctolibUrl : undefined,
       },
       {
-        onSuccess: () => navigate({ to: '/app' }),
+        onSuccess: () => navigate({ to: '/bibliotheque' }),
         onError: (err) => {
           setError(err instanceof Error ? err.message : 'Une erreur est survenue.');
         },
