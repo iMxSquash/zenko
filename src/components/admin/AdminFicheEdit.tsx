@@ -41,7 +41,7 @@ export function AdminFicheEdit({ slug }: AdminFicheEditProps) {
         </div>
       )}
 
-      <div className="max-w-2xl">
+      <div>
         <FicheForm
           initial={{
             slug: fiche.slug,

@@ -28,6 +28,13 @@ type ProfileRow = {
   created_at: string;
 };
 
+type ProfileDetailRow = ProfileRow & {
+  linkedin_url: string | null;
+  instagram_url: string | null;
+  twitter_url: string | null;
+  doctolib_url: string | null;
+};
+
 type AdminReplyRow = {
   id: string;
   content: string;
@@ -76,6 +83,19 @@ export interface AdminThread {
   createdAt: string;
   replyCount: number;
   replies: { id: string; content: string; authorName: string; createdAt: string }[];
+}
+
+export interface AdminUserDetail extends AdminUser {
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
+  doctolibUrl: string | null;
+}
+
+export interface AdminUserUpdate {
+  firstName?: string;
+  lastName?: string;
+  role?: ForumUserRole | null;
 }
 
 export interface FicheInput {
@@ -366,6 +386,77 @@ export function useAdminStats() {
         threadsCount: threadsResult.count ?? 0,
         usersCount: usersResult.count ?? 0,
       };
+    },
+  });
+}
+
+export function useAdminUserDetail(userId: string) {
+  return useQuery({
+    queryKey: ['admin', 'users', userId],
+    queryFn: async () => {
+      const [profileResult, adminResult] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select(
+            'id, email, first_name, last_name, avatar_url, role, created_at, linkedin_url, instagram_url, twitter_url, doctolib_url'
+          )
+          .eq('id', userId)
+          .single(),
+        supabase.from('admins').select('user_id').eq('user_id', userId).maybeSingle(),
+      ]);
+      if (profileResult.error) throw profileResult.error;
+      const p = profileResult.data as ProfileDetailRow;
+      return {
+        id: p.id,
+        email: p.email,
+        firstName: p.first_name,
+        lastName: p.last_name,
+        avatarUrl: p.avatar_url,
+        role: p.role,
+        createdAt: p.created_at,
+        isAdmin: !!adminResult.data,
+        linkedinUrl: p.linkedin_url,
+        instagramUrl: p.instagram_url,
+        twitterUrl: p.twitter_url,
+        doctolibUrl: p.doctolib_url,
+      } satisfies AdminUserDetail;
+    },
+    enabled: !!userId,
+  });
+}
+
+export function useAdminUpdateUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userId, input }: { userId: string; input: AdminUserUpdate }) => {
+      const payload: Record<string, unknown> = {};
+      if (input.firstName !== undefined) payload.first_name = input.firstName;
+      if (input.lastName !== undefined) payload.last_name = input.lastName;
+      if (input.role !== undefined) payload.role = input.role;
+
+      const { error } = await supabase.from('profiles').update(payload).eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: (_data, { userId }) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users', userId] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+    },
+  });
+}
+
+export function useAdminDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase.functions.invoke('admin-delete-user', {
+        method: 'POST',
+        body: { userId },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
     },
   });
 }

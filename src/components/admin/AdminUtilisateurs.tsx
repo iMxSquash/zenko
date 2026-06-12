@@ -1,10 +1,12 @@
 import { useAdminUsers } from '@/hooks/useAdmin';
 import type { AdminUser } from '@/hooks/useAdmin';
+import { Link } from '@tanstack/react-router';
+import { ChevronRight } from 'lucide-react';
 
 const ROLE_LABELS: Record<string, string> = {
   parent: 'Parent',
-  prof: 'Professeur',
-  expert: 'Expert',
+  prof: 'Enseignant·e',
+  expert: 'Expert·e',
 };
 
 export function AdminUtilisateurs() {
@@ -26,6 +28,7 @@ export function AdminUtilisateurs() {
               <th className="px-5 py-4 text-left font-semibold text-text-secondary">Rôle</th>
               <th className="px-5 py-4 text-left font-semibold text-text-secondary">Inscrit le</th>
               <th className="px-5 py-4 text-left font-semibold text-text-secondary">Admin</th>
+              <th className="px-5 py-4" />
             </tr>
           </thead>
           <tbody>
@@ -34,7 +37,7 @@ export function AdminUtilisateurs() {
             ))}
             {users?.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-5 py-8 text-center text-text-muted">
+                <td colSpan={6} className="px-5 py-8 text-center text-text-muted">
                   Aucun utilisateur.
                 </td>
               </tr>
@@ -57,14 +60,14 @@ function UserRow({ user }: { user: AdminUser }) {
   });
 
   return (
-    <tr className="border-b border-border last:border-0 hover:bg-background transition-colors">
+    <tr className="border-b border-border last:border-0 transition-colors hover:bg-background">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
           {user.avatarUrl ? (
             <img
               src={user.avatarUrl}
               alt=""
-              className="size-8 rounded-full object-cover shrink-0"
+              className="size-8 shrink-0 rounded-full object-cover"
             />
           ) : (
             <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
@@ -93,6 +96,16 @@ function UserRow({ user }: { user: AdminUser }) {
             Admin
           </span>
         )}
+      </td>
+      <td className="px-5 py-4">
+        <Link
+          to="/admin/utilisateurs/$userId"
+          params={{ userId: user.id }}
+          className="flex size-8 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
+          title="Voir le profil"
+        >
+          <ChevronRight size={16} />
+        </Link>
       </td>
     </tr>
   );
