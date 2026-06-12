@@ -1,338 +1,563 @@
 ---
 name: seo-geo-toolkit
-description: Implémente le référencement naturel (SEO technique, on-page, JSON-LD/schema.org, sitemap, robots.txt) ET le référencement IA (GEO / Generative Engine Optimization, llms.txt, contenu citable par ChatGPT/Perplexity/Claude) en code pur pour l'écosystème detailing.fr / cms-template / formulaire_cms. Utiliser quand on demande "améliore le SEO", "ajoute du JSON-LD", "fais une page géo-localisée", "optimise pour les IA / GEO", "sitemap", "robots.txt", "rich results", "schema.org", "LocalBusiness", "FAQPage", "llms.txt".
+description: Implémente le référencement naturel complet (SEO technique, on-page, JSON-LD/schema.org, sitemap, robots.txt) ET le référencement IA (GEO / Generative Engine Optimization, llms.txt, contenu citable par ChatGPT/Perplexity/Claude/Google AI) en code pur, pour n'importe quel projet (Next.js, React/Vite SPA, HTML statique). Utiliser quand on demande "améliore le SEO", "ajoute du JSON-LD", "fais une page géo-localisée", "optimise pour les IA / GEO", "sitemap", "robots.txt", "rich results", "schema.org", "LocalBusiness", "FAQPage", "llms.txt", "metadata", "Open Graph".
 metadata:
   version: "1.0"
-  scope: "Alternance (detailing.fr, cms-template, formulaire_cms)"
 ---
 
-# SEO & GEO Toolkit — écosystème Alternance
+# SEO & GEO Toolkit
 
-Référence pour implémenter le SEO et le GEO (SEO + Generative Engine Optimization) **directement en code**, sans
-outil externe, sur les deux stacks du projet :
+Boîte à outils générique pour construire **tout le référencement naturel d'un site en code pur**, sans dépendance
+externe : metadata, balises Open Graph/Twitter, JSON-LD (schema.org), sitemap.xml, robots.txt, et le **GEO**
+(Generative Engine Optimization = être cité par ChatGPT, Perplexity, Google AI Overviews, Claude).
 
-- **`detailing.fr`** — Next.js 14 App Router, métadonnées natives (`generateMetadata`, `sitemap.ts`, `robots.ts`).
-- **`cms-template`** — React + Vite (SPA), pas de SSR → SEO injecté côté client via `SEOHead` + `services/jsonld.ts`.
-- **`formulaire_cms`** — ne génère pas de SEO directement, mais provisionne le `site_config` qui alimente le SEO de `cms-template`.
-
-Toujours vérifier les fichiers réels avant de dupliquer du code :
-- `cms-template/src/services/jsonld.ts` — générateurs JSON-LD réutilisables
-- `cms-template/src/services/sitemap.ts` — sitemap + robots.txt générés côté tenant
-- `cms-template/src/components/SEOHead.tsx` — injection des balises meta/OG/Twitter
-- `cms-template/src/types/index.ts` — interface `SiteConfig` (source de vérité des données tenant pour le SEO)
-- `detailing.fr/src/app/layout.tsx` — metadata globale + Organization JSON-LD
-- `detailing.fr/src/app/sitemap.ts` et `robots.ts` — sitemap/robots natifs Next.js
-- `detailing.fr/src/app/boutiques/[slug]/page.tsx` — exemple complet de LocalBusiness JSON-LD par detailer
-- `detailing.fr/src/app/page.tsx` — exemple de `@graph` multi-entités (Organization, WebSite, Service, FAQPage…)
+S'applique à n'importe quelle stack : adapter les snippets ci-dessous au framework du projet (Next.js App Router,
+React/Vite SPA, Nuxt, Astro, HTML statique...).
 
 ---
 
 ## 1. Metadata (title, description, OG, canonical)
 
-### Next.js (`detailing.fr`)
-
-Pages statiques : export `metadata` dans `page.tsx`. Pages dynamiques (`[slug]`) : `generateMetadata()`.
+### Next.js (App Router)
 
 ```tsx
-// app/services/polissage/page.tsx
+// app/ma-page/page.tsx — page statique
 export const metadata: Metadata = {
-  title: "Polissage automobile : tarifs, étapes et pros près de vous | Detailing.fr",
-  description: "Tout savoir sur le polissage auto : prix moyen, étapes, différence avec le lustrage, et annuaire de pros qualifiés.",
-  alternates: { canonical: "https://detailing.fr/services/polissage" },
+  title: "Titre orienté requête (≤ 60 caractères) | Marque",
+  description: "Description claire, 120-160 caractères, qui donne envie de cliquer et reprend le mot-clé principal.",
+  alternates: { canonical: "https://example.com/ma-page" },
   openGraph: {
     title: "...",
     description: "...",
-    url: "https://detailing.fr/services/polissage",
+    url: "https://example.com/ma-page",
     type: "website",
-    images: [{ url: "https://detailing.fr/og/polissage.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://example.com/og/ma-page.jpg", width: 1200, height: 630 }],
   },
+  twitter: { card: "summary_large_image" },
 };
 ```
 
 ```tsx
-// app/boutiques/[slug]/page.tsx
+// app/produits/[slug]/page.tsx — page dynamique
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const detailer = await getDetailerBySlug(params.slug);
-  const title = `${detailer.name} — Detailing auto à ${detailer.city} | Avis & Tarifs`;
-  const description = `${detailer.name} à ${detailer.city} (${detailer.department}) : ${detailer.services.slice(0,3).join(", ")}. Avis clients, horaires, devis.`;
+  const item = await getItem(params.slug);
+  const title = `${item.name} — ${item.shortPitch} | Marque`;
+  const description = item.metaDescription ?? item.excerpt.slice(0, 155);
   return {
     title,
     description,
-    alternates: { canonical: `https://detailing.fr/boutiques/${detailer.slug}` },
-    openGraph: { title, description, type: "profile", images: [detailer.logo ?? "/og-default.jpg"] },
+    alternates: { canonical: `https://example.com/produits/${item.slug}` },
+    openGraph: { title, description, type: "website", images: [item.image ?? "/og-default.jpg"] },
   };
 }
 ```
 
-Règles :
-- Title ≤ 60 caractères, description 120-160 caractères, inclure ville/région pour les pages géo.
-- Toujours un `canonical` explicite (évite le duplicate content sur les pages géo qui partagent du contenu).
-- `metadataBase` est déjà défini dans `layout.tsx` racine → les URL relatives marchent dans les enfants.
+Penser `metadataBase` dans le `layout.tsx` racine pour que les URL relatives marchent partout.
 
-### Vite/React (`cms-template`)
+### React / Vite SPA (sans SSR)
 
-Pas de SSR : on utilise `<SEOHead />` (composant existant, injection DOM via `useEffect`). À placer en haut de chaque page/route.
+Sans SSR, il faut injecter les balises côté client (au minimum) ET idéalement pré-rendre le HTML pour les
+crawlers qui n'exécutent pas JS (voir section GEO).
 
 ```tsx
-import SEOHead from "@/components/SEOHead";
+// components/SEOHead.tsx — composant générique réutilisable
+import { useEffect } from "react";
 
-<SEOHead
-  title={`${service.name} — ${siteConfig.name}`}
-  description={service.metaDescription ?? service.shortDescription}
-  keywords={[service.name, siteConfig.business?.areaServed ?? "", "detailing auto"]}
-  siteName={siteConfig.name}
-  ogType="website"
-  ogImage={service.image}
-  canonical={`${siteUrl}/services/${service.slug}`}
-/>
+interface SEOProps {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogType?: "website" | "article" | "product" | "profile";
+  ogImage?: string;
+  keywords?: string[];
+  robots?: string; // "index, follow" | "noindex, nofollow"
+}
+
+export default function SEOHead(props: SEOProps) {
+  useEffect(() => {
+    document.title = props.title;
+
+    const setMeta = (name: string, content?: string, attr: "name" | "property" = "name") => {
+      if (!content) return;
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    setMeta("description", props.description);
+    if (props.keywords?.length) setMeta("keywords", props.keywords.join(", "));
+    if (props.robots) setMeta("robots", props.robots);
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = props.canonical ?? window.location.href;
+
+    setMeta("og:title", props.title, "property");
+    setMeta("og:description", props.description, "property");
+    setMeta("og:type", props.ogType ?? "website", "property");
+    setMeta("og:url", canonical.href, "property");
+    if (props.ogImage) setMeta("og:image", props.ogImage, "property");
+
+    setMeta("twitter:card", "summary_large_image");
+    setMeta("twitter:title", props.title);
+    setMeta("twitter:description", props.description);
+    if (props.ogImage) setMeta("twitter:image", props.ogImage);
+  }, [props]);
+
+  return null;
+}
 ```
 
-Pour un article de blog → `ogType="article"` + `articlePublishedTime`, `articleModifiedTime`, `articleTags`.
+Usage : `<SEOHead title="..." description="..." canonical="https://example.com/page" />` en haut de chaque page/route.
 
-⚠️ Important pour `cms-template` : comme c'est une SPA, les balises meta sont injectées **après** le premier rendu.
-Pour les robots/crawlers IA qui n'exécutent pas JS (cf. section GEO), privilégier le pré-rendu côté `formulaire_cms`
-au build (ou un futur SSR) si le contenu doit être indexable sans JS.
+### Astro / Nuxt / HTML statique
+
+Injecter directement dans le `<head>` du layout — pas de hook nécessaire, c'est déjà du SSR/SSG :
+
+```html
+<title>Titre orienté requête | Marque</title>
+<meta name="description" content="..." />
+<link rel="canonical" href="https://example.com/page" />
+<meta property="og:title" content="..." />
+<meta property="og:description" content="..." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://example.com/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+```
 
 ---
 
-## 2. JSON-LD (schema.org) — catalogue
+## 2. JSON-LD (schema.org) — catalogue de templates
 
-### `cms-template` : utiliser les générateurs existants
+Règles générales :
+- Toujours `JSON.stringify(obj)` pour l'injection — jamais d'interpolation de string brute (échappe `<`, `"`, etc. et évite l'injection de script).
+- Un objet par schéma logique, ou un `@graph` unique combinant plusieurs entités liées par `@id`.
+- Ne mettre que des champs avec une vraie valeur (utiliser des spreads conditionnels `...(value && {...})`).
 
-Ne pas réécrire de schémas à la main — `src/services/jsonld.ts` contient déjà :
+### Organization / LocalBusiness (à mettre sur toutes les pages, layout global)
 
-| Fonction | Type schema.org | Usage |
-|---|---|---|
-| `generateOrganizationJsonLd(siteConfig, siteUrl)` | `LocalBusiness` | À injecter sur **toutes les pages** (footer/layout global) — NAP + geo + horaires |
-| `generateWebSiteJsonLd(siteUrl)` | `WebSite` | Page d'accueil uniquement |
-| `generatePageJsonLd(title, description, image, url, siteConfig)` | `WebPage` | Pages de contenu génériques |
-| `generateArticleJsonLd(post, siteConfig, siteUrl)` | `NewsArticle` | Articles de blog |
-| `generateBreadcrumbJsonLd(breadcrumbs, siteUrl)` | `BreadcrumbList` | Toute page avec fil d'Ariane |
-| `generateFAQJsonLd(faqs)` | `FAQPage` | Pages avec section FAQ (très utilisé en GEO, voir section 4) |
-| `generateProductJsonLd(...)` | `Product` + `Offer` | Pages services/tarifs |
-| `generateItemListJsonLd(items, siteUrl)` | `ItemList` | Listes (services, articles, galerie) |
-| `generateOfferJsonLd(...)` | `Offer` | Tarifs détaillés |
-| `generateAggregateRatingJsonLd(value, count)` | `AggregateRating` | À injecter dans `Organization`/`Product` si avis dispo |
-
-Injection via le hook existant :
-
-```tsx
-import { useJsonLd } from "@/hooks/useJsonLd";
-import { generateOrganizationJsonLd, generateFAQJsonLd } from "@/services/jsonld";
-
-// dans une page de service avec FAQ
-useJsonLd(generateOrganizationJsonLd(siteConfig, siteUrl), "org-jsonld");
-useJsonLd(generateFAQJsonLd(faqs), "faq-jsonld");
-```
-
-Pour combiner plusieurs schémas sur une page, injecter chacun avec un `elementId` différent (le 2e argument
-de `injectJsonLd`/`useJsonLd`) — ne jamais réutiliser le même id sinon le précédent est écrasé.
-
-**Manquant à ajouter si besoin** (suivre le même style — fonction pure qui retourne l'objet JSON-LD) :
-- `generateServiceJsonLd(service, siteConfig, siteUrl)` → `@type: "Service"`, `provider: Organization`, `areaServed`.
-- `generateHowToJsonLd(steps)` → `@type: "HowTo"` pour les articles "comment faire X" (très utile en GEO).
-- `generateVideoObjectJsonLd(...)` si galerie vidéo.
-
-### `detailing.fr` : pattern `@graph` inline
-
-Pour les pages riches (accueil, fiche detailer, pages géo), construire un objet `@graph` avec plusieurs entités
-liées par `@id`, comme dans `app/page.tsx` et `app/boutiques/[slug]/page.tsx` :
-
-```tsx
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "LocalBusiness",
-      "@id": `https://detailing.fr/boutiques/${detailer.slug}#business`,
-      name: detailer.name,
-      image: detailer.logo,
+```ts
+function generateOrganizationJsonLd(config: {
+  name: string; url: string; logo?: string; description?: string;
+  address?: { street?: string; city?: string; postalCode?: string; country?: string; region?: string };
+  geo?: { lat: number | string; lng: number | string };
+  phone?: string; email?: string;
+  openingHours?: { dayOfWeek: string[]; opens: string; closes: string }[];
+  sameAs?: string[]; // réseaux sociaux
+  areaServed?: string | string[];
+  priceRange?: string;
+  isLocalBusiness?: boolean; // true => LocalBusiness, false => Organization
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": config.isLocalBusiness ? "LocalBusiness" : "Organization",
+    name: config.name,
+    url: config.url,
+    ...(config.description && { description: config.description }),
+    ...(config.logo && { logo: config.logo, image: config.logo }),
+    ...(config.sameAs?.length && { sameAs: config.sameAs }),
+    ...(config.address && {
       address: {
         "@type": "PostalAddress",
-        streetAddress: detailer.address,
-        addressLocality: detailer.city,
-        postalCode: detailer.postalCode,
-        addressRegion: detailer.region,
-        addressCountry: "FR",
+        ...(config.address.street && { streetAddress: config.address.street }),
+        ...(config.address.city && { addressLocality: config.address.city }),
+        ...(config.address.postalCode && { postalCode: config.address.postalCode }),
+        ...(config.address.region && { addressRegion: config.address.region }),
+        ...(config.address.country && { addressCountry: config.address.country }),
       },
-      geo: detailer.lat && detailer.lng ? {
-        "@type": "GeoCoordinates",
-        latitude: detailer.lat,
-        longitude: detailer.lng,
-      } : undefined,
-      openingHoursSpecification: detailer.openingHours?.map(h => ({
+    }),
+    ...(config.geo && {
+      geo: { "@type": "GeoCoordinates", latitude: config.geo.lat, longitude: config.geo.lng },
+    }),
+    ...(config.openingHours?.length && {
+      openingHoursSpecification: config.openingHours.map((h) => ({
         "@type": "OpeningHoursSpecification",
         dayOfWeek: h.dayOfWeek,
         opens: h.opens,
         closes: h.closes,
       })),
-      ...(detailer.rating && {
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: detailer.rating.value,
-          reviewCount: detailer.rating.count,
-        },
-      }),
-      sameAs: detailer.socials ? Object.values(detailer.socials).filter(Boolean) : undefined,
+    }),
+    ...((config.phone || config.email) && {
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Customer Support",
+        ...(config.phone && { telephone: config.phone }),
+        ...(config.email && { email: config.email }),
+      },
+    }),
+    ...(config.areaServed && { areaServed: config.areaServed }),
+    ...(config.priceRange && { priceRange: config.priceRange }),
+  };
+}
+```
+
+### WebSite (page d'accueil, avec sitelinks search box)
+
+```ts
+function generateWebSiteJsonLd(siteUrl: string, searchPath = "/recherche?q={search_term_string}") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: siteUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}${searchPath}` },
+      "query-input": "required name=search_term_string",
     },
-    {
-      "@type": "BreadcrumbList",
-      "@id": `https://detailing.fr/boutiques/${detailer.slug}#breadcrumb`,
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Accueil", item: "https://detailing.fr" },
-        { "@type": "ListItem", position: 2, name: "Annuaire", item: "https://detailing.fr/boutiques" },
-        { "@type": "ListItem", position: 3, name: detailer.city, item: `https://detailing.fr/villes/${detailer.citySlug}` },
-        { "@type": "ListItem", position: 4, name: detailer.name },
-      ],
+  };
+}
+```
+
+### WebPage générique
+
+```ts
+function generatePageJsonLd(title: string, description: string, url: string, siteUrl: string, image?: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description,
+    url,
+    ...(image && { image }),
+    isPartOf: { "@type": "WebSite", url: siteUrl },
+  };
+}
+```
+
+### Article / BlogPosting / NewsArticle
+
+```ts
+function generateArticleJsonLd(article: {
+  title: string; description?: string; url: string; image?: string;
+  datePublished: string; dateModified?: string; authorName?: string;
+  publisherName: string; publisherLogo?: string; keywords?: string[];
+  type?: "Article" | "BlogPosting" | "NewsArticle";
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": article.type ?? "BlogPosting",
+    headline: article.title,
+    ...(article.description && { description: article.description }),
+    ...(article.image && { image: [article.image] }),
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+    ...(article.authorName && { author: { "@type": "Person", name: article.authorName } }),
+    publisher: {
+      "@type": "Organization",
+      name: article.publisherName,
+      ...(article.publisherLogo && { logo: { "@type": "ImageObject", url: article.publisherLogo } }),
     },
+    mainEntityOfPage: { "@type": "WebPage", "@id": article.url },
+    ...(article.keywords?.length && { keywords: article.keywords.join(", ") }),
+  };
+}
+```
+
+### BreadcrumbList
+
+```ts
+function generateBreadcrumbJsonLd(items: { name: string; url?: string }[], siteUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      ...(item.url && { item: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}` }),
+    })),
+  };
+}
+```
+
+### FAQPage (très utile aussi pour le GEO, voir section 4)
+
+```ts
+function generateFAQJsonLd(faqs: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
+}
+```
+
+### HowTo (guides procéduraux — fort impact GEO)
+
+```ts
+function generateHowToJsonLd(howTo: { name: string; description?: string; steps: { name: string; text: string; image?: string }[] }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: howTo.name,
+    ...(howTo.description && { description: howTo.description }),
+    step: howTo.steps.map((s) => ({
+      "@type": "HowToStep",
+      name: s.name,
+      text: s.text,
+      ...(s.image && { image: s.image }),
+    })),
+  };
+}
+```
+
+### Product / Service + Offer
+
+```ts
+function generateProductJsonLd(product: { name: string; description?: string; image?: string; price?: string; currency?: string; url: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    ...(product.description && { description: product.description }),
+    ...(product.image && { image: product.image }),
+    url: product.url,
+    ...(product.price && {
+      offers: {
+        "@type": "Offer",
+        price: product.price.replace(/[^0-9.,]/g, "").replace(",", "."),
+        priceCurrency: product.currency ?? "EUR",
+        url: product.url,
+      },
+    }),
+  };
+}
+
+function generateServiceJsonLd(service: { name: string; description?: string; providerName: string; areaServed?: string | string[]; url: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    ...(service.description && { description: service.description }),
+    provider: { "@type": "Organization", name: service.providerName },
+    ...(service.areaServed && { areaServed: service.areaServed }),
+    url: service.url,
+  };
+}
+```
+
+### ItemList (listes : articles, produits, résultats d'annuaire)
+
+```ts
+function generateItemListJsonLd(items: { name: string; url: string; description?: string; image?: string }[], siteUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}`,
+      name: item.name,
+      ...(item.description && { description: item.description }),
+      ...(item.image && { image: item.image }),
+    })),
+  };
+}
+```
+
+### AggregateRating (à fusionner dans Organization/Product si avis dispo)
+
+```ts
+function generateAggregateRatingJsonLd(ratingValue: number | string, reviewCount: number | string, bestRating = "5") {
+  return { "@type": "AggregateRating", ratingValue, reviewCount, bestRating, worstRating: "1" };
+}
+```
+
+### Combiner plusieurs entités avec `@graph`
+
+```ts
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { ...generateOrganizationJsonLd({ ...config, isLocalBusiness: true }), "@id": `${pageUrl}#business` },
+    { ...generateBreadcrumbJsonLd(breadcrumbs, siteUrl), "@id": `${pageUrl}#breadcrumb` },
+    { ...generateFAQJsonLd(faqs), "@id": `${pageUrl}#faq` },
   ],
 };
 ```
 
-Puis injecter en JSX :
+### Injection
 
 ```tsx
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-/>
+// Next.js / Astro / SSR — dans le JSX du <head> ou du body
+<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 ```
 
-⚠️ **Sécurité** : ne jamais interpoler de string directement dans le HTML — toujours `JSON.stringify(obj)` (échappe
-correctement les `<`, `"`, etc.). Ne pas insérer de contenu utilisateur non sanitisé dans `name`/`description`
-sans vérifier qu'il ne contient pas de séquences de fermeture `</script>`.
+```ts
+// SPA / client-side
+function injectJsonLd(jsonLd: unknown, elementId: string) {
+  document.getElementById(elementId)?.remove();
+  const script = document.createElement("script");
+  script.id = elementId;
+  script.type = "application/ld+json";
+  script.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(script);
+}
+```
 
-### Pages géo (régions/départements/villes)
-
-Utiliser `ItemList` (liste des detailers de la zone) + `LocalBusiness` minimal par item + `FAQPage` (questions
-type "Comment trouver un detailer à {ville} ?", générées dynamiquement comme dans `regions/[slug]/page.tsx`).
-Pour les zones, `GeoCircle` / `geoMidpoint` + `geoRadius` (cf. `page.tsx` ligne ~404-422) permet de signaler une
-zone de couverture (`areaServed`) plutôt qu'un point unique.
+Pour combiner plusieurs schémas sur une même page sans `@graph`, donner un `elementId` différent à chaque injection.
 
 ---
 
-## 3. Sitemaps & robots.txt
+## 3. Sitemap & robots.txt
 
-### Next.js (`detailing.fr`)
+### Next.js (App Router, natif)
 
-- `src/app/sitemap.ts` → export `MetadataRoute.Sitemap`. Les entités dynamiques volumineuses (régions, villes,
-  blog, detailers) doivent être **séparées en sitemaps dédiés** (`sitemap-regions.xml`, etc., générés par des
-  routes `app/sitemap-xxx.xml/route.ts`) et référencées dans un `sitemap_index.xml` — Google limite chaque
-  sitemap à 50 000 URLs.
-- `priority`/`changeFrequency` : accueil 1.0/daily, annuaire 0.9/daily, listes géo 0.8/weekly, pages légales
-  0.3/yearly. Garder cette hiérarchie pour les nouvelles pages.
-- `src/app/robots.ts` → bloquer `/api/`, `/admin/`, `/_next/`, `/private/`, fichiers `*.json`. Toujours lister
-  tous les sitemaps dans `sitemap: [...]`.
+```ts
+// app/sitemap.ts
+import { MetadataRoute } from "next";
 
-### Vite/React (`cms-template`)
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = "https://example.com";
+  return [
+    { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    // ...pages dynamiques via fetch/DB, en respectant la limite de 50 000 URL/sitemap
+  ];
+}
+```
 
-- `src/services/sitemap.ts` construit le XML à la main (`generatePagesSitemap`, `generateBlogSitemap`,
-  `generateSitemapIndex`, `generateRobotsTxt`) à partir des données Supabase du tenant (services, articles).
-- `syncSitemaps()` envoie le XML généré au backend (`formulaire_cms` via `/api/write-sitemaps`) qui écrit les
-  fichiers statiques sur le sous-domaine du tenant (puisque la SPA ne peut pas servir de fichiers dynamiques
-  à la racine sans backend). **Quand on ajoute un nouveau type de contenu indexable** (ex: galerie, pages
-  promo), il faut : 1) ajouter une fonction `generateXxxSitemap()`, 2) l'inclure dans `generateSitemapIndex()`,
-  3) vérifier que `syncSitemaps()` l'envoie bien au backend.
-- Si une nouvelle page doit être bloquée à l'indexation (page de paiement, dashboard interne), l'ajouter dans
-  `disallowPaths` de `generateRobotsTxt()`.
+```ts
+// app/robots.ts
+import { MetadataRoute } from "next";
+
+export default function robots(): MetadataRoute.Robots {
+  const baseUrl = "https://example.com";
+  return {
+    rules: [
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/admin/", "/_next/", "/private/"] },
+      { userAgent: ["GPTBot", "PerplexityBot", "ClaudeBot", "Google-Extended"], allow: "/" },
+    ],
+    sitemap: [`${baseUrl}/sitemap.xml`],
+  };
+}
+```
+
+Au-delà de 50 000 URL : créer plusieurs `app/sitemap-xxx.xml/route.ts` (ou `generateSitemaps()` de Next.js) et
+un `sitemap_index.xml` qui les référence.
+
+### SPA / build statique (pas de routing serveur)
+
+Générer le XML programmatiquement au build (script Node) et l'écrire dans `dist/`/`public/` :
+
+```ts
+function generateSitemapXml(urls: { loc: string; lastmod?: string; changefreq?: string; priority?: number }[]) {
+  const items = urls.map((u) => `
+  <url>
+    <loc>${u.loc}</loc>
+    ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}
+    ${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}
+    ${u.priority !== undefined ? `<priority>${u.priority}</priority>` : ""}
+  </url>`).join("");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${items}
+</urlset>`;
+}
+
+function generateRobotsTxt(opts: { sitemapUrl: string; disallow?: string[]; allowAiCrawlers?: boolean }) {
+  const lines = ["User-agent: *", "Allow: /"];
+  for (const path of opts.disallow ?? []) lines.push(`Disallow: ${path}`);
+  if (opts.allowAiCrawlers) {
+    lines.push("", "User-agent: GPTBot", "Allow: /", "", "User-agent: PerplexityBot", "Allow: /", "", "User-agent: ClaudeBot", "Allow: /");
+  }
+  lines.push("", `Sitemap: ${opts.sitemapUrl}`);
+  return lines.join("\n");
+}
+```
+
+Priorités/fréquences usuelles : accueil `1.0/daily`, pages catégorie `0.8/weekly`, contenu profond `0.6/monthly`,
+pages légales `0.3/yearly`.
 
 ---
 
 ## 4. GEO — Generative Engine Optimization (référencement IA)
 
-Le "GEO" ici = optimiser pour être **cité par les moteurs IA** (ChatGPT/SearchGPT, Perplexity, Google AI
-Overviews, Claude). Ces moteurs s'appuient fortement sur : contenu structuré, schema.org (surtout `FAQPage`,
-`HowTo`, `Organization`), réponses directes et autonomes, et accès non bloqué pour leurs crawlers.
+Le GEO consiste à optimiser pour être **cité comme source par les moteurs IA** (ChatGPT/SearchGPT, Perplexity,
+Google AI Overviews, Claude). Ces moteurs valorisent : contenu structuré (schema.org), réponses directes et
+autonomes, fraîcheur, et un accès non bloqué pour leurs crawlers.
 
 ### 4.1 `llms.txt`
 
-Fichier `public/llms.txt` (Next.js : `src/app/llms.txt/route.ts` ou fichier statique dans `public/`) — résumé
-en Markdown du site destiné aux LLM : qui est l'entreprise, quelles pages sont importantes, liens directs.
+Fichier `public/llms.txt` (ou route dédiée en SSR) : résumé Markdown du site pour les LLM — qui est l'entité,
+pages clés avec description courte.
 
 ```
-# Detailing.fr
+# Nom du site
 
-> Annuaire national de detailers automobiles professionnels en France, avec guides, tarifs et un portail SaaS
-> pour les pros (sites web, prise de RDV, gestion clients).
+> Description en 1-2 phrases : ce qu'est le site, pour qui, ce qu'il propose.
 
 ## Pages principales
-- [Annuaire des detailers](https://detailing.fr/annuaire): recherche par ville/région
-- [Guide des services](https://detailing.fr/services): polissage, céramique, PPF, nettoyage intérieur, avec tarifs moyens
-- [Glossaire](https://detailing.fr/glossaire): définitions des termes du detailing auto
-- [FAQ](https://detailing.fr/faq): questions fréquentes sur le detailing et la plateforme
-
-## Pour les pros
-- [Rejoindre l'annuaire](https://detailing.fr/boutiques/rejoindre): inscription des professionnels
+- [Nom de la page](https://example.com/page): description courte de ce qu'on y trouve
+- [FAQ](https://example.com/faq): questions fréquentes
 ```
 
-Pour `cms-template`, générer un `llms.txt` par tenant à partir de `site_config` (nom, description, services,
-zone géographique, lien contact) — même logique que `sitemap.ts`, à ajouter côté `formulaire_cms` au
-provisioning ou via une route statique générée au build.
+### 4.2 Crawlers IA dans `robots.txt`
 
-### 4.2 Autoriser les crawlers IA dans `robots.txt`
-
-Sauf besoin explicite de les bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-SearchBot`, `PerplexityBot`,
-`ClaudeBot`, `Google-Extended`, `Applebot-Extended`. Exemple à ajouter dans `robots.ts` :
-
-```ts
-rules: [
-  { userAgent: "*", allow: "/", disallow: [...] },
-  { userAgent: ["GPTBot", "PerplexityBot", "ClaudeBot", "Google-Extended"], allow: "/" },
-],
-```
+Sauf besoin explicite de bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-SearchBot`, `PerplexityBot`,
+`ClaudeBot`, `Google-Extended`, `Applebot-Extended` (voir snippet section 3).
 
 ### 4.3 Contenu citable
 
-- Chaque page de contenu (guide, glossaire, service) doit avoir un **paragraphe de réponse directe** dès le
-  début (definition/réponse en 1-3 phrases) avant les détails — c'est ce que les IA extraient en priorité.
-- `FAQPage` JSON-LD sur toute page avec une section FAQ (déjà supporté par `generateFAQJsonLd`) : les questions
-  doivent être formulées comme une vraie recherche utilisateur ("Combien coûte un polissage automobile ?").
-- `HowTo` JSON-LD pour les guides procéduraux (étapes numérotées dans le contenu ET dans le schema).
-- Dates `datePublished`/`dateModified` toujours renseignées (déjà fait dans `generateArticleJsonLd`) — les IA
-  pondèrent la fraîcheur du contenu.
-- Garder une hiérarchie de titres propre (`h1` unique, `h2`/`h3` logiques) : les IA segmentent le contenu par
-  heading pour citer la bonne section.
+- Réponse directe en 1-3 phrases dès le début de chaque page de contenu (definition/réponse), avant les détails —
+  c'est ce que les IA extraient en priorité pour citer la source.
+- `FAQPage` JSON-LD sur toute section FAQ, avec des questions formulées comme de vraies recherches utilisateur.
+- `HowTo` JSON-LD pour le contenu procédural, avec les mêmes étapes numérotées dans le texte et dans le schema.
+- Toujours renseigner `datePublished`/`dateModified` — les IA pondèrent la fraîcheur.
+- Hiérarchie de titres propre (`h1` unique par page, `h2`/`h3` logiques) : les IA segmentent par heading pour
+  citer la bonne section.
+- Sur les SPA sans SSR : si le contenu critique n'apparaît qu'après exécution JS, les crawlers non-JS (et
+  certains bots IA) ne le verront pas — prioriser le pré-rendu/SSG/SSR pour les pages de contenu indexable.
 
 ---
 
-## 5. Checklists
+## 5. Checklist par type de page
 
-### Nouvelle page de service (`detailing.fr` ou `cms-template`)
-1. `metadata`/`generateMetadata` (ou `<SEOHead>`) avec title/description orientés requête utilisateur + canonical.
-2. JSON-LD `Service` (ou `Product`) + `Organization`/`LocalBusiness` lié via `provider`.
-3. Si FAQ présente → `FAQPage` JSON-LD.
-4. Ajouter l'URL dans le sitemap correspondant avec priorité/fréquence cohérente.
-5. Vérifier le maillage interne (lien depuis la page parente + breadcrumb).
+### Page de contenu (service/produit/landing)
+1. Title (≤60c, mot-clé devant) + description (120-160c) + canonical.
+2. Open Graph + Twitter card.
+3. JSON-LD `WebPage`/`Product`/`Service` + `Organization` lié.
+4. `FAQPage` si section FAQ.
+5. Ajout au sitemap avec priorité cohérente + lien interne depuis une page parente.
 
-### Nouvelle page géo (région/département/ville)
-1. Title/description incluant le nom de la zone + intention ("près de moi", "pas cher", etc.).
-2. `ItemList` des detailers de la zone + `LocalBusiness` minimal par item (nom, adresse, geo).
-3. `FAQPage` avec questions géo-spécifiques générées dynamiquement (cf. `regions/[slug]/page.tsx`).
-4. `BreadcrumbList` cohérent avec la hiérarchie région > département > ville.
-5. Sitemap dédié (`sitemap-regions.xml`/`sitemap-cities.xml`) avec `lastModified` réel si data dynamique.
+### Page géo-localisée (ville/région/zone)
+1. Title/description incluant la zone + intention de recherche.
+2. `ItemList` + `LocalBusiness`/`Organization` avec `geo`/`address`/`areaServed`.
+3. `FAQPage` avec questions géo-spécifiques.
+4. `BreadcrumbList` cohérent avec la hiérarchie géographique.
+5. Sitemap dédié si volume important, `lastmod` réel si data dynamique.
 
-### Nouveau tenant (`cms-template` / provisioning)
-1. Vérifier que `site_config.business` est rempli (geo, openingHours, areaServed, addressLocality,
-   addressCountry, priceRange) → alimente `generateOrganizationJsonLd`.
-2. `generateOrganizationJsonLd` injecté globalement (layout) avec `LocalBusiness`.
-3. `sitemap.ts` du tenant inclut bien les pages services + blog (`generatePagesSitemap`/`generateBlogSitemap`).
-4. `robots.txt` du tenant généré et synchronisé (`syncSitemaps`).
-5. (Optionnel GEO) `llms.txt` du tenant généré avec nom, description, services, zone, contact.
+### Article de blog
+1. JSON-LD `Article`/`BlogPosting` avec dates et auteur.
+2. OG type `article` (published/modified time, tags).
+3. `BreadcrumbList`.
+4. Sitemap blog avec `lastmod` = date de publication/modif.
+5. Réponse directe en intro + structure de titres claire (GEO).
 
-### Nouvel article de blog
-1. `generateArticleJsonLd` (NewsArticle) avec `datePublished`/`dateModified`, `focus_keyword`, `tags`.
-2. `<SEOHead ogType="article">` avec `articlePublishedTime`/`articleTags`.
-3. `BreadcrumbList` (Accueil > Blog > Article).
-4. Ajout au sitemap blog avec `lastmod` = date de publication/modif.
-5. Paragraphe de réponse directe en intro (pour GEO) + structure `h2`/`h3` claire.
+### Site entier (one-time)
+1. `robots.txt` avec règles + crawlers IA + sitemap(s).
+2. `sitemap.xml` (ou index) couvrant toutes les pages indexables.
+3. `Organization`/`WebSite` JSON-LD global (layout).
+4. `llms.txt` à la racine.
+5. Favicon, `manifest.json`, balises `theme-color` (qualité technique générale).
 
 ---
 
 ## 6. Validation
 
-- Google Rich Results Test / Schema Markup Validator (schema.org/validator) pour valider chaque JSON-LD avant
-  déploiement — coller le `JSON.stringify(jsonLd, null, 2)`.
-- Vérifier qu'un seul `<script type="application/ld+json">` par schéma logique (pas de doublons d'id sur
-  `cms-template`, attention aux re-renders qui pourraient empiler des scripts).
-- Sur `cms-template`, tester en désactivant JS (ou via "View Source") pour voir ce qu'un crawler non-JS verra —
-  si le contenu critique est absent, prioriser le pré-rendu/SSG pour ces pages.
+- Coller `JSON.stringify(jsonLd, null, 2)` dans le Schema Markup Validator (schema.org/validator) ou Google
+  Rich Results Test avant déploiement.
+- Vérifier qu'il n'y a pas de doublons de `<script type="application/ld+json">` (même id écrasé/empilé sur les SPA).
+- Tester le rendu "vue source"/sans JS pour s'assurer que le contenu indexable est bien présent côté serveur.
