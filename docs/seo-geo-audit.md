@@ -11,14 +11,12 @@
 - `SEOHead` : title, description, canonical, OG/Twitter par route
 - Accès anonyme aux pages publiques (bibliothèque, forum, profils)
 
-## 🔴 Critique — assets manquants
+## ✅ Résolu — assets manquants
 
-`index.html`, `vite.config.ts` et `src/lib/seo/site.ts` référencent des fichiers absents de `public/` :
-
-- `/favicon.svg`
-- `/apple-touch-icon.png`
-- `/pwa-192x192.png`, `/pwa-512x512.png`
-- `/assets/og-image.png` → **previews de partage cassées** (OG/Twitter pointent sur une 404)
+`index.html`, `vite.config.ts` et `src/lib/seo/site.ts` référencent désormais des fichiers présents
+dans `public/` : `favicon.svg`, `apple-touch-icon.png`, `pwa-192x192.png`, `pwa-512x512.png` et
+`assets/og-image.png`. Générés depuis le logo (`favicon.svg`) via `scripts/generate-brand-assets.mjs`
+(placeholders à remplacer par un design final si besoin).
 
 ## ✅ Résolu — domaine placeholder
 
@@ -63,7 +61,7 @@ trigger `handle_updated_at`).
 ## Suivi
 
 - [x] Ajouter `favicon.svg`
-- [ ] Ajouter `og-image.png` + icônes PWA (`apple-touch-icon.png`, `pwa-192x192.png`, `pwa-512x512.png`)
+- [x] Ajouter `og-image.png` + icônes PWA (`apple-touch-icon.png`, `pwa-192x192.png`, `pwa-512x512.png`)
 - [x] Confirmer le domaine de production et propager `SITE_URL`
 - [x] Pré-rendu des pages bibliothèque/forum pour les crawlers (Edge Function `prerender`)
 - [x] `datePublished`/`dateModified` sur `LearningResource`
