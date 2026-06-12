@@ -1,9 +1,11 @@
 import { Button, Capsule, SearchInput } from '@/components/ui';
 import { useCreateThread, useForumThreads } from '@/hooks/useForum';
+import { useProfile } from '@/hooks/useProfile';
 import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
 import { CATEGORIES, ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
+import { getDisplayName } from '@/lib/profile/profile';
 import { cn, formatDate } from '@/lib/utils';
-import type { ForumThread, ForumUserRole, ResourceCategory } from '@/types';
+import type { ForumThread, ResourceCategory } from '@/types';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
@@ -48,6 +50,7 @@ function ThreadCard({ thread }: { thread: ForumThread }) {
 export function Forum() {
   const navigate = useNavigate();
   const { data: threads = [], isLoading, error } = useForumThreads();
+  const { data: profile } = useProfile();
   const createThread = useCreateThread();
 
   const [activeCategory, setActiveCategory] = useState<ResourceCategory | 'all'>('all');
@@ -56,8 +59,6 @@ export function Forum() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState<ResourceCategory>('TSA');
-  const [authorName, setAuthorName] = useState('');
-  const [authorRole, setAuthorRole] = useState<ForumUserRole>('parent');
   const [formError, setFormError] = useState<string | null>(null);
 
   const filtered = threads
@@ -76,9 +77,16 @@ export function Forum() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!profile) return;
     setFormError(null);
     createThread.mutate(
-      { title, content, category, authorName, authorRole },
+      {
+        title,
+        content,
+        category,
+        authorName: getDisplayName(profile),
+        authorRole: profile.role ?? 'parent',
+      },
       {
         onSuccess: (data) => {
           handleCancel();
@@ -183,62 +191,25 @@ export function Forum() {
                 />
               </div>
 
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <label
-                    htmlFor="thread-category"
-                    className="mb-1 block text-label font-medium text-text-secondary"
-                  >
-                    Catégorie
-                  </label>
-                  <select
-                    id="thread-category"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value as ResourceCategory)}
-                    className="w-full rounded-[8px] border border-border-default bg-background px-3 py-2 text-body-sm text-text-primary outline-none focus:border-brand"
-                  >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="thread-role"
-                    className="mb-1 block text-label font-medium text-text-secondary"
-                  >
-                    Votre rôle
-                  </label>
-                  <select
-                    id="thread-role"
-                    value={authorRole}
-                    onChange={(e) => setAuthorRole(e.target.value as ForumUserRole)}
-                    className="w-full rounded-[8px] border border-border-default bg-background px-3 py-2 text-body-sm text-text-primary outline-none focus:border-brand"
-                  >
-                    <option value="parent">Parent</option>
-                    <option value="prof">Enseignant-e</option>
-                    <option value="expert">Expert-e</option>
-                  </select>
-                </div>
-              </div>
-
               <div>
                 <label
-                  htmlFor="thread-author"
+                  htmlFor="thread-category"
                   className="mb-1 block text-label font-medium text-text-secondary"
                 >
-                  Nom affiché
+                  Catégorie
                 </label>
-                <input
-                  id="thread-author"
-                  type="text"
-                  value={authorName}
-                  onChange={(e) => setAuthorName(e.target.value)}
-                  required
+                <select
+                  id="thread-category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ResourceCategory)}
                   className="w-full rounded-[8px] border border-border-default bg-background px-3 py-2 text-body-sm text-text-primary outline-none focus:border-brand"
-                />
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -270,7 +241,11 @@ export function Forum() {
               >
                 Annuler
               </button>
-              <Button type="submit" disabled={createThread.isPending} className="px-5 py-2">
+              <Button
+                type="submit"
+                disabled={createThread.isPending || !profile}
+                className="px-5 py-2"
+              >
                 {createThread.isPending ? 'Publication…' : 'Publier'}
               </Button>
             </div>
