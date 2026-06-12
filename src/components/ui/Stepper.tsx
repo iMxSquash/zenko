@@ -18,7 +18,7 @@ export function Stepper({ steps, currentStep }: StepperProps) {
             <div className="flex items-center gap-2">
               <div
                 className={cn(
-                  'flex size-7 items-center justify-center rounded-full text-[12px] font-bold',
+                  'flex size-7 items-center justify-center rounded-full text-label font-bold',
                   isActive || isDone ? 'bg-brand text-white' : 'bg-border text-[#7a766d]'
                 )}
               >

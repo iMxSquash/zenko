@@ -34,7 +34,7 @@ export function OnboardingRoleStep({
         <h1 className="text-display-md font-bold tracking-display text-text-primary">
           Bienvenue. Vous êtes...
         </h1>
-        <p className="max-w-[580px] text-[17px] leading-[26px] text-text-secondary">
+        <p className="max-w-145 text-[17px] leading-6.5 text-text-secondary">
           Trois entrées, un seul espace. Choisissez votre profil pour adapter ZENKO à votre
           quotidien.
         </p>
@@ -50,7 +50,7 @@ export function OnboardingRoleStep({
           placeholder="https://www.doctolib.fr/..."
           value={doctolibUrl}
           onChange={(e) => onDoctolibUrlChange(e.target.value)}
-          className="w-full max-w-[400px]"
+          className="w-full max-w-100"
         />
       )}
 

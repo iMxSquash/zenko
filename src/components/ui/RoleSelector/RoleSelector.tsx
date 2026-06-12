@@ -51,7 +51,7 @@ export function RoleSelector({ value, onChange, className }: RoleSelectorProps) 
           onClick={() => onChange(role.id)}
           aria-pressed={value === role.id}
           className={cn(
-            'flex w-[220px] flex-col gap-3 rounded-card-lg p-5 text-left transition-all',
+            'flex w-55 flex-col gap-3 rounded-card-lg p-5 text-left transition-all',
             value === role.id
               ? 'border-2 border-brand bg-surface shadow-[0px_8px_24px_0px_rgba(47,157,212,0.15)]'
               : 'border border-border bg-surface shadow-[0px_4px_16px_0px_rgba(23,23,20,0.05)] hover:border-brand/40'
@@ -64,7 +64,7 @@ export function RoleSelector({ value, onChange, className }: RoleSelectorProps) 
             {role.icon}
           </div>
           <p className="text-body-lg font-bold text-text-primary">{role.title}</p>
-          <p className="text-body-sm leading-[20px] text-text-secondary">{role.description}</p>
+          <p className="text-body-sm leading-5 text-text-secondary">{role.description}</p>
         </button>
       ))}
     </div>

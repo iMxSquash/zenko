@@ -15,7 +15,7 @@ export function SearchInput({ value, onChange, placeholder, className }: SearchI
         className
       )}
     >
-      <span aria-hidden="true" className="text-[16px] font-medium text-text-primary">
+      <span aria-hidden="true" className="text-h3 font-medium text-text-primary">
         ⌕
       </span>
       <input

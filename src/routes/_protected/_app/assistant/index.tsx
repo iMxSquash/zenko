@@ -2,13 +2,13 @@ import { ChatAssistant } from '@/components/assistant/ChatAssistant';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { History } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/assistant/')({
+export const Route = createFileRoute('/_protected/_app/assistant/')({
   component: AssistantPage,
 });
 
 function AssistantPage() {
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h1 className="text-sm font-semibold">Assistant</h1>
         <Link

@@ -11,7 +11,7 @@ export function TestimonialCard({ quote, bg, color }: TestimonialCardProps) {
       style={{ background: bg }}
     >
       <span
-        className="text-display-xl font-bold leading-[80px] tracking-display"
+        className="text-display-xl font-bold leading-20 tracking-display"
         style={{ color }}
         aria-hidden="true"
       >

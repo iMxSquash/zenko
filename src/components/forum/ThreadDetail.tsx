@@ -1,9 +1,11 @@
 import { Capsule } from '@/components/ui';
 import { useAddReply, useForumThread } from '@/hooks/useForum';
+import { useProfile } from '@/hooks/useProfile';
 import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
 import { ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
+import { getDisplayName } from '@/lib/profile/profile';
 import { formatDate } from '@/lib/utils';
-import type { ForumReply, ForumUserRole } from '@/types';
+import type { ForumReply } from '@/types';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
@@ -29,18 +31,22 @@ function ReplyCard({ reply }: { reply: ForumReply }) {
 }
 
 function ReplyForm({ threadId }: { threadId: string }) {
+  const { data: profile } = useProfile();
   const addReply = useAddReply();
   const [content, setContent] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [authorRole, setAuthorRole] = useState<ForumUserRole>('parent');
   const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!content.trim() || !profile) return;
     setError(null);
     addReply.mutate(
-      { threadId, content, authorName, authorRole },
+      {
+        threadId,
+        content,
+        authorName: getDisplayName(profile),
+        authorRole: profile.role ?? 'parent',
+      },
       {
         onSuccess: () => setContent(''),
         onError: (err) => {
@@ -58,43 +64,6 @@ function ReplyForm({ threadId }: { threadId: string }) {
       <p className="text-body-lg font-semibold leading-6.5 text-text-primary">
         Ajouter une réponse
       </p>
-
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <label
-            htmlFor="reply-author"
-            className="mb-1 block text-label font-medium text-text-secondary"
-          >
-            Nom affiché
-          </label>
-          <input
-            id="reply-author"
-            type="text"
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
-            required
-            className="w-full rounded-[8px] border border-border-default bg-background px-3 py-2 text-body-sm text-text-primary outline-none focus:border-brand"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="reply-role"
-            className="mb-1 block text-label font-medium text-text-secondary"
-          >
-            Rôle
-          </label>
-          <select
-            id="reply-role"
-            value={authorRole}
-            onChange={(e) => setAuthorRole(e.target.value as ForumUserRole)}
-            className="rounded-[8px] border border-border-default bg-background px-3 py-2 text-body-sm text-text-primary outline-none focus:border-brand"
-          >
-            <option value="parent">Parent</option>
-            <option value="prof">Enseignant-e</option>
-            <option value="expert">Expert-e</option>
-          </select>
-        </div>
-      </div>
 
       <div>
         <label
@@ -118,7 +87,7 @@ function ReplyForm({ threadId }: { threadId: string }) {
 
       <button
         type="submit"
-        disabled={addReply.isPending || !content.trim()}
+        disabled={addReply.isPending || !content.trim() || !profile}
         className="w-fit rounded-full bg-brand-100 px-5 py-2 font-display text-[16px] font-semibold text-[#f4f4f7] transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         {addReply.isPending ? 'Envoi…' : 'Répondre'}

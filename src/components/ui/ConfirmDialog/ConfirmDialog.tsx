@@ -28,7 +28,7 @@ export function ConfirmDialog({
       <dialog
         open
         aria-labelledby="confirm-dialog-title"
-        className="flex w-full max-w-[400px] flex-col gap-4 rounded-card-lg border-none bg-surface p-6 shadow-[0px_8px_24px_0px_rgba(23,23,20,0.15)]"
+        className="static flex w-full max-w-100 flex-col gap-4 rounded-card-lg border-none bg-surface p-6 shadow-[0px_8px_24px_0px_rgba(23,23,20,0.15)]"
       >
         <h2 id="confirm-dialog-title" className="text-h3 font-bold text-text-primary">
           {title}

@@ -2,6 +2,11 @@ import { signOut } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import type { ForumUserRole, Profile, PublicProfile } from '@/types';
 
+export function getDisplayName(profile: Pick<Profile, 'firstName' | 'lastName' | 'email'>): string {
+  const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
+  return fullName || profile.email.split('@')[0];
+}
+
 type ProfileRow = {
   id: string;
   email: string;
