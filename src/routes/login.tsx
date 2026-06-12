@@ -1,7 +1,7 @@
 import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
-import { signInWithPassword, signUpWithPassword } from '@/lib/supabase/auth';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { signInWithPassword } from '@/lib/supabase/auth';
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 type Search = { mode?: 'login' | 'signup' };
@@ -15,9 +15,8 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const { mode } = Route.useSearch();
-  const navigate = useNavigate();
   const isSignup = mode === 'signup';
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +28,7 @@ function LoginPage() {
     setLoading(true);
     try {
       await signInWithPassword(email, password);
-      navigate({ to: '/app' });
+      navigate({ to: '/bibliotheque' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Identifiants incorrects');
     } finally {
@@ -52,24 +51,108 @@ function LoginPage() {
 
       {/* Blob 22 — top, brand, positionné sur <main> */}
       <div
-        className="pointer-events-none fixed -top-24 -left-24 h-72 w-72 rounded-full blur-3xl"
-        style={{ background: '#419FD7', opacity: 0.08 }}
-      />
-      <div
-        className="pointer-events-none fixed -bottom-20 -right-20 h-80 w-80 rounded-full blur-3xl"
-        style={{ background: '#20CA73', opacity: 0.08 }}
-      />
-      <div
-        className="pointer-events-none fixed top-1/2 right-0 h-56 w-56 rounded-full blur-3xl"
-        style={{ background: '#FCD808', opacity: 0.07 }}
-      />
+        aria-hidden="true"
+        className="pointer-events-none absolute hidden select-none lg:block"
+        style={{
+          left: '34.2vw',
+          top: '-5.35vw',
+          width: '11.11vw',
+          height: '11.11vw',
+          zIndex: 10,
+        }}
+      >
+        <div className="relative size-full">
+          <img
+            src="/assets/blob_22.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute block inset-0 max-w-none size-full"
+          />
+        </div>
+      </div>
 
-      <div className="relative w-full max-w-[400px]">
-        {/* Logo + tagline */}
-        <div className="mb-8 flex flex-col items-center">
-          <ZenkoLogo width={168} />
-          <p className="mt-3 text-center text-sm text-[#5a5750]">
-            Accompagnement des enfants neurodivergents
+      {/* Blob 23 — chevauche les 2 panneaux, positionné sur <main> */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute hidden select-none lg:block"
+        style={{
+          left: '37.7vw',
+          bottom: '-10.76vw',
+          width: '17.78vw',
+          height: '20vw',
+          zIndex: 10,
+          position: 'absolute',
+        }}
+      >
+        <div className="relative size-full">
+          <img
+            src="/assets/blob_23.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute block inset-0 max-w-none size-full"
+          />
+        </div>
+      </div>
+
+      {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
+      <div className="relative hidden lg:flex lg:w-[48.4%] flex-col items-center justify-center overflow-hidden bg-neutral-50">
+        {/* Blob 24 — left-center */}
+        <img
+          src="/assets/blob_24.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute select-none"
+          style={{ left: -104, top: 188, width: 207, height: 215 }}
+        />
+
+        {/* Blob 25 — center, blurred */}
+        <div
+          className="pointer-events-none absolute select-none"
+          style={{ left: 440, top: 242, width: 103, height: 107 }}
+        >
+          <img
+            src="/assets/blob_25.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute block max-w-none size-full"
+            style={{ inset: '-15.98% -16.6%' }}
+          />
+        </div>
+
+        {/* Blob 26 — bottom-center, ancré en bas */}
+        <div
+          className="pointer-events-none absolute select-none"
+          style={{ left: 186, bottom: 110, width: 163, height: 154 }}
+        >
+          <img
+            src="/assets/blob_26.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute block max-w-none size-full"
+            style={{ inset: '-6.43% -6.07%' }}
+          />
+        </div>
+
+        {/* Texte central */}
+        <div className="relative z-10 flex flex-col gap-2.5" style={{ width: 388 }}>
+          <h2
+            className="font-bold text-black"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '56px',
+              lineHeight: '64px',
+              letterSpacing: '-0.84px',
+            }}
+          >
+            Ravie de vous
+            <br />
+            <span className="text-brand">revoir !</span>
+          </h2>
+          <p
+            className="text-text-muted"
+            style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+          >
+            Connectez-vous pour accéder à votre espace et retrouver vos ressources
           </p>
         </div>
       </div>
