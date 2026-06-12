@@ -7,14 +7,6 @@ create table if not exists public.admins (
 
 alter table public.admins enable row level security;
 
--- Un admin peut voir la liste des admins (utile pour la page Utilisateurs)
-create policy "admins_select_self_admins"
-  on public.admins for select
-  to authenticated
-  using (public.is_admin(auth.uid()));
-
--- Promotion/rétrogradation via service_role uniquement — pas de policy insert/delete client
-
 -- Fonction utilitaire is_admin — security definer pour éviter la récursion RLS
 create or replace function public.is_admin(uid uuid)
 returns boolean
@@ -27,6 +19,14 @@ as $$
 $$;
 
 grant execute on function public.is_admin(uuid) to authenticated;
+
+-- Un admin peut voir la liste des admins (utile pour la page Utilisateurs)
+create policy "admins_select_self_admins"
+  on public.admins for select
+  to authenticated
+  using (public.is_admin(auth.uid()));
+
+-- Promotion/rétrogradation via service_role uniquement — pas de policy insert/delete client
 
 -- Fiches : un admin peut créer, modifier, supprimer
 create policy "fiches_admin_all"
