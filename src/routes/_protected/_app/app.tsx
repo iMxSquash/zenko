@@ -2,7 +2,7 @@ import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signOut } from '@/lib/supabase/auth';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/app')({
+export const Route = createFileRoute('/_protected/_app/app')({
   component: AppPage,
 });
 
@@ -59,7 +59,7 @@ function AppPage() {
             await signOut();
             navigate({ to: '/' });
           }}
-          className="rounded-lg px-3 py-1.5 text-sm text-text-muted transition-colors hover:bg-neutral-100 hover:text-[#171614]"
+          className="rounded-lg px-3 py-1.5 text-sm text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-muted"
         >
           Déconnexion
         </button>

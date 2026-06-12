@@ -2,7 +2,7 @@ import { useChatSessions } from '@/hooks/useAssistant';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft, Plus } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/assistant/history')({
+export const Route = createFileRoute('/_protected/_app/assistant/history')({
   component: AssistantHistoryPage,
 });
 
@@ -10,7 +10,7 @@ function AssistantHistoryPage() {
   const { data: sessions, isLoading, error } = useChatSessions();
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <Link

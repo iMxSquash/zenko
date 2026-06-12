@@ -4,7 +4,7 @@ import type { AssistantSource } from '@/types';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/assistant/$sessionId')({
+export const Route = createFileRoute('/_protected/_app/assistant/$sessionId')({
   component: SessionReplayPage,
 });
 
@@ -13,7 +13,7 @@ function SessionReplayPage() {
   const { data: messages, isLoading, error } = useChatMessages(sessionId);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-full flex-col">
       <div className="flex items-center gap-2 border-b border-border px-4 py-3">
         <Link
           to="/assistant/history"
