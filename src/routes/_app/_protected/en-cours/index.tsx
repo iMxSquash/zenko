@@ -2,7 +2,7 @@ import { ResourceCard } from '@/components/bibliotheque/ResourceCard';
 import { useInProgressFiches } from '@/hooks/useBibliotheque';
 import { Link, createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/_app/en-cours/')({
+export const Route = createFileRoute('/_app/_protected/en-cours/')({
   component: EnCoursPage,
 });
 

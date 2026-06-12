@@ -69,9 +69,10 @@ export function useFiche(slug: string) {
   });
 }
 
-export function useReadingProgress(slug: string) {
+export function useReadingProgress(slug: string, enabled = true) {
   return useQuery({
     queryKey: ['reading-progress', slug],
+    enabled,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('reading_progress')
@@ -84,9 +85,10 @@ export function useReadingProgress(slug: string) {
   });
 }
 
-export function useInProgressFiches() {
+export function useInProgressFiches(enabled = true) {
   return useQuery({
     queryKey: ['in-progress-fiches'],
+    enabled,
     queryFn: async () => {
       const { data: progressRows, error } = await supabase
         .from('reading_progress')
@@ -133,9 +135,10 @@ export function useStartReading() {
   });
 }
 
-export function useIsSaved(slug: string) {
+export function useIsSaved(slug: string, enabled = true) {
   return useQuery({
     queryKey: ['saved-resources', slug],
+    enabled,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('saved_resources')
@@ -178,9 +181,10 @@ export function useSaveResource() {
   });
 }
 
-export function useSavedFiches() {
+export function useSavedFiches(enabled = true) {
   return useQuery({
     queryKey: ['saved-fiches'],
+    enabled,
     queryFn: async () => {
       const { data: savedRows, error } = await supabase
         .from('saved_resources')

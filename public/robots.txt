@@ -1,0 +1,37 @@
+# Update the Sitemap URL once SITE_URL (src/lib/seo/site.ts) is set to the production domain.
+# /sitemap.xml is generated dynamically by supabase/functions/sitemap (see vercel.json rewrite).
+User-agent: *
+Allow: /
+Allow: /bibliotheque
+Allow: /forum
+Allow: /profile/
+Disallow: /assistant
+Disallow: /profile$
+Disallow: /profile/edit
+Disallow: /en-cours
+Disallow: /favoris
+Disallow: /onboarding
+Disallow: /signup
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://zenkoo.vercel.app/sitemap.xml

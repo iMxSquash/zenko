@@ -8,7 +8,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/_app/profile/edit')({
+export const Route = createFileRoute('/_app/_protected/profile/edit')({
   component: ProfileEditPage,
 });
 

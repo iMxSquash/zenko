@@ -2,7 +2,7 @@ import { ChatAssistant } from '@/components/assistant/ChatAssistant';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { History } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/_app/assistant/')({
+export const Route = createFileRoute('/_app/_protected/assistant/')({
   component: AssistantPage,
 });
 

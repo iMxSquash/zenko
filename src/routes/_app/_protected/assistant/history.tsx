@@ -2,7 +2,7 @@ import { useChatSessions } from '@/hooks/useAssistant';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft, Plus } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/_app/assistant/history')({
+export const Route = createFileRoute('/_app/_protected/assistant/history')({
   component: AssistantHistoryPage,
 });
 

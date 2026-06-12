@@ -1,0 +1,19 @@
+# Zenko
+
+> Zenko réunit l'école, la famille et les spécialistes dans un espace partagé pour accompagner
+> les enfants neurodivergents, avec un assistant vocal pour transformer les signaux flous en
+> conversations utiles autour de l'enfant.
+
+## Pages principales
+
+- [Accueil](https://zenkoo.vercel.app/): présentation de Zenko pour les enseignants, parents et spécialistes
+- [Connexion / Inscription](https://zenkoo.vercel.app/login): créer un compte gratuit (gratuit pour les enseignants, conforme RGPD)
+- [Bibliothèque](https://zenkoo.vercel.app/bibliotheque): fiches pratiques pour accompagner les enfants TSA, TDAH, DYS et TDI, consultables sans compte
+- [Forum](https://zenkoo.vercel.app/forum): discussions entre enseignants, parents et spécialistes, consultables sans compte
+
+## À propos
+
+Zenko s'adresse aux enseignants, parents, pédopsychiatres et autres spécialistes accompagnant des
+enfants neurodivergents (TDAH, TSA, troubles dys, etc.). La plateforme propose une bibliothèque de
+fiches pratiques, un forum d'échange entre professionnels et familles, et un assistant vocal pour
+faciliter le suivi quotidien de l'enfant.

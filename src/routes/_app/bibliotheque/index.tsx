@@ -1,4 +1,5 @@
 import { ResourceCard } from '@/components/bibliotheque/ResourceCard';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { SearchInput } from '@/components/ui';
 import { useFiches } from '@/hooks/useBibliotheque';
 import { cn } from '@/lib/utils';
@@ -6,7 +7,7 @@ import type { ResourceCategory } from '@/types';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
-export const Route = createFileRoute('/_protected/_app/bibliotheque/')({
+export const Route = createFileRoute('/_app/bibliotheque/')({
   component: BibliothequePage,
 });
 
@@ -65,6 +66,11 @@ function BibliothequePage() {
 
   return (
     <div className="flex flex-col gap-8 px-8 py-6">
+      <SEOHead
+        title="Bibliothèque de ressources"
+        description="Des fiches pratiques pour accompagner les enfants TSA, TDAH, DYS et TDI au quotidien, à l'école comme à la maison."
+        path="/bibliotheque"
+      />
       {/* Header */}
       <div className="flex flex-col gap-2">
         <h1 className="text-[32px] font-bold tracking-[-0.01em] text-text-primary">Bibliothèque</h1>
