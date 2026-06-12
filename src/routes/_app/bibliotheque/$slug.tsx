@@ -1,3 +1,4 @@
+import { SEOHead } from '@/components/seo/SEOHead';
 import {
   useFiche,
   useIsSaved,
@@ -7,6 +8,11 @@ import {
   useStartReading,
 } from '@/hooks/useBibliotheque';
 import { CATEGORY_BADGE_BG } from '@/lib/bibliotheque/bibliotheque';
+import {
+  generateBreadcrumbJsonLd,
+  generateLearningResourceJsonLd,
+  useJsonLd,
+} from '@/lib/seo/jsonld';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
 import { Link, createFileRoute } from '@tanstack/react-router';
@@ -34,6 +40,17 @@ function FicheDetailPage() {
   const isCompleted = !!progress?.completedAt;
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  useJsonLd(fiche ? generateLearningResourceJsonLd(fiche) : null, 'fiche-jsonld');
+  useJsonLd(
+    fiche
+      ? generateBreadcrumbJsonLd([
+          { name: 'Bibliothèque', path: '/bibliotheque' },
+          { name: fiche.title, path: `/bibliotheque/${slug}` },
+        ])
+      : null,
+    'fiche-breadcrumb-jsonld'
+  );
+
   // Track start of reading on mount
   useEffect(() => {
     if (!user) return;
@@ -58,6 +75,12 @@ function FicheDetailPage() {
 
   return (
     <>
+      <SEOHead
+        title={fiche?.title ?? 'Fiche pratique'}
+        description={fiche?.description}
+        path={`/bibliotheque/${slug}`}
+        noIndex={!fiche}
+      />
       {/* Sticky header — always visible while scrolling */}
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background px-8 py-4">
         <Link
