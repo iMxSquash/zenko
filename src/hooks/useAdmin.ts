@@ -460,3 +460,23 @@ export function useAdminDeleteUser() {
     },
   });
 }
+
+export function useToggleAdmin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userId, makeAdmin }: { userId: string; makeAdmin: boolean }) => {
+      if (makeAdmin) {
+        const { error } = await supabase.from('admins').insert({ user_id: userId });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('admins').delete().eq('user_id', userId);
+        if (error) throw error;
+      }
+    },
+    onSuccess: (_data, { userId }) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users', userId] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'is-admin'] });
+    },
+  });
+}
