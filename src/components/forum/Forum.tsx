@@ -8,6 +8,8 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 function ThreadCard({ thread }: { thread: ForumThread }) {
+  const navigate = useNavigate();
+
   return (
     <Link
       to="/forum/$threadId"
@@ -23,8 +25,19 @@ function ThreadCard({ thread }: { thread: ForumThread }) {
       <div className="flex flex-col gap-2">
         <p className="text-body-lg font-semibold leading-6.5 text-text-primary">{thread.title}</p>
         <p className="text-body-sm font-normal leading-5 text-text-muted">
-          Par {thread.author.name} · {formatDate(thread.createdAt)} · {thread.replies.length}{' '}
-          réponse
+          Par{' '}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate({ to: '/profile/$userId', params: { userId: thread.author.userId } });
+            }}
+            className="font-medium text-text-secondary hover:underline"
+          >
+            {thread.author.name}
+          </button>{' '}
+          · {formatDate(thread.createdAt)} · {thread.replies.length} réponse
           {thread.replies.length !== 1 ? 's' : ''}
         </p>
       </div>

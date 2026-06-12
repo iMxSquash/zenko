@@ -41,7 +41,7 @@ const FEATURES = [
     icon: '✨',
     bg: '#fce2d2',
     color: '#a03f0e',
-    to: '/onboarding',
+    to: '/profile',
   },
 ] as const;
 
@@ -49,9 +49,9 @@ function AppPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#fafaf9]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e8e7e3] bg-white/90 px-5 py-3 backdrop-blur-sm">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-white/90 px-5 py-3 backdrop-blur-sm">
         <ZenkoLogo width={108} />
         <button
           type="button"
@@ -59,7 +59,7 @@ function AppPage() {
             await signOut();
             navigate({ to: '/' });
           }}
-          className="rounded-lg px-3 py-1.5 text-sm text-[#a6a39b] transition-colors hover:bg-[#f4f4f2] hover:text-[#171614]"
+          className="rounded-lg px-3 py-1.5 text-sm text-text-muted transition-colors hover:bg-neutral-100 hover:text-[#171614]"
         >
           Déconnexion
         </button>
@@ -69,7 +69,7 @@ function AppPage() {
       <main className="mx-auto max-w-lg px-4 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-[#171614]">Bonjour 👋</h1>
-          <p className="mt-1 text-sm text-[#5a5750]">Que souhaitez-vous faire aujourd'hui ?</p>
+          <p className="mt-1 text-sm text-text-secondary">Que souhaitez-vous faire aujourd'hui ?</p>
         </div>
 
         {/* Color stripe */}

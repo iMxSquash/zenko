@@ -1,5 +1,30 @@
 export type ForumUserRole = 'parent' | 'prof' | 'expert';
 
+export interface Profile {
+  id: string;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
+  role: ForumUserRole | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
+  doctolibUrl: string | null;
+}
+
+export interface PublicProfile {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
+  role: ForumUserRole | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
+  doctolibUrl: string | null;
+}
+
 export interface AssistantSource {
   source_type: 'fiche' | 'forum_thread' | 'forum_reply';
   source_id: string;
@@ -41,6 +66,7 @@ export interface ReadingProgress {
 export type ResourceCategory = 'TSA' | 'TDAH' | 'DYS' | 'TDI';
 
 export interface ForumAuthor {
+  userId: string;
   name: string;
   role: ForumUserRole;
 }

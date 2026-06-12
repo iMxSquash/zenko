@@ -24,7 +24,7 @@ export function SolutionSection() {
       <SectionDecor shapes={SOLUTION_DECOR} />
       <div className="relative z-10 flex flex-col items-center gap-8">
         <SectionLabel color="var(--color-brand-rose)">LA SOLUTION</SectionLabel>
-        <h2 className="max-w-5xl text-center text-[40px] font-bold leading-[52px] tracking-display text-dark md:text-display-md">
+        <h2 className="max-w-5xl text-center text-[40px] font-bold leading-13 tracking-display text-dark md:text-display-md">
           Un seul espace.
           <br />
           Trois mondes qui parlent enfin la même langue.
