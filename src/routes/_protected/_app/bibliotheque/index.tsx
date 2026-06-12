@@ -179,11 +179,11 @@ function BibliothequePage() {
         </div>
 
         {isLoading && (
-          <div className="flex gap-5">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="flex-1 animate-pulse overflow-hidden rounded-card border border-border bg-surface"
+                className="animate-pulse overflow-hidden rounded-card border border-border bg-surface"
               >
                 <div className="h-[140px] w-full bg-neutral-100" />
                 <div className="flex flex-col gap-2.5 p-5">
@@ -207,13 +207,13 @@ function BibliothequePage() {
         )}
 
         {!isLoading && !error && searchedFiches.length > 0 && (
-          <div className="flex flex-wrap gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {searchedFiches.map((fiche) => (
               <Link
                 key={fiche.slug}
                 to="/bibliotheque/$slug"
                 params={{ slug: fiche.slug }}
-                className="min-w-[220px] max-w-[calc(25%-15px)] flex-1 transition-transform hover:-translate-y-0.5"
+                className="transition-transform hover:-translate-y-0.5"
               >
                 <ResourceCard fiche={fiche} className="h-full" />
               </Link>
