@@ -55,9 +55,9 @@ export function AppSidebar() {
 
   return (
     <aside className="flex h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
-      <div className="px-2 pb-6 pt-1">
+      <Link to="/bibliotheque" className="block px-2 pb-6 pt-1">
         <ZenkoLogo width={110} />
-      </div>
+      </Link>
 
       <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
         {/* Fiches section */}
