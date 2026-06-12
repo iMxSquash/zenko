@@ -29,7 +29,7 @@ export function TestimonialsSection() {
       <SectionDecor shapes={TESTIMONIALS_DECOR} />
       <div className="relative z-10 flex flex-col items-center gap-8">
         <SectionLabel color="var(--color-success)">ILS NOUS PARLENT</SectionLabel>
-        <h2 className="text-center text-[40px] font-bold leading-[52px] tracking-display text-dark md:text-display-md">
+        <h2 className="text-center text-[40px] font-bold leading-13 tracking-display text-dark md:text-display-md">
           Les mots des gens du terrain.
         </h2>
         <div className="flex w-full flex-col items-stretch justify-center gap-6 sm:flex-row">

@@ -54,7 +54,7 @@ export function AppSidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-[248px] shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
+    <aside className="flex h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
       <div className="px-2 pb-6 pt-1">
         <ZenkoLogo width={110} />
       </div>
@@ -68,7 +68,7 @@ export function AppSidebar() {
 
           <Link
             to="/app"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
@@ -77,13 +77,13 @@ export function AppSidebar() {
 
           <Link
             to="/en-cours"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
             <span className="min-w-0 flex-1">En cours…</span>
             {inProgressFiches.length > 0 && (
-              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
                 {inProgressFiches.length}
               </span>
             )}
@@ -91,13 +91,13 @@ export function AppSidebar() {
 
           <Link
             to="/favoris"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
             <span className="min-w-0 flex-1">Favoris</span>
             {savedFiches.length > 0 && (
-              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
                 {savedFiches.length}
               </span>
             )}
@@ -105,7 +105,7 @@ export function AppSidebar() {
 
           <Link
             to="/bibliotheque"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
@@ -121,7 +121,7 @@ export function AppSidebar() {
 
           <Link
             to="/forum"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] transition-colors"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
@@ -130,7 +130,7 @@ export function AppSidebar() {
 
           <Link
             to="/forum"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-[14px] font-medium text-text-active transition-colors hover:bg-neutral-100"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm font-medium text-text-active transition-colors hover:bg-neutral-100"
           >
             <span className="min-w-0 flex-1">Explorer</span>
           </Link>
@@ -149,8 +149,8 @@ export function AppSidebar() {
               className="size-9 shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#e1f4e5]">
-              <span className="text-[13px] font-semibold text-[#288d40]">{userInitials}</span>
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
+              <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
             </div>
           )}
           <span className="min-w-0 flex-1 truncate text-left text-[13px] font-semibold text-text-primary">

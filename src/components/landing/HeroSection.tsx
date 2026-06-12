@@ -44,7 +44,7 @@ export function HeroSection() {
 
       <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center">
         {/* Left — text + CTAs */}
-        <div className="flex max-w-[660px] flex-col gap-8">
+        <div className="flex max-w-165 flex-col gap-8">
           {/* Badge */}
           <div className="flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5">
             <img
@@ -59,7 +59,7 @@ export function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[52px] font-bold leading-[1.1] tracking-display text-dark md:text-display-xl md:leading-[80px]">
+          <h1 className="text-[52px] font-bold leading-[1.1] tracking-display text-dark md:text-display-xl md:leading-20">
             Même enfant.
             <br />
             Mêmes m
@@ -84,7 +84,7 @@ export function HeroSection() {
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-[560px] text-body-lg leading-7 text-text-muted">
+          <p className="max-w-140 text-body-lg leading-7 text-text-muted">
             ZENKO réunit l'école, la famille et les spécialistes dans un espace partagé. Pour que
             les signaux flous deviennent enfin des conversations utiles autour de l'enfant.
           </p>
@@ -107,7 +107,7 @@ export function HeroSection() {
         </div>
 
         {/* Right — role cards grid */}
-        <div className="relative z-20 ml-auto shrink-0 lg:w-[520px]">
+        <div className="relative z-20 ml-auto shrink-0 lg:w-130">
           <div className="relative grid grid-cols-2 gap-4">
             {ROLES.map((role) => (
               <RoleCard key={role.label} {...role} />

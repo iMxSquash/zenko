@@ -15,16 +15,16 @@ export function ResourceCard({ fiche, className }: ResourceCardProps) {
         className
       )}
     >
-      <div className={cn('h-[140px] w-full shrink-0', CATEGORY_COVER_BG[fiche.category])} />
+      <div className={cn('h-35 w-full shrink-0', CATEGORY_COVER_BG[fiche.category])} />
 
       <div className="flex flex-col gap-2.5 p-5">
-        <div className="self-start rounded-[6px] bg-neutral-100 px-2 py-[3px]">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
+        <div className="self-start rounded-[6px] bg-neutral-100 px-2 py-0.75">
+          <span className="text-capsule font-semibold uppercase tracking-[0.06em] text-text-secondary">
             {fiche.category}
           </span>
         </div>
 
-        <p className="text-[16px] font-semibold leading-[22px] text-text-primary">{fiche.title}</p>
+        <p className="text-[16px] font-semibold leading-5.5 text-text-primary">{fiche.title}</p>
 
         <p className="text-[13px] font-normal leading-5 text-text-secondary">{fiche.description}</p>
 
@@ -44,7 +44,7 @@ export function ResourceCard({ fiche, className }: ResourceCardProps) {
         </div>
 
         <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-          <span className="text-[12px] font-semibold text-brand">Lire la fiche →</span>
+          <span className="text-label font-semibold text-brand">Lire la fiche →</span>
         </div>
       </div>
     </article>
