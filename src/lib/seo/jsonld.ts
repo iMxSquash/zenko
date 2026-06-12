@@ -54,6 +54,8 @@ export function generateLearningResourceJsonLd(fiche: Fiche): JsonLd {
     isAccessibleForFree: true,
     learningResourceType: 'Fiche pratique',
     educationalLevel: fiche.category,
+    datePublished: fiche.createdAt,
+    dateModified: fiche.updatedAt,
     author: { '@type': 'Person', name: fiche.author },
     publisher: { '@id': `${siteConfig.url}/#organization` },
   };

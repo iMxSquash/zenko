@@ -79,6 +79,8 @@ type Fiche = {
   category: string;
   author: string;
   content: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 function learningResourceJsonLd(fiche: Fiche): JsonLd {
@@ -92,6 +94,8 @@ function learningResourceJsonLd(fiche: Fiche): JsonLd {
     isAccessibleForFree: true,
     learningResourceType: 'Fiche pratique',
     educationalLevel: fiche.category,
+    datePublished: fiche.created_at,
+    dateModified: fiche.updated_at,
     author: { '@type': 'Person', name: fiche.author },
     publisher: { '@id': `${SITE_URL}/#organization` },
   };
@@ -235,7 +239,7 @@ Deno.serve(async (req) => {
       const slug = ficheMatch[1];
       const { data: fiche } = await supabase
         .from('fiches')
-        .select('slug, title, description, category, author, content')
+        .select('slug, title, description, category, author, content, created_at, updated_at')
         .eq('slug', slug)
         .maybeSingle<Fiche>();
 
