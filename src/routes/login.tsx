@@ -23,31 +23,34 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      if (isSignup) {
-        await signUpWithPassword(email, password);
-      } else {
-        await signInWithPassword(email, password);
-      }
-      navigate({ to: '/bibliotheque' });
+      await signInWithPassword(email, password);
+      navigate({ to: '/app' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setError(err instanceof Error ? err.message : 'Identifiants incorrects');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#fafaf9] flex flex-col items-center justify-center px-4 py-12">
+    <main className="relative flex min-h-screen overflow-hidden bg-white">
       <SEOHead
         title={isSignup ? 'Créer un compte' : 'Connexion'}
         description="Connectez-vous ou créez votre compte Zenko pour accompagner les enfants neurodivergents avec l'école, la famille et les spécialistes."
         path="/login"
       />
-      {/* Decorative blobs */}
+
+      {/* Logo absolu en haut à gauche — overlay sur tout le layout */}
+      <div className="absolute left-16 top-16 z-20">
+        <ZenkoLogo width={145} />
+      </div>
+
+      {/* Blob 22 — top, brand, positionné sur <main> */}
       <div
         className="pointer-events-none fixed -top-24 -left-24 h-72 w-72 rounded-full blur-3xl"
         style={{ background: '#419FD7', opacity: 0.08 }}
@@ -69,81 +72,139 @@ function LoginPage() {
             Accompagnement des enfants neurodivergents
           </p>
         </div>
+      </div>
 
-        {/* Color stripe */}
-        <div className="mb-6 flex h-1 overflow-hidden rounded-full">
-          <div className="flex-1" style={{ background: '#419FD7' }} />
-          <div className="flex-1" style={{ background: '#F7A4C0' }} />
-          <div className="flex-1" style={{ background: '#20CA73' }} />
-          <div className="flex-1" style={{ background: '#EF6A22' }} />
-          <div className="flex-1" style={{ background: '#FCD808' }} />
+      {/* ── Panneau droit — formulaire (743/1440 = ~51.6%) ── */}
+      <div className="flex flex-1 flex-col items-center justify-center overflow-hidden p-3 lg:w-[51.6%]">
+        {/* Mobile logo */}
+        <div className="lg:hidden mb-10 self-start pl-4">
+          <ZenkoLogo width={120} />
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-[#e8e7e3] bg-white p-6 shadow-sm">
-          <h1 className="mb-5 text-xl font-semibold text-[#171614]">
-            {isSignup ? 'Créer un compte' : 'Bon retour 👋'}
-          </h1>
-
-          <div className="space-y-3">
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm text-[#5a5750]">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="votre@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                className="w-full rounded-xl border border-[#e8e7e3] bg-[#fafaf9] px-4 py-2.5 text-sm outline-none transition-all focus:border-[#419FD7] focus:bg-white focus:ring-2 focus:ring-[#419FD7]/20"
-              />
+        <div className="rounded-[32px] bg-[rgba(207,231,245,0.12)] p-8">
+          <div className="flex w-full flex-col gap-8 lg:w-[442px]">
+            {/* Header */}
+            <div className="flex flex-col gap-2.5">
+              <h1
+                className="font-bold text-black"
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '28px',
+                  lineHeight: '36px',
+                  letterSpacing: '-0.084px',
+                }}
+              >
+                Connexion
+              </h1>
+              <div
+                className="flex flex-col gap-1"
+                style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+              >
+                <p className="text-text-secondary">Remplissez le formulaire pour rejoindre Zenko</p>
+                <p>
+                  <span className="text-danger">*</span>
+                  <span className="text-text-secondary">Champs obligatoires</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm text-[#5a5750]">
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                className="w-full rounded-xl border border-[#e8e7e3] bg-[#fafaf9] px-4 py-2.5 text-sm outline-none transition-all focus:border-[#419FD7] focus:bg-white focus:ring-2 focus:ring-[#419FD7]/20"
-              />
+
+            {/* Form */}
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
+                {error && (
+                  <div className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3">
+                    <span className="text-sm">⚠️</span>
+                    <p className="text-danger" style={{ fontSize: 'var(--text-body-sm)' }}>
+                      {error}
+                    </p>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Email */}
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="email"
+                      className="font-bold text-text-secondary"
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                      }}
+                    >
+                      EMAIL
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      placeholder="mail@exemple.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none"
+                      style={{ fontSize: 'var(--text-body-sm)' }}
+                    />
+                  </div>
+
+                  {/* Mot de passe */}
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="password"
+                      className="font-bold text-text-secondary"
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                      }}
+                    >
+                      MOT DE PASSE
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      required
+                      autoComplete="current-password"
+                      placeholder="••••••••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none"
+                      style={{ fontSize: 'var(--text-body-sm)' }}
+                    />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2.5">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={
+                        email && password && !loading
+                          ? 'w-full rounded-full bg-brand px-6 py-4 font-display font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]'
+                          : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline outline-1 outline-offset-[-1px] outline-border-default transition-all'
+                      }
+                      style={{ fontSize: 'var(--text-button)', lineHeight: '16px' }}
+                    >
+                      {loading ? '…' : 'Se connecter'}
+                    </button>
+
+                    <p
+                      className="text-center text-text-secondary"
+                      style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+                    >
+                      Pas encore de compte ?{' '}
+                      <Link to="/signup" className="font-bold text-brand hover:underline">
+                        S&apos;inscrire
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-
-          {error && (
-            <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
-          )}
-
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={loading || !email || !password}
-            className="mt-5 w-full rounded-xl bg-[#419FD7] px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-[#2f9dd4] disabled:opacity-50"
-          >
-            {loading ? '…' : isSignup ? 'Créer mon compte' : 'Se connecter'}
-          </button>
         </div>
-
-        {/* Toggle */}
-        <p className="mt-5 text-center text-sm text-[#a6a39b]">
-          {isSignup ? 'Déjà un compte ?' : 'Pas encore de compte ?'}{' '}
-          <button
-            type="button"
-            onClick={() =>
-              navigate({ to: '/login', search: { mode: isSignup ? 'login' : 'signup' } })
-            }
-            className="font-semibold text-[#419FD7] hover:underline"
-          >
-            {isSignup ? 'Se connecter' : "S'inscrire"}
-          </button>
-        </p>
       </div>
-    </div>
+    </main>
   );
 }
