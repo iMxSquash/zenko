@@ -7,6 +7,7 @@ import {
   useStartReading,
 } from '@/hooks/useBibliotheque';
 import { CATEGORY_BADGE_BG } from '@/lib/bibliotheque/bibliotheque';
+import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { Bookmark, BookmarkCheck, Clock } from 'lucide-react';
@@ -20,10 +21,11 @@ export const Route = createFileRoute('/_app/bibliotheque/$slug')({
 
 function FicheDetailPage() {
   const { slug } = Route.useParams();
+  const { user } = useAuth();
 
   const { data: fiche, isLoading, error } = useFiche(slug);
-  const { data: progress, isLoading: progressLoading } = useReadingProgress(slug);
-  const { data: isSaved = false } = useIsSaved(slug);
+  const { data: progress, isLoading: progressLoading } = useReadingProgress(slug, !!user);
+  const { data: isSaved = false } = useIsSaved(slug, !!user);
 
   const { mutate: startReading } = useStartReading();
   const { mutate: markCompleted } = useMarkFicheCompleted();
@@ -34,12 +36,13 @@ function FicheDetailPage() {
 
   // Track start of reading on mount
   useEffect(() => {
+    if (!user) return;
     startReading(slug);
-  }, [slug, startReading]);
+  }, [slug, user, startReading]);
 
   // Auto-mark as completed when user reaches the bottom
   useEffect(() => {
-    if (!fiche || progressLoading || isCompleted || !bottomRef.current) return;
+    if (!user || !fiche || progressLoading || isCompleted || !bottomRef.current) return;
 
     const el = bottomRef.current;
     const observer = new IntersectionObserver(
@@ -51,7 +54,7 @@ function FicheDetailPage() {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [fiche, progressLoading, isCompleted, slug, markCompleted]);
+  }, [user, fiche, progressLoading, isCompleted, slug, markCompleted]);
 
   return (
     <>
@@ -65,20 +68,30 @@ function FicheDetailPage() {
           <span>Retour</span>
         </Link>
 
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={() => saveResource({ slug, save: !isSaved })}
-          className={cn(
-            'flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors',
-            isSaved
-              ? 'bg-brand text-white hover:bg-brand/90'
-              : 'border border-border bg-surface text-text-active hover:bg-neutral-100'
-          )}
-        >
-          {isSaved ? <BookmarkCheck size={15} /> : <Bookmark size={15} />}
-          {isSaved ? 'Enregistré' : 'Enregistrer'}
-        </button>
+        {user ? (
+          <button
+            type="button"
+            disabled={isSaving}
+            onClick={() => saveResource({ slug, save: !isSaved })}
+            className={cn(
+              'flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors',
+              isSaved
+                ? 'bg-brand text-white hover:bg-brand/90'
+                : 'border border-border bg-surface text-text-active hover:bg-neutral-100'
+            )}
+          >
+            {isSaved ? <BookmarkCheck size={15} /> : <Bookmark size={15} />}
+            {isSaved ? 'Enregistré' : 'Enregistrer'}
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-[13px] font-semibold text-text-active transition-colors hover:bg-neutral-100"
+          >
+            <Bookmark size={15} />
+            Se connecter pour enregistrer
+          </Link>
+        )}
       </div>
 
       {/* Content */}
