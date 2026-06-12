@@ -24,9 +24,12 @@
   --color-brand-100: #419fd7;
   --color-brand-orange: #ee6b2d;
   --color-brand-green: #52c46a;
+  --color-brand-rose: #f7a4c0;
 
   /* === Colors — semantic === */
   --color-danger: #e04e4e;
+  --color-success: #52c46a;
+  --color-info: #4fb4e5;
 
   /* === Colors — role tints (hero cards) === */
   --color-teacher-bg: #e2f2fb;

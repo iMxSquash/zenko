@@ -1,3 +1,4 @@
+import { SectionDecor, TESTIMONIALS_DECOR } from '@/components/landing/LandingDecor';
 import { TestimonialCard } from '@/components/landing/TestimonialCard';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
@@ -24,13 +25,14 @@ const TESTIMONIALS = [
 
 export function TestimonialsSection() {
   return (
-    <section className="overflow-hidden bg-surface px-8 py-20 md:px-16">
-      <div className="flex flex-col items-center gap-8">
-        <SectionLabel color="#52c46a">ILS NOUS PARLENT</SectionLabel>
+    <section className="relative overflow-hidden bg-surface px-8 py-20 md:px-16">
+      <SectionDecor shapes={TESTIMONIALS_DECOR} />
+      <div className="relative z-10 flex flex-col items-center gap-8">
+        <SectionLabel color="var(--color-success)">ILS NOUS PARLENT</SectionLabel>
         <h2 className="text-center text-[40px] font-bold leading-[52px] tracking-display text-dark md:text-display-md">
           Les mots des gens du terrain.
         </h2>
-        <div className="grid w-full gap-6 sm:grid-cols-3">
+        <div className="flex w-full flex-col items-stretch justify-center gap-6 sm:flex-row">
           {TESTIMONIALS.map((t) => (
             <TestimonialCard key={t.color} {...t} />
           ))}
