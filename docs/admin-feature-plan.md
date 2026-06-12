@@ -6,7 +6,8 @@ Donner à certains utilisateurs (équipe Zenko) un accès à un espace `/admin` 
 
 - gérer les **fiches** de la bibliothèque (créer, éditer, supprimer, publier du contenu),
 - modérer le **forum** (supprimer threads/réponses signalés),
-- consulter la liste des **utilisateurs** et gérer qui est admin.
+- consulter la liste des **utilisateurs** et gérer qui est admin,
+- gérer les **avatars** proposés aux utilisateurs (ajouter, supprimer du bucket `avatars`).
 
 Le rôle admin est indépendant du `role` existant sur `profiles` (`parent` / `prof` / `expert`), qui sert à l'identité publique sur le forum. Un admin est avant tout un membre de l'équipe.
 
@@ -93,6 +94,22 @@ create policy "profiles_admin_select_all"
 
 > Pas de policy `update`/`delete` sur `profiles` pour les admins dans un premier temps — pas de besoin produit identifié (pas d'édition de profil d'autrui).
 
+**Bucket Storage `avatars`** — créé en 00022 avec lecture publique et écriture réservée à `service_role` (upload manuel). Ajouter des policies pour permettre aux admins d'ajouter/supprimer des avatars depuis `/admin/avatars` :
+
+```sql
+create policy "avatars_admin_insert"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'avatars' and public.is_admin(auth.uid()));
+
+create policy "avatars_admin_delete"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'avatars' and public.is_admin(auth.uid()));
+```
+
+> Pas de policy `update` : pour remplacer un avatar, on supprime puis on réinsère (évite les soucis de cache CDN sur les URLs publiques inchangées).
+
 ### Promotion / rétrogradation d'un admin
 
 Pas d'UI d'auto-promotion. Deux options, à trancher selon le besoin :
@@ -124,6 +141,8 @@ src/routes/
         nouvelle.tsx             # /admin/fiches/nouvelle — création
       forum/
         index.tsx               # /admin/forum — modération threads/réponses
+      avatars/
+        index.tsx               # /admin/avatars — galerie + ajout/suppression d'avatars
 ```
 
 ### Guard `_admin.tsx`
@@ -157,9 +176,11 @@ useAdminFiches()            // liste fiches pour la table de gestion
 useCreateFiche() / useUpdateFiche() / useDeleteFiche()
 useAdminForumThreads()      // threads avec compteur de réponses, pour modération
 useDeleteForumThread() / useDeleteForumReply()
+useAdminAvatars()           // liste des fichiers du bucket `avatars` (réutilise listAvatars de lib/profile/avatars.ts)
+useUploadAvatar() / useDeleteAvatar()
 ```
 
-Toutes ces requêtes/mutations passent par TanStack Query, comme le reste du projet (cf. `useBibliotheque`, `useForum`). Invalider les query keys `['fiches']` et `['forum', ...]` après une mutation admin pour que la bibliothèque/le forum se mettent à jour côté utilisateur normal.
+Toutes ces requêtes/mutations passent par TanStack Query, comme le reste du projet (cf. `useBibliotheque`, `useForum`). Invalider les query keys `['fiches']` et `['forum', ...]` après une mutation admin pour que la bibliothèque/le forum se mettent à jour côté utilisateur normal. Invalider la query key `['avatars']` (utilisée par `useAvatars`, cf. `AvatarPicker`) après upload/suppression pour que le sélecteur d'avatar du profil se mette à jour.
 
 ## 4. UI
 
@@ -177,6 +198,7 @@ Dans `AppSidebar.tsx`, ajouter une section "Administration" affichée uniquement
     <Link to="/admin/fiches" ...>Fiches</Link>
     <Link to="/admin/forum" ...>Modération</Link>
     <Link to="/admin/utilisateurs" ...>Utilisateurs</Link>
+    <Link to="/admin/avatars" ...>Avatars</Link>
   </div>
 )}
 ```
@@ -188,17 +210,19 @@ Dans `AppSidebar.tsx`, ajouter une section "Administration" affichée uniquement
 - **`/admin/fiches/$slug`** et **`/admin/fiches/nouvelle`** — formulaire (titre, description, catégorie, auteur, contenu) réutilisant `TextInput`, `RoleSelector`/`Capsule` pour la catégorie.
 - **`/admin/forum`** — liste des threads avec nombre de réponses et bouton supprimer (le `ConfirmDialog` existe déjà pour ce pattern).
 - **`/admin/utilisateurs`** — table des profils (nom, email, rôle, badge "Admin" si présent dans `admins`). Pas d'action de promotion dans une première itération (cf. section 1).
+- **`/admin/avatars`** — galerie des avatars du bucket `avatars` (réutilise `listAvatars`/`AvatarPicker` pour l'affichage), bouton "Ajouter un avatar" (upload fichier image vers le bucket) et action supprimer par avatar avec `ConfirmDialog` (vérifier qu'un avatar utilisé par un profil reste affichable même après suppression — l'URL publique cassée doit être gérée côté `ProfileAvatarSection`/`AvatarPicker` avec un fallback).
 
 ## 5. Ordre de travail recommandé
 
-1. Migration `00024_admins.sql` (table `admins`, fonction `is_admin`, policies sur `fiches`, `forum_threads`, `forum_replies`, `profiles`) + `/supabase-rls` pour vérifier.
+1. Migration `00024_admins.sql` (table `admins`, fonction `is_admin`, policies sur `fiches`, `forum_threads`, `forum_replies`, `profiles`, `storage.objects` pour le bucket `avatars`) + `/supabase-rls` pour vérifier.
 2. Insertion manuelle du premier admin (ton `user_id`) via Supabase Studio.
 3. `useIsAdmin` + lien conditionnel dans `AppSidebar`.
 4. Layout `_admin.tsx` + guard.
 5. `/admin/fiches` (CRUD complet) — c'est la valeur la plus immédiate.
 6. `/admin/forum` (modération).
 7. `/admin/utilisateurs` (lecture seule au départ).
-8. `/admin` (dashboard, en dernier — purement cosmétique).
+8. `/admin/avatars` (ajout/suppression d'avatars).
+9. `/admin` (dashboard, en dernier — purement cosmétique).
 
 ## 6. Hors scope (V2)
 
