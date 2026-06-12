@@ -163,6 +163,8 @@ function renderPage(data: PageData): string {
     <meta property="og:description" content="${escapeHtml(data.description)}" />
     <meta property="og:url" content="${escapeHtml(url)}" />
     <meta property="og:image" content="${escapeHtml(image)}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="fr_FR" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(fullTitle)}" />

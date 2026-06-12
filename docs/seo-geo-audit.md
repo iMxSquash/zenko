@@ -35,16 +35,24 @@ mais une nouvelle Edge Function `supabase/functions/prerender` sert un HTML stat
 Les humains continuent de recevoir la SPA normale. Voir section "SEO / GEO — pré-rendu pour les bots"
 du README.
 
+## ✅ Résolu — datePublished/dateModified sur LearningResource
+
+`generateLearningResourceJsonLd` (`src/lib/seo/jsonld.ts`) et `learningResourceJsonLd`
+(`supabase/functions/prerender/index.ts`) exposent désormais `datePublished`/`dateModified` à
+partir de `created_at`/`updated_at` de la table `fiches` (migration `00026_fiches_updated_at.sql`,
+trigger `handle_updated_at`).
+
+## ✅ Résolu — llms.txt enrichi + OG image width/height
+
+`public/llms.txt` liste désormais le `sitemap.xml` et décrit les catégories de fiches
+(TSA/TDAH/DYS/TDI). `index.html`, `SEOHead` et `prerender` déclarent `og:image:width`/
+`og:image:height` (1200×630) — l'asset `og-image.png` reste à créer (voir 🔴 Critique).
+
 ## 🟡 Moyen
 
-- `generateLearningResourceJsonLd` (`src/lib/seo/jsonld.ts`) n'a pas de `datePublished`/`dateModified`
-  — utiliser `created_at`/`updated_at` de la table `fiches` (signal de fraîcheur pour le GEO).
 - Pas de `FAQPage` sur la landing — fort potentiel GEO pour un sujet de niche
   (ex. "comment gérer une crise sensorielle TSA").
 - `generateOrganizationJsonLd` n'a pas de `sameAs` (réseaux sociaux) — à ajouter si Zenko a des comptes.
-- `llms.txt` est statique et ne mentionne pas les catégories de fiches (TSA/TDAH/DYS/TDI) — enrichir
-  aiderait les LLM à comprendre le contenu sans crawler tout le site.
-- OG image sans `width`/`height` déclarés dans les meta tags (une fois l'asset créé).
 
 ## 🟢 Mineur
 
@@ -58,5 +66,6 @@ du README.
 - [ ] Ajouter `og-image.png` + icônes PWA (`apple-touch-icon.png`, `pwa-192x192.png`, `pwa-512x512.png`)
 - [x] Confirmer le domaine de production et propager `SITE_URL`
 - [x] Pré-rendu des pages bibliothèque/forum pour les crawlers (Edge Function `prerender`)
-- [ ] `datePublished`/`dateModified` sur `LearningResource`
+- [x] `datePublished`/`dateModified` sur `LearningResource`
+- [x] Enrichir `llms.txt` (catégories + sitemap) et déclarer `og:image:width`/`height`
 - [ ] `FAQPage` JSON-LD sur la landing
