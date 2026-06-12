@@ -116,7 +116,7 @@ export function AppSidebar() {
             activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
             inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
           >
-            <span className="min-w-0 flex-1">Populaires</span>
+            <span className="min-w-0 flex-1">Explorer</span>
           </Link>
         </div>
 
