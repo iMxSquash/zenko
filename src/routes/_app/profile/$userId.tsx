@@ -3,7 +3,7 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { usePublicProfile } from '@/hooks/useProfile';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/_app/profile/$userId')({
+export const Route = createFileRoute('/_app/profile/$userId')({
   component: PublicProfilePage,
 });
 

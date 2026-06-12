@@ -2,7 +2,7 @@ import { ResourceCard } from '@/components/bibliotheque/ResourceCard';
 import { useSavedFiches } from '@/hooks/useBibliotheque';
 import { Link, createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/_app/favoris/')({
+export const Route = createFileRoute('/_app/_protected/favoris/')({
   component: FavorisPage,
 });
 

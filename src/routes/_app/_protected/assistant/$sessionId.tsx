@@ -4,7 +4,7 @@ import type { AssistantSource } from '@/types';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 
-export const Route = createFileRoute('/_protected/_app/assistant/$sessionId')({
+export const Route = createFileRoute('/_app/_protected/assistant/$sessionId')({
   component: SessionReplayPage,
 });
 

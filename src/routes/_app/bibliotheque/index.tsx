@@ -6,7 +6,7 @@ import type { ResourceCategory } from '@/types';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
-export const Route = createFileRoute('/_protected/_app/bibliotheque/')({
+export const Route = createFileRoute('/_app/bibliotheque/')({
   component: BibliothequePage,
 });
 

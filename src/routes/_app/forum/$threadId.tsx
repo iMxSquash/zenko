@@ -1,7 +1,7 @@
 import { ThreadDetail } from '@/components/forum/ThreadDetail';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_protected/_app/forum/$threadId')({
+export const Route = createFileRoute('/_app/forum/$threadId')({
   component: ThreadDetailPage,
 });
 

@@ -14,7 +14,7 @@ import { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-export const Route = createFileRoute('/_protected/_app/bibliotheque/$slug')({
+export const Route = createFileRoute('/_app/bibliotheque/$slug')({
   component: FicheDetailPage,
 });
 
