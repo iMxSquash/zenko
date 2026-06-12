@@ -14,23 +14,23 @@ const FOOTER_LINKS = {
 export function LandingFooter() {
   return (
     <footer className="bg-dark px-8 py-16 text-white md:px-16">
-      <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-10 flex flex-col gap-10 lg:flex-row lg:gap-20">
         {/* Brand */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4">
           <p className="text-sm font-medium opacity-70">Même enfant. Mêmes mots.</p>
           <p className="text-[13px] leading-5 opacity-60">
             Une plateforme pour faire dialoguer l&apos;école, la famille et les spécialistes autour
             de l&apos;enfant neurodivergent.
           </p>
-          <ZenkoLogo width={110} className="opacity-80 brightness-0 invert" />
+          <ZenkoLogo width={110} />
         </div>
 
         {/* Link columns */}
         {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-          <div key={section} className="flex flex-col gap-3">
+          <div key={section} className="flex flex-col gap-3.5">
             <p className="text-label font-semibold tracking-label opacity-50">{section}</p>
             {links.map((l) => (
-              <p key={l} className="text-body-sm font-medium opacity-85">
+              <p key={l} className="text-body-sm font-medium opacity-90">
                 {l}
               </p>
             ))}
