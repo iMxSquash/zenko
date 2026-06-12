@@ -24,9 +24,12 @@
   --color-brand-100: #419fd7;
   --color-brand-orange: #ee6b2d;
   --color-brand-green: #52c46a;
+  --color-brand-rose: #f7a4c0;
 
   /* === Colors — semantic === */
   --color-danger: #e04e4e;
+  --color-success: #52c46a;
+  --color-info: #4fb4e5;
 
   /* === Colors — role tints (hero cards) === */
   --color-teacher-bg: #e2f2fb;
@@ -43,18 +46,35 @@
   --color-rose-25: #fde8ef;
   --color-vert-25: #c7f2dc;
   --color-bleu-25: #cfe7f5;
+  --color-jaune-50: #fdeb83;
+
+  /* === Colors — fiche covers (75%) === */
+  --color-orange-75: #f4924a;
+  --color-jaune-75: #fcd234;
+  --color-vert-75: #58d796;
+  --color-bleu-75: #5ab8e2;
 
   /* === Font sizes === */
-  --text-display-xl: 4.5rem; /* 72px */
-  --text-display-md: 2.75rem; /* 44px */
-  --text-h2: 1.75rem; /* 28px */
-  --text-h3: 1.375rem; /* 22px */
-  --text-body-lg: 1.125rem; /* 18px */
-  --text-body-md: 1rem; /* 16px */
-  --text-body-sm: 0.875rem; /* 14px */
-  --text-label: 0.75rem; /* 12px */
-  --text-capsule: 0.625rem; /* 10px */
-  --text-button: 1rem; /* 16px */
+  --text-display-xl: 4.5rem;
+  /* 72px */
+  --text-display-md: 2.75rem;
+  /* 44px */
+  --text-h2: 1.75rem;
+  /* 28px */
+  --text-h3: 1.375rem;
+  /* 22px */
+  --text-body-lg: 1.125rem;
+  /* 18px */
+  --text-body-md: 1rem;
+  /* 16px */
+  --text-body-sm: 0.875rem;
+  /* 14px */
+  --text-label: 0.75rem;
+  /* 12px */
+  --text-capsule: 0.625rem;
+  /* 10px */
+  --text-button: 1rem;
+  /* 16px */
 
   /* === Letter spacing === */
   --tracking-display: -0.02em;

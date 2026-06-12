@@ -1,0 +1,8 @@
+export { AvatarPicker } from './AvatarPicker/AvatarPicker';
+export { Button } from './Button/Button';
+export { Capsule } from './Capsule/Capsule';
+export { CapsuleFiche } from './CapsuleFiche/CapsuleFiche';
+export { ConfirmDialog } from './ConfirmDialog/ConfirmDialog';
+export { RoleSelector } from './RoleSelector/RoleSelector';
+export { SearchInput } from './SearchInput/SearchInput';
+export { TextInput } from './TextInput/TextInput';

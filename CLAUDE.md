@@ -201,6 +201,7 @@ Ces skills doivent être invoqués **automatiquement** sans que l'utilisateur le
 /new-migration   <description>
 /new-edge-function <nom>
 /supabase-rls    <table>
+/audit-conformite [accessibilite|rgpd|securite]
 ```
 
 ## Variables d'environnement

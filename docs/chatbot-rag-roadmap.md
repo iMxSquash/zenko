@@ -15,7 +15,7 @@ Question envoyée à l'Edge Function /chat
   ├── 1. Embedder la question (gte-small, 384 dims)
   ├── 2. Recherche vectorielle → top-k fiches + discussions forum proches
   ├── 3. Construire le prompt : system + contexte (fiches + discussions)
-  └── 4. streamText (Anthropic Sonnet) → réponse en français
+  └── 4. streamText (Gemini Flash) → réponse en français
               │
               ├── Partie rédigée (toujours présente → affichage UI)
               └── Sources citées (fiches et discussions utilisées)
@@ -26,7 +26,7 @@ UI ChatAssistant
   └── Web Speech API (TTS) — lecture vocale de la réponse
 ```
 
-Le bot n'a pas accès à internet. On lui pré-mâche le travail : l'embedding de la question permet de retrouver les documents les plus proches sémantiquement dans la base. Claude reçoit uniquement ces documents comme contexte et rédige une synthèse. Il ne peut pas inventer d'informations hors corpus.
+Le bot n'a pas accès à internet. On lui pré-mâche le travail : l'embedding de la question permet de retrouver les documents les plus proches sémantiquement dans la base. Gemini reçoit uniquement ces documents comme contexte et rédige une synthèse. Il ne peut pas inventer d'informations hors corpus.
 
 ---
 
@@ -36,7 +36,7 @@ Le bot n'a pas accès à internet. On lui pré-mâche le travail : l'embedding d
 |---|---|---|
 | RAG | pgvector natif Supabase + recherche cosine | Tout reste dans la DB existante, RLS inclus |
 | Embeddings | `gte-small` via Supabase Edge Function (keyless, 384 dims) | Pas de clé API supplémentaire |
-| LLM | Vercel AI SDK + `@ai-sdk/anthropic` (Sonnet), streaming | Aligné avec le reste de la stack |
+| LLM | Vercel AI SDK + `@ai-sdk/google` (Gemini 2.0 Flash), streaming | Aligné avec le reste de la stack |
 | API | Supabase Edge Function `/chat` | SPA Vite — pas de route handler disponible |
 | Voix | Web Speech API (STT + TTS) avec couche abstraite | Keyless, privacy-first, Magnific/ElevenLabs branchables |
 | Mode | Hybride voix + texte | Robuste si le micro échoue |
@@ -104,7 +104,7 @@ src/
 
 ## Phase 0 — Setup : pgvector + variables d'env
 
-**Livrables :** migration `001_enable_pgvector.sql`, `ANTHROPIC_API_KEY` dans les secrets Supabase Edge Functions (pas dans `.env.local`).
+**Livrables :** migration `001_enable_pgvector.sql`, `GEMINI_API_KEY` dans les secrets Supabase Edge Functions (pas dans `.env.local`).
 
 **Prompt :**
 
@@ -114,7 +114,7 @@ Sur une branche feat/assistant-setup depuis develop.
 Crée supabase/migrations/001_enable_pgvector.sql qui active l'extension
 vector (create extension if not exists vector with schema extensions).
 
-Documente dans .env.example que ANTHROPIC_API_KEY est une variable
+Documente dans .env.example que GEMINI_API_KEY est une variable
 Supabase Edge Function secret uniquement — ne jamais la mettre en VITE_.
 
 Lance npm run lint, type-check et build. PR vers develop.
@@ -242,7 +242,7 @@ Crée supabase/functions/chat/index.ts (Deno) :
    - Ne jamais donner de conseil médical ou de diagnostic
    - Refuser poliment les questions hors sujet
 
-6. streamText avec anthropic('claude-sonnet-4-6'), renvoie le stream.
+6. streamText avec google('gemini-2.0-flash'), renvoie le stream.
 
 7. Dans les metadata du stream, inclure les sources : liste des
    { source_type, source_id, title } des documents utilisés.
@@ -375,7 +375,7 @@ Lance les 4 checks. PR develop → main si tout est vert.
 |---|---|---|
 | `VITE_SUPABASE_URL` | Client | URL Supabase |
 | `VITE_SUPABASE_ANON_KEY` | Client | Clé publique Supabase |
-| `ANTHROPIC_API_KEY` | **Supabase Edge Function secrets uniquement** | LLM Anthropic Sonnet |
+| `GEMINI_API_KEY` | **Supabase Edge Function secrets uniquement** | LLM Google Gemini 2.0 Flash |
 
 ## Vérification au fil des phases
 
