@@ -14,8 +14,8 @@ describe('ROLE_LABELS', () => {
 
   it('retourne les libellés corrects', () => {
     expect(ROLE_LABELS.parent).toBe('Parent');
-    expect(ROLE_LABELS.prof).toBe('Enseignant-e');
-    expect(ROLE_LABELS.expert).toBe('Expert-e');
+    expect(ROLE_LABELS.prof).toBe('Enseignant·e');
+    expect(ROLE_LABELS.expert).toBe('Expert·e');
   });
 });
 

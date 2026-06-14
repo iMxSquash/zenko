@@ -1,4 +1,5 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
+import { useIsAdmin } from '@/hooks/useAdmin';
 import { useInProgressFiches, useSavedFiches } from '@/hooks/useBibliotheque';
 import { useProfile } from '@/hooks/useProfile';
 import { signOut } from '@/lib/supabase/auth';
@@ -21,6 +22,7 @@ export function AppSidebar() {
   const { data: inProgressFiches = [] } = useInProgressFiches(!!user);
   const { data: savedFiches = [] } = useSavedFiches(!!user);
   const { data: profile } = useProfile();
+  const { data: isAdmin } = useIsAdmin();
   const navigate = useNavigate();
 
   const profileName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
@@ -122,6 +124,60 @@ export function AppSidebar() {
               inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
             >
               <span className="min-w-0 flex-1">Assistant vocal</span>
+            </Link>
+          </div>
+        )}
+
+        {/* Administration section */}
+        {isAdmin && (
+          <div className="flex flex-col gap-1">
+            <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+              Administration
+            </p>
+
+            <Link
+              to="/admin"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            >
+              <span className="min-w-0 flex-1">Tableau de bord</span>
+            </Link>
+
+            <Link
+              to="/admin/fiches"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            >
+              <span className="min-w-0 flex-1">Fiches</span>
+            </Link>
+
+            <Link
+              to="/admin/forum"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            >
+              <span className="min-w-0 flex-1">Modération</span>
+            </Link>
+
+            <Link
+              to="/admin/utilisateurs"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            >
+              <span className="min-w-0 flex-1">Utilisateurs</span>
+            </Link>
+
+            <Link
+              to="/admin/avatars"
+              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
+              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
+              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            >
+              <span className="min-w-0 flex-1">Avatars</span>
             </Link>
           </div>
         )}
