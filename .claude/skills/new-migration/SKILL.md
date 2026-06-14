@@ -16,16 +16,17 @@ L'utilisateur décrit la migration à créer (ex: `/new-migration ajouter table 
 
 ## Étapes
 
-### 1. Trouver le prochain numéro
+### 1. Générer le timestamp
 
-Lister les fichiers dans `supabase/migrations/` et prendre le numéro le plus élevé + 1.
-Format : `00001`, `00002`, etc. (5 chiffres avec zéros).
+Les migrations sont nommées avec un timestamp `YYYYMMDDHHMMSS` (UTC), pas un numéro séquentiel —
+c'est ce format que Supabase utilise pour suivre les migrations appliquées au projet distant.
+Utiliser l'heure actuelle (`date -u +%Y%m%d%H%M%S`), supérieure à la dernière migration existante.
 
 ### 2. Nommer le fichier
 
-`supabase/migrations/<NNNNN>_<description_en_snake_case>.sql`
+`supabase/migrations/<YYYYMMDDHHMMSS>_<description_en_snake_case>.sql`
 
-Ex : `00006_add_notifications_table.sql`
+Ex : `20260615093000_add_notifications_table.sql`
 
 ### 3. Contenu du fichier
 
@@ -106,5 +107,5 @@ alter table public.<table>
 - Toujours activer RLS sur chaque nouvelle table
 - Toujours ajouter `created_at` (et `updated_at` + trigger si la table est mutable)
 - Utiliser `if not exists` pour l'idempotence
-- La fonction `handle_updated_at()` existe depuis `00001_init.sql` — ne pas la recréer
+- La fonction `handle_updated_at()` existe depuis la migration `init` — ne pas la recréer
 - Noms de politiques en snake_case, descriptifs et uniques
