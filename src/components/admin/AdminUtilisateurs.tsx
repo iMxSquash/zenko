@@ -1,13 +1,8 @@
 import { useAdminUsers } from '@/hooks/useAdmin';
 import type { AdminUser } from '@/hooks/useAdmin';
+import { ROLE_LABELS } from '@/types';
 import { Link } from '@tanstack/react-router';
 import { ChevronRight } from 'lucide-react';
-
-const ROLE_LABELS: Record<string, string> = {
-  parent: 'Parent',
-  prof: 'Enseignant·e',
-  expert: 'Expert·e',
-};
 
 export function AdminUtilisateurs() {
   const { data: users, isLoading, error } = useAdminUsers();

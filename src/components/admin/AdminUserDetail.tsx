@@ -10,6 +10,7 @@ import {
 import type { AdminUserUpdate } from '@/hooks/useAdmin';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
+import { ROLES } from '@/types';
 import type { ForumUserRole } from '@/types';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -22,24 +23,6 @@ import {
   Twitter,
 } from 'lucide-react';
 import { useState } from 'react';
-
-const ROLES: Array<{
-  id: ForumUserRole;
-  label: string;
-  iconBg: string;
-  iconColor: string;
-  icon: string;
-}> = [
-  { id: 'parent', label: 'Parent', icon: '♥', iconBg: '#fceaf0', iconColor: '#d77890' },
-  { id: 'prof', label: 'Enseignant·e', icon: '◉', iconBg: '#e2f2fb', iconColor: '#2f9dd4' },
-  { id: 'expert', label: 'Expert·e', icon: '★', iconBg: '#e1f4e5', iconColor: '#288d40' },
-];
-
-const ROLE_LABELS: Record<ForumUserRole, string> = {
-  parent: 'Parent',
-  prof: 'Enseignant·e',
-  expert: 'Expert·e',
-};
 
 interface AdminUserDetailProps {
   userId: string;
@@ -96,7 +79,7 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
 
   function handleToggleAdmin() {
     toggleAdmin.mutate(
-      { userId, makeAdmin: !user.isAdmin },
+      { userId, makeAdmin: !user?.isAdmin },
       {
         onSettled: () => setConfirmToggle(false),
         onError: (err) => setSaveError(err instanceof Error ? err.message : 'Erreur inconnue'),
