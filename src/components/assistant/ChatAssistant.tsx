@@ -42,33 +42,42 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
       <VoiceStatus isListening={isListening} isLoading={isLoading} isSpeaking={isSpeaking} />
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        {messages.length === 0 && (
-          <p className="text-center text-sm text-text-muted mt-8">
-            Posez votre question sur l&apos;accompagnement des enfants neurodivergents.
-          </p>
-        )}
-        {messages.map((m) => (
-          <MessageRow key={m.id} message={m} />
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="rounded-card bg-neutral-100 px-4 py-2.5 text-sm">
-              <span className="inline-flex gap-1">
-                <span className="animate-bounce">·</span>
-                <span className="animate-bounce [animation-delay:0.1s]">·</span>
-                <span className="animate-bounce [animation-delay:0.2s]">·</span>
-              </span>
-            </div>
+        {messages.length === 0 && !isLoading && !error ? (
+          <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
+            <img src="/favicon.svg" alt="" className="h-16 w-16" />
+            <p className="font-display text-h3 font-semibold text-text-primary">
+              Un moment avec Zenko
+            </p>
+            <p className="max-w-xs text-sm text-text-muted">
+              Posez votre question sur l&apos;accompagnement des enfants neurodivergents.
+            </p>
           </div>
+        ) : (
+          <>
+            {messages.map((m) => (
+              <MessageRow key={m.id} message={m} />
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="rounded-card bg-neutral-100 px-4 py-2.5 text-sm">
+                  <span className="inline-flex gap-1">
+                    <span className="animate-bounce">·</span>
+                    <span className="animate-bounce [animation-delay:0.1s]">·</span>
+                    <span className="animate-bounce [animation-delay:0.2s]">·</span>
+                  </span>
+                </div>
+              </div>
+            )}
+            {error && (
+              <div className="flex justify-start">
+                <div className="rounded-card bg-red-50 px-4 py-2.5 text-sm text-red-600">
+                  {error.message || 'Une erreur est survenue, veuillez réessayer.'}
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </>
         )}
-        {error && (
-          <div className="flex justify-start">
-            <div className="rounded-card bg-red-50 px-4 py-2.5 text-sm text-red-600">
-              {error.message || 'Une erreur est survenue, veuillez réessayer.'}
-            </div>
-          </div>
-        )}
-        <div ref={bottomRef} />
       </div>
 
       <form
