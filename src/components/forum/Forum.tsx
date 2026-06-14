@@ -4,6 +4,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
 import { CATEGORIES, ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
 import { getDisplayName } from '@/lib/profile/profile';
+import { useAuth } from '@/lib/supabase/use-auth';
 import { cn, formatDate } from '@/lib/utils';
 import type { ForumThread, ResourceCategory } from '@/types';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -49,6 +50,7 @@ function ThreadCard({ thread }: { thread: ForumThread }) {
 
 export function Forum() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: threads = [], isLoading, error } = useForumThreads();
   const { data: profile } = useProfile();
   const createThread = useCreateThread();
@@ -144,9 +146,18 @@ export function Forum() {
         </div>
 
         {/* CTA */}
-        <Button type="button" onClick={() => setShowForm(true)} className="w-fit">
-          Ouvrir une conversation
-        </Button>
+        {user ? (
+          <Button type="button" onClick={() => setShowForm(true)} className="w-fit">
+            Ouvrir une conversation
+          </Button>
+        ) : (
+          <Link
+            to="/login"
+            className="w-fit rounded-full bg-brand-100 px-5 py-2.5 text-body-sm font-semibold text-[#f4f4f7] transition-opacity hover:opacity-90"
+          >
+            Se connecter pour ouvrir une conversation
+          </Link>
+        )}
       </div>
 
       {/* Thread list */}

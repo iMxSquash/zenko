@@ -1,5 +1,47 @@
 export type ForumUserRole = 'parent' | 'prof' | 'expert';
 
+export interface RoleInfo {
+  id: ForumUserRole;
+  label: string;
+  description: string;
+  icon: string;
+  iconBg: string;
+  iconColor: string;
+}
+
+export const ROLES: RoleInfo[] = [
+  {
+    id: 'parent',
+    label: 'Parent',
+    description: 'Vous accompagnez votre enfant au quotidien.',
+    icon: '♥',
+    iconBg: '#fceaf0',
+    iconColor: '#d77890',
+  },
+  {
+    id: 'prof',
+    label: 'Enseignant·e',
+    description: 'Vous adaptez votre pédagogie pour des élèves neurodivergents.',
+    icon: '◉',
+    iconBg: '#e2f2fb',
+    iconColor: '#2f9dd4',
+  },
+  {
+    id: 'expert',
+    label: 'Expert·e',
+    description: 'Orthophoniste, psychologue ou pédopsychiatre.',
+    icon: '★',
+    iconBg: '#e1f4e5',
+    iconColor: '#288d40',
+  },
+];
+
+export const ROLE_LABELS: Record<ForumUserRole, string> = {
+  parent: 'Parent',
+  prof: 'Enseignant·e',
+  expert: 'Expert·e',
+};
+
 export interface Profile {
   id: string;
   email: string;
@@ -56,6 +98,8 @@ export interface Fiche {
   authorAvatarUrl?: string;
   content?: string;
   readingTimeMinutes?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ReadingProgress {

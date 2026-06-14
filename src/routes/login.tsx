@@ -1,3 +1,4 @@
+import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signInWithPassword, signUpWithPassword } from '@/lib/supabase/auth';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -41,6 +42,11 @@ function LoginPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#fafaf9] flex flex-col items-center justify-center px-4 py-12">
+      <SEOHead
+        title={isSignup ? 'Créer un compte' : 'Connexion'}
+        description="Connectez-vous ou créez votre compte Zenko pour accompagner les enfants neurodivergents avec l'école, la famille et les spécialistes."
+        path="/login"
+      />
       {/* Decorative blobs */}
       <div
         className="pointer-events-none fixed -top-24 -left-24 h-72 w-72 rounded-full blur-3xl"

@@ -4,6 +4,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { CATEGORY_CAPSULE_BG } from '@/lib/categories/categories';
 import { ROLE_CAPSULE_BG, ROLE_LABELS } from '@/lib/forum/forum';
 import { getDisplayName } from '@/lib/profile/profile';
+import { useAuth } from '@/lib/supabase/use-auth';
 import { formatDate } from '@/lib/utils';
 import type { ForumReply } from '@/types';
 import { Link } from '@tanstack/react-router';
@@ -31,6 +32,7 @@ function ReplyCard({ reply }: { reply: ForumReply }) {
 }
 
 function ReplyForm({ threadId }: { threadId: string }) {
+  const { user } = useAuth();
   const { data: profile } = useProfile();
   const addReply = useAddReply();
   const [content, setContent] = useState('');
@@ -53,6 +55,22 @@ function ReplyForm({ threadId }: { threadId: string }) {
           setError(err instanceof Error ? err.message : 'Une erreur est survenue.');
         },
       }
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center gap-3 rounded-search border border-border-default bg-surface p-6 text-center">
+        <p className="text-body-sm font-medium text-text-secondary">
+          Connectez-vous pour répondre à cette discussion.
+        </p>
+        <Link
+          to="/login"
+          className="rounded-full bg-brand-100 px-5 py-2 font-display text-[16px] font-semibold text-[#f4f4f7] transition-opacity hover:opacity-90"
+        >
+          Se connecter
+        </Link>
+      </div>
     );
   }
 

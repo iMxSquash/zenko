@@ -84,6 +84,18 @@ Client (Zenko PWA)
 
 ---
 
+## SEO / GEO — pré-rendu pour les bots
+
+`SEOHead` met à jour titre/description/canonical/OG/JSON-LD côté client (`useEffect`) — invisible
+pour les crawlers sans JS. Pour les pages publiques indexables (`/`, `/bibliotheque`,
+`/bibliotheque/:slug`, `/forum`, `/forum/:threadId`), `vercel.json` détecte les user-agents bots
+(Googlebot, GPTBot, ClaudeBot, PerplexityBot, etc. via `has: user-agent`) et les redirige vers
+l'Edge Function `supabase/functions/prerender`, qui renvoie un HTML statique avec meta/OG/JSON-LD
+réels et le contenu de la fiche/thread, généré à la volée depuis Supabase. Les utilisateurs humains
+continuent de recevoir la SPA normale.
+
+---
+
 ## Structure
 
 ```

@@ -1,39 +1,6 @@
 import { cn } from '@/lib/utils';
+import { ROLES } from '@/types';
 import type { ForumUserRole } from '@/types';
-
-const ROLE_OPTIONS: Array<{
-  id: ForumUserRole;
-  title: string;
-  description: string;
-  icon: string;
-  iconBg: string;
-  iconColor: string;
-}> = [
-  {
-    id: 'parent',
-    title: 'Parent',
-    description: 'Vous accompagnez votre enfant au quotidien.',
-    icon: '♥',
-    iconBg: '#fceaf0',
-    iconColor: '#d77890',
-  },
-  {
-    id: 'prof',
-    title: 'Enseignant·e',
-    description: 'Vous adaptez votre pédagogie pour des élèves neurodivergents.',
-    icon: '◉',
-    iconBg: '#e2f2fb',
-    iconColor: '#2f9dd4',
-  },
-  {
-    id: 'expert',
-    title: 'Expert·e',
-    description: 'Orthophoniste, psychologue ou pédopsychiatre.',
-    icon: '★',
-    iconBg: '#e1f4e5',
-    iconColor: '#288d40',
-  },
-];
 
 interface RoleSelectorProps {
   value: ForumUserRole | null;
@@ -44,7 +11,7 @@ interface RoleSelectorProps {
 export function RoleSelector({ value, onChange, className }: RoleSelectorProps) {
   return (
     <div className={cn('flex flex-wrap gap-4', className)}>
-      {ROLE_OPTIONS.map((role) => (
+      {ROLES.map((role) => (
         <button
           key={role.id}
           type="button"
@@ -63,7 +30,7 @@ export function RoleSelector({ value, onChange, className }: RoleSelectorProps) 
           >
             {role.icon}
           </div>
-          <p className="text-body-lg font-bold text-text-primary">{role.title}</p>
+          <p className="text-body-lg font-bold text-text-primary">{role.label}</p>
           <p className="text-body-sm leading-5 text-text-secondary">{role.description}</p>
         </button>
       ))}
