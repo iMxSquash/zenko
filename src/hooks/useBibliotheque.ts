@@ -11,6 +11,7 @@ type FicheRow = {
   author: string;
   author_avatar_url: string | null;
   created_at: string;
+  updated_at: string;
   content: string | null;
   reading_time_minutes: number | null;
 };
@@ -31,6 +32,8 @@ function toFiche(row: FicheRow): Fiche {
     authorAvatarUrl: row.author_avatar_url ?? undefined,
     content: row.content ?? undefined,
     readingTimeMinutes: row.reading_time_minutes ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
 

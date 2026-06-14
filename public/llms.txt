@@ -10,6 +10,16 @@
 - [Connexion / Inscription](https://zenkoo.vercel.app/login): créer un compte gratuit (gratuit pour les enseignants, conforme RGPD)
 - [Bibliothèque](https://zenkoo.vercel.app/bibliotheque): fiches pratiques pour accompagner les enfants TSA, TDAH, DYS et TDI, consultables sans compte
 - [Forum](https://zenkoo.vercel.app/forum): discussions entre enseignants, parents et spécialistes, consultables sans compte
+- [Plan du site](https://zenkoo.vercel.app/sitemap.xml): liste complète et à jour des fiches et pages publiques
+
+## Catégories de la bibliothèque
+
+Chaque fiche pratique de [/bibliotheque](https://zenkoo.vercel.app/bibliotheque) est classée dans une de ces catégories :
+
+- **TSA** — Trouble du Spectre de l'Autisme : comprendre le fonctionnement de l'enfant, gérer les crises sensorielles, adapter la communication
+- **TDAH** — Trouble du Déficit de l'Attention avec ou sans Hyperactivité : routines, organisation, concentration
+- **DYS** — Troubles dys (dyslexie, dysphasie, dyspraxie, etc.) : adapter la lecture, l'écriture et les supports pédagogiques
+- **TDI** — Trouble du Développement Intellectuel : adapter le rythme et le niveau des apprentissages
 
 ## À propos
 

@@ -98,6 +98,8 @@ export interface Fiche {
   authorAvatarUrl?: string;
   content?: string;
   readingTimeMinutes?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ReadingProgress {

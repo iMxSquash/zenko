@@ -3,6 +3,61 @@
     {
       "source": "/sitemap.xml",
       "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/sitemap"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|whatsapp|telegrambot|discordbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|perplexitybot|ccbot|google-extended|bytespider|amazonbot|petalbot|applebot|duckduckbot).*"
+        }
+      ],
+      "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/prerender?path=/"
+    },
+    {
+      "source": "/bibliotheque",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|whatsapp|telegrambot|discordbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|perplexitybot|ccbot|google-extended|bytespider|amazonbot|petalbot|applebot|duckduckbot).*"
+        }
+      ],
+      "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/prerender?path=/bibliotheque"
+    },
+    {
+      "source": "/bibliotheque/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|whatsapp|telegrambot|discordbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|perplexitybot|ccbot|google-extended|bytespider|amazonbot|petalbot|applebot|duckduckbot).*"
+        }
+      ],
+      "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/prerender?path=/bibliotheque/:slug"
+    },
+    {
+      "source": "/forum",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|whatsapp|telegrambot|discordbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|perplexitybot|ccbot|google-extended|bytespider|amazonbot|petalbot|applebot|duckduckbot).*"
+        }
+      ],
+      "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/prerender?path=/forum"
+    },
+    {
+      "source": "/forum/:threadId",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|whatsapp|telegrambot|discordbot|gptbot|chatgpt-user|claudebot|claude-web|anthropic-ai|perplexitybot|ccbot|google-extended|bytespider|amazonbot|petalbot|applebot|duckduckbot).*"
+        }
+      ],
+      "destination": "https://aqyvrumakemtyoouoodc.supabase.co/functions/v1/prerender?path=/forum/:threadId"
     }
   ]
 }

@@ -9,6 +9,8 @@ const mockFiche: Fiche = {
   description: 'Méthode visuelle pour segmenter les instructions. Modèle imprimable inclus.',
   category: 'TDAH',
   author: 'Dr Lambert',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
 };
 
 describe('FicheCard', () => {

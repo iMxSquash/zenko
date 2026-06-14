@@ -51,6 +51,8 @@ export function SEOHead({ title, description, path = '/', image, noIndex }: SEOH
     setMetaTag('property', 'og:url', url);
     setMetaTag('property', 'og:type', 'website');
     setMetaTag('property', 'og:image', ogImage);
+    setMetaTag('property', 'og:image:width', '1200');
+    setMetaTag('property', 'og:image:height', '630');
     setMetaTag('property', 'og:locale', siteConfig.locale);
     setMetaTag('property', 'og:site_name', siteConfig.name);
 
