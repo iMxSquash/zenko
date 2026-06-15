@@ -5,7 +5,7 @@ const NAV_LINKS = ['Comment ça marche ?', 'Pour qui ?', 'Ressources', 'Tarifs']
 
 export function LandingNav() {
   return (
-    <nav className="flex items-center justify-between border-b border-border bg-surface px-8 py-3 md:px-16">
+    <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-surface px-8 py-3 md:px-16">
       <ZenkoLogo width={120} />
       <div className="flex items-center gap-8">
         <div className="hidden items-center gap-8 md:flex">

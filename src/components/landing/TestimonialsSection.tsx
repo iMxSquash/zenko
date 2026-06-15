@@ -1,6 +1,7 @@
 import { SectionDecor, TESTIMONIALS_DECOR } from '@/components/landing/LandingDecor';
 import { TestimonialCard } from '@/components/landing/TestimonialCard';
 import { SectionLabel } from '@/components/ui/SectionLabel';
+import { useRef } from 'react';
 
 const TESTIMONIALS = [
   {
@@ -24,9 +25,15 @@ const TESTIMONIALS = [
 ] as const;
 
 export function TestimonialsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section className="relative overflow-hidden bg-surface px-8 py-20 md:px-16">
-      <SectionDecor shapes={TESTIMONIALS_DECOR} />
+    <section
+      ref={sectionRef}
+      data-snap-section
+      className="relative isolate flex flex-col justify-center overflow-hidden bg-surface px-8 py-20 md:px-16"
+    >
+      <SectionDecor shapes={TESTIMONIALS_DECOR} sectionRef={sectionRef} />
       <div className="relative z-10 flex flex-col items-center gap-8">
         <SectionLabel color="var(--color-success)">ILS NOUS PARLENT</SectionLabel>
         <h2 className="text-center text-[40px] font-bold leading-13 tracking-display text-dark md:text-display-md">

@@ -1,6 +1,7 @@
 import { PROBLEM_DECOR, SectionDecor } from '@/components/landing/LandingDecor';
 import { ProblemCard } from '@/components/landing/ProblemCard';
 import { SectionLabel } from '@/components/ui/SectionLabel';
+import { useRef } from 'react';
 
 const PROBLEMS = [
   {
@@ -21,15 +22,21 @@ const PROBLEMS = [
 ] as const;
 
 export function ProblemSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section className="relative overflow-hidden bg-surface px-8 py-20 md:px-16">
-      <SectionDecor shapes={PROBLEM_DECOR} />
+    <section
+      ref={sectionRef}
+      data-snap-section
+      className="relative isolate flex min-h-screen flex-col justify-center overflow-hidden bg-surface px-8 py-20 md:px-16"
+    >
+      <SectionDecor shapes={PROBLEM_DECOR} sectionRef={sectionRef} />
 
       <div className="relative z-10 flex flex-col items-center gap-8">
         <SectionLabel color="var(--color-brand-orange)">LE PROBLÈME</SectionLabel>
         <h2 className="max-w-5xl text-center text-[40px] font-bold leading-13 tracking-display text-dark md:text-display-md">
           {' '}
-          Chacun parle de l&apos;enfant — personne ne se parle.
+          Chacun parle de l&apos;enfant - personne ne se parle.
         </h2>
         <p className="max-w-4xl text-center text-body-lg leading-7 text-text-secondary">
           563 400 élèves en situation de handicap scolarisés en milieu ordinaire en 2024. Les
