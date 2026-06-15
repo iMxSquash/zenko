@@ -98,8 +98,7 @@ export function HeroSection() {
           {/* CTA + trust signals */}
           <div className="flex flex-col gap-4">
             <Link
-              to="/login"
-              search={{ mode: 'signup' }}
+              to="/signup"
               className="w-fit rounded-full bg-brand-100 px-6 py-4 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Créer mon compte gratuitement

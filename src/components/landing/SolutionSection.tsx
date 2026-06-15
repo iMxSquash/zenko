@@ -42,8 +42,7 @@ export function SolutionSection() {
           ))}
         </div>
         <Link
-          to="/login"
-          search={{ mode: 'signup' }}
+          to="/signup"
           className="rounded-full bg-brand px-6 py-4 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           Créer mon compte gratuitement
