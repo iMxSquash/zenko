@@ -2,6 +2,7 @@ import { SOLUTION_DECOR, SectionDecor } from '@/components/landing/LandingDecor'
 import { SolutionCard } from '@/components/landing/SolutionCard';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { Link } from '@tanstack/react-router';
+import { useRef } from 'react';
 
 const SOLUTIONS = [
   {
@@ -19,9 +20,15 @@ const SOLUTIONS = [
 ] as const;
 
 export function SolutionSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section className="relative overflow-hidden bg-background px-8 py-20 md:px-16">
-      <SectionDecor shapes={SOLUTION_DECOR} />
+    <section
+      ref={sectionRef}
+      data-snap-section
+      className="relative isolate flex min-h-screen flex-col justify-center overflow-hidden bg-background px-8 py-20 md:px-16"
+    >
+      <SectionDecor shapes={SOLUTION_DECOR} sectionRef={sectionRef} />
       <div className="relative z-10 flex flex-col items-center gap-8">
         <SectionLabel color="var(--color-brand-rose)">LA SOLUTION</SectionLabel>
         <h2 className="max-w-5xl text-center text-[40px] font-bold leading-13 tracking-display text-dark md:text-display-md">
