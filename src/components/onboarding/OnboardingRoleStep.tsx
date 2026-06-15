@@ -4,36 +4,6 @@ import type { ForumUserRole } from '@/types';
 
 const ONBOARDING_STEPS = ['Rôle', 'Profil', 'Premier élève'] as const;
 
-const ROLES = [
-  {
-    id: 'teacher',
-    title: 'Enseignant·e',
-    // biome-ignore lint/style/noUnusedTemplateLiteral: French apostrophes require template literal
-    description: `Je suis le quotidien d'élèves neurodivergents et je cherche des outils concrets pour adapter ma pédagogie.`,
-    icon: '◉',
-    iconBg: '#e2f2fb',
-    iconColor: '#2f9dd4',
-  },
-  {
-    id: 'parent',
-    title: 'Parent',
-    // biome-ignore lint/style/noUnusedTemplateLiteral: French apostrophes require template literal
-    description: `Je veux que l'école comprenne mon enfant et qu'on parle enfin avec les mêmes mots.`,
-    icon: '♥',
-    iconBg: '#fceaf0',
-    iconColor: '#d77890',
-  },
-  {
-    id: 'specialist',
-    title: 'Spécialiste',
-    description:
-      'Je suis orthophoniste, psy ou pédopsy. Mes recommandations doivent atterrir en classe.',
-    icon: '★',
-    iconBg: '#e1f4e5',
-    iconColor: '#288d40',
-  },
-] as const;
-
 interface OnboardingRoleStepProps {
   selectedRole: ForumUserRole | null;
   onSelectRole: (role: ForumUserRole) => void;
