@@ -96,6 +96,7 @@ export interface Fiche {
   category: ResourceCategory;
   author: string;
   authorAvatarUrl?: string;
+  coverImageUrl?: string | null;
   content?: string;
   readingTimeMinutes?: number;
   createdAt: string;

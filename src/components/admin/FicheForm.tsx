@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/Button/Button';
 import { TextInput } from '@/components/ui/TextInput/TextInput';
+import { useUploadFicheCover } from '@/hooks/useAdmin';
 import type { FicheInput } from '@/hooks/useAdmin';
 import { cn } from '@/lib/utils';
 import type { ResourceCategory } from '@/types';
-import { useId, useState } from 'react';
+import { ImagePlus, X } from 'lucide-react';
+import { useId, useRef, useState } from 'react';
 
 const CATEGORIES: ResourceCategory[] = ['TSA', 'TDAH', 'DYS', 'TDI'];
 
@@ -18,6 +20,10 @@ interface FicheFormProps {
 export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }: FicheFormProps) {
   const descriptionId = useId();
   const contentId = useId();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const uploadCover = useUploadFicheCover();
+
   const [slug, setSlug] = useState(initial?.slug ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
@@ -27,6 +33,8 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
   const [readingTime, setReadingTime] = useState(
     initial?.readingTimeMinutes != null ? String(initial.readingTimeMinutes) : ''
   );
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initial?.coverImageUrl ?? null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function validate(): boolean {
@@ -41,6 +49,20 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
     return Object.keys(next).length === 0;
   }
 
+  function handleCoverFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image trop lourde (max 5 Mo).');
+      return;
+    }
+    setUploadError(null);
+    uploadCover.mutate(file, {
+      onSuccess: (url) => setCoverImageUrl(url),
+      onError: () => setUploadError("Erreur lors de l'upload de l'image."),
+    });
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
@@ -50,6 +72,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
       description: description.trim(),
       category,
       author: author.trim(),
+      coverImageUrl: coverImageUrl ?? null,
       content: content.trim() || null,
       readingTimeMinutes: readingTime ? Number(readingTime) : null,
     });
@@ -106,6 +129,60 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
         error={errors.author}
       />
 
+      {/* Cover image */}
+      <div className="flex flex-col gap-1.5">
+        <span className="text-label font-semibold uppercase tracking-label text-text-secondary">
+          Image de couverture
+        </span>
+
+        {coverImageUrl ? (
+          <div className="relative w-full overflow-hidden rounded-card">
+            <img src={coverImageUrl} alt="Couverture" className="h-40 w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => setCoverImageUrl(null)}
+              className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-opacity hover:bg-black/70"
+              aria-label="Supprimer l'image"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadCover.isPending}
+            className="flex h-32 w-full items-center justify-center gap-3 rounded-card border-2 border-dashed border-border bg-background text-text-muted transition-colors hover:border-brand hover:text-brand disabled:opacity-50"
+          >
+            <ImagePlus size={20} />
+            <span className="text-body-sm font-medium">
+              {uploadCover.isPending ? 'Upload en cours…' : 'Ajouter une image (max 5 Mo)'}
+            </span>
+          </button>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleCoverFileChange}
+        />
+
+        {uploadError && <p className="text-body-sm text-danger">{uploadError}</p>}
+
+        {coverImageUrl && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadCover.isPending}
+            className="self-start text-body-sm font-medium text-brand hover:underline disabled:opacity-50"
+          >
+            Changer l'image
+          </button>
+        )}
+      </div>
+
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor={descriptionId}
@@ -157,7 +234,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
         <Button type="button" variant="outline" onClick={onCancel}>
           Annuler
         </Button>
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending || uploadCover.isPending}>
           {isPending ? 'Enregistrement…' : isCreating ? 'Créer la fiche' : 'Enregistrer'}
         </Button>
       </div>
