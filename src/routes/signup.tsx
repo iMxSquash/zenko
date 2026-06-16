@@ -1,6 +1,7 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signUpWithPassword } from '@/lib/supabase/auth';
 import { Link, createFileRoute } from '@tanstack/react-router';
+import { motion } from 'motion/react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/signup')({
@@ -95,11 +96,13 @@ function SignupPage() {
         }}
       >
         <div className="absolute" style={{ inset: '-7.21% -6.79%' }}>
-          <img
+          <motion.img
             src="/assets/signup_blob_23.svg"
             alt=""
             aria-hidden="true"
             className="block size-full max-w-none"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
           />
         </div>
       </div>
@@ -118,11 +121,18 @@ function SignupPage() {
           zIndex: 10,
         }}
       >
-        <img
+        <motion.img
           src="/assets/signup_blob_25.svg"
           alt=""
           aria-hidden="true"
           className="block w-full h-full"
+          animate={{ y: [0, -8, 0] }}
+          transition={{
+            duration: 7,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut',
+            delay: 1.2,
+          }}
         />
       </div>
 
@@ -135,11 +145,18 @@ function SignupPage() {
           style={{ left: 349, top: 89, width: 192, height: 208 }}
         >
           <div className="absolute" style={{ inset: '-5.59% -5.82%' }}>
-            <img
+            <motion.img
               src="/assets/signup_blob_24.svg"
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
+              animate={{ x: [0, 6, 0], y: [0, -8, 0] }}
+              transition={{
+                duration: 9,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: 'easeInOut',
+                delay: 0.6,
+              }}
             />
           </div>
         </div>
@@ -151,11 +168,18 @@ function SignupPage() {
           style={{ left: 19, top: 250, width: 128, height: 144 }}
         >
           <div className="absolute" style={{ inset: '-19.79% -20.51%' }}>
-            <img
+            <motion.img
               src="/assets/signup_blob_20.svg"
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
+              animate={{ y: [0, -10, 0] }}
+              transition={{
+                duration: 6,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: 'easeInOut',
+                delay: 1.8,
+              }}
             />
           </div>
         </div>
@@ -166,11 +190,18 @@ function SignupPage() {
           className="pointer-events-none absolute select-none"
           style={{ left: -165, bottom: -109, width: 384, height: 384 }}
         >
-          <img
+          <motion.img
             src="/assets/signup_blob_22.svg"
             alt=""
             aria-hidden="true"
             className="block w-full h-full"
+            animate={{ scale: [1, 1.04, 1] }}
+            transition={{
+              duration: 8,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+              delay: 0.3,
+            }}
           />
         </div>
 
