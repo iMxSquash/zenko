@@ -1,6 +1,7 @@
 import { HERO_DECOR, SectionDecor } from '@/components/landing/LandingDecor';
 import { RoleCard } from '@/components/landing/RoleCard';
 import { Link } from '@tanstack/react-router';
+import { useRef } from 'react';
 
 // Avatars are local SVG files in public/assets/ (served from the site root, so
 // referenced as '/assets/...'). Map each Ellipse file to the right person by
@@ -37,10 +38,15 @@ const ROLES = [
 ] as const;
 
 export function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section className="relative isolate overflow-hidden bg-background px-8 py-16 md:px-16">
+    <section
+      ref={sectionRef}
+      className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-8 py-24 pb-48 md:px-16"
+    >
       {/* Decorative shapes — see LandingDecor.tsx (expiring URLs note there) */}
-      <SectionDecor shapes={HERO_DECOR} />
+      <SectionDecor shapes={HERO_DECOR} sectionRef={sectionRef} />
 
       <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center">
         {/* Left — text + CTAs */}
@@ -92,8 +98,7 @@ export function HeroSection() {
           {/* CTA + trust signals */}
           <div className="flex flex-col gap-4">
             <Link
-              to="/login"
-              search={{ mode: 'signup' }}
+              to="/signup"
               className="w-fit rounded-full bg-brand-100 px-6 py-4 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Créer mon compte gratuitement

@@ -1,7 +1,7 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signOut } from '@/lib/supabase/auth';
+import { SignOut } from '@phosphor-icons/react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { LogOut } from 'lucide-react';
 
 export function AdminSidebar() {
   const navigate = useNavigate();
@@ -93,7 +93,7 @@ export function AdminSidebar() {
         onClick={handleLogout}
         className="flex w-full items-center gap-2 rounded-nav px-3 py-3 text-body-sm font-medium text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
       >
-        <LogOut size={16} />
+        <SignOut size={16} />
         Déconnexion
       </button>
     </aside>

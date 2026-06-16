@@ -2,7 +2,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog';
 import { useAdminForumThreads, useDeleteForumReply, useDeleteForumThread } from '@/hooks/useAdmin';
 import type { AdminThread } from '@/hooks/useAdmin';
 import { cn } from '@/lib/utils';
-import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { CaretDown, CaretRight, Trash } from '@phosphor-icons/react';
 import { useState } from 'react';
 
 type PendingDelete =
@@ -110,7 +110,7 @@ function ThreadBlock({
           className="shrink-0 text-text-muted transition-colors hover:text-text-primary"
           aria-label={isExpanded ? 'Réduire' : 'Voir les réponses'}
         >
-          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          {isExpanded ? <CaretDown size={16} /> : <CaretRight size={16} />}
         </button>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -133,7 +133,7 @@ function ThreadBlock({
           className="flex size-8 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-danger/10 hover:text-danger"
           title="Supprimer le thread"
         >
-          <Trash2 size={15} />
+          <Trash size={15} />
         </button>
       </div>
 
@@ -156,7 +156,7 @@ function ThreadBlock({
                 className="flex size-7 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-danger/10 hover:text-danger"
                 title="Supprimer la réponse"
               >
-                <Trash2 size={13} />
+                <Trash size={13} />
               </button>
             </div>
           ))}

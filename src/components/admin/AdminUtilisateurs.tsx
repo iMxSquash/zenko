@@ -1,8 +1,8 @@
 import { useAdminUsers } from '@/hooks/useAdmin';
 import type { AdminUser } from '@/hooks/useAdmin';
 import { ROLE_LABELS } from '@/types';
+import { CaretRight } from '@phosphor-icons/react';
 import { Link } from '@tanstack/react-router';
-import { ChevronRight } from 'lucide-react';
 
 export function AdminUtilisateurs() {
   const { data: users, isLoading, error } = useAdminUsers();
@@ -99,7 +99,7 @@ function UserRow({ user }: { user: AdminUser }) {
           className="flex size-8 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
           title="Voir le profil"
         >
-          <ChevronRight size={16} />
+          <CaretRight size={16} />
         </Link>
       </td>
     </tr>

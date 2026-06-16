@@ -1,6 +1,6 @@
 import { ChatAssistant } from '@/components/assistant/ChatAssistant';
+import { ClockCounterClockwise } from '@phosphor-icons/react';
 import { Link, createFileRoute } from '@tanstack/react-router';
-import { History } from 'lucide-react';
 
 export const Route = createFileRoute('/_app/_protected/assistant/')({
   component: AssistantPage,
@@ -16,7 +16,7 @@ function AssistantPage() {
           aria-label="Historique des conversations"
           className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:text-brand transition-colors"
         >
-          <History size={18} />
+          <ClockCounterClockwise size={18} />
         </Link>
       </div>
       <ChatAssistant />

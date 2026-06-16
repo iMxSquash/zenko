@@ -1,6 +1,6 @@
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog';
 import { useAdminAvatars, useDeleteAvatar, useUploadAvatar } from '@/hooks/useAdmin';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash } from '@phosphor-icons/react';
 import { useRef, useState } from 'react';
 
 export function AdminAvatars() {
@@ -85,7 +85,7 @@ export function AdminAvatars() {
               className="absolute right-0 top-0 flex size-7 translate-x-1/4 -translate-y-1/4 items-center justify-center rounded-full bg-danger text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
               title="Supprimer"
             >
-              <Trash2 size={12} />
+              <Trash size={12} />
             </button>
             <p className="mt-1 truncate text-center text-[11px] text-text-muted">{avatar.name}</p>
           </div>

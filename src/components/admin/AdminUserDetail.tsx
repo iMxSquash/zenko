@@ -12,16 +12,17 @@ import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
 import { ROLES } from '@/types';
 import type { ForumUserRole } from '@/types';
-import { useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeft,
-  Instagram,
-  Linkedin,
+  InstagramLogo,
+  LinkedinLogo,
+  type Icon as PhosphorIcon,
   ShieldCheck,
-  ShieldOff,
+  ShieldWarning,
   Stethoscope,
-  Twitter,
-} from 'lucide-react';
+  TwitterLogo,
+} from '@phosphor-icons/react';
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 interface AdminUserDetailProps {
@@ -170,7 +171,7 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
           >
             {user.isAdmin ? (
               <>
-                <ShieldOff size={15} />
+                <ShieldWarning size={15} />
                 Retirer admin
               </>
             ) : (
@@ -250,13 +251,13 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
             <h2 className="mb-4 text-h3 font-bold text-text-primary">Liens</h2>
             <div className="flex flex-wrap gap-3">
               {user.linkedinUrl && (
-                <SocialLink href={user.linkedinUrl} icon={Linkedin} label="LinkedIn" />
+                <SocialLink href={user.linkedinUrl} icon={LinkedinLogo} label="LinkedIn" />
               )}
               {user.instagramUrl && (
-                <SocialLink href={user.instagramUrl} icon={Instagram} label="Instagram" />
+                <SocialLink href={user.instagramUrl} icon={InstagramLogo} label="Instagram" />
               )}
               {user.twitterUrl && (
-                <SocialLink href={user.twitterUrl} icon={Twitter} label="Twitter / X" />
+                <SocialLink href={user.twitterUrl} icon={TwitterLogo} label="Twitter / X" />
               )}
               {user.doctolibUrl && (
                 <SocialLink href={user.doctolibUrl} icon={Stethoscope} label="Doctolib" />
@@ -347,7 +348,7 @@ function SocialLink({
   label,
 }: {
   href: string;
-  icon: typeof Linkedin;
+  icon: PhosphorIcon;
   label: string;
 }) {
   return (
