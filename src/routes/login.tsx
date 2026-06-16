@@ -24,21 +24,21 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
- async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  setError(null);
-  setLoading(true);
-  try {
-    const { user } = await signInWithPassword(email, password);
-    // New users without a role go to onboarding; others to the library.
-    const profile = user ? await getProfile(user.id) : null;
-    navigate({ to: profile?.role ? '/bibliotheque' : '/onboarding' });
-  } catch (err) {
-    setError(err instanceof Error ? err.message : 'Identifiants incorrects');
-  } finally {
-    setLoading(false);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const { user } = await signInWithPassword(email, password);
+      // New users without a role go to onboarding; others to the library.
+      const profile = user ? await getProfile(user.id) : null;
+      navigate({ to: profile?.role ? '/bibliotheque' : '/onboarding' });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Identifiants incorrects');
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-white">

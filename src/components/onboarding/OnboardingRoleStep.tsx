@@ -43,7 +43,12 @@ export function OnboardingRoleStep({
         <div className="relative z-10 flex flex-col gap-2.5" style={{ width: 388 }}>
           <h2
             className="font-bold text-black"
-            style={{ fontFamily: 'Inter, sans-serif', fontSize: '56px', lineHeight: '64px', letterSpacing: '-0.84px' }}
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '56px',
+              lineHeight: '64px',
+              letterSpacing: '-0.84px',
+            }}
           >
             Bienvenue !
             <br />
@@ -54,7 +59,10 @@ export function OnboardingRoleStep({
             <span style={{ color: '#ffd43b' }}>s</span>
             <span style={{ color: '#ef6a22' }}>...</span>
           </h2>
-          <p className="text-text-secondary" style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}>
+          <p
+            className="text-text-secondary"
+            style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+          >
             Trois entrées, un seul espace.
           </p>
         </div>
@@ -81,11 +89,19 @@ export function OnboardingRoleStep({
           <div className="flex w-[442px] max-w-full flex-col gap-2.5">
             <h1
               className="font-bold text-black"
-              style={{ fontFamily: 'Inter, sans-serif', fontSize: '28px', lineHeight: '36px', letterSpacing: '-0.084px' }}
+              style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '28px',
+                lineHeight: '36px',
+                letterSpacing: '-0.084px',
+              }}
             >
               Choix du rôle
             </h1>
-            <p className="text-text-secondary" style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}>
+            <p
+              className="text-text-secondary"
+              style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+            >
               Choisissez votre profil pour adapter ZENKO à votre quotidien.
               <br />
               Ce choix n&apos;est pas définitif et peut être modifier.
@@ -113,7 +129,12 @@ export function OnboardingRoleStep({
                   <div className="flex flex-col gap-2.5">
                     <p
                       className="font-bold text-black"
-                      style={{ fontFamily: 'Inter, sans-serif', fontSize: '28px', lineHeight: '36px', letterSpacing: '-0.084px' }}
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '28px',
+                        lineHeight: '36px',
+                        letterSpacing: '-0.084px',
+                      }}
                     >
                       {role.label}
                     </p>
