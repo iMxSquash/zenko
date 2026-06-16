@@ -1,9 +1,10 @@
+import { MicButton } from '@/components/assistant/MicButton';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signInWithPassword } from '@/lib/supabase/auth';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { motion } from 'motion/react';
 import { useState } from 'react';
+import { getProfile } from '@/lib/profile/profile';
 
 type Search = { mode?: 'login' | 'signup' };
 
@@ -23,19 +24,21 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      await signInWithPassword(email, password);
-      navigate({ to: '/bibliotheque' });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Identifiants incorrects');
-    } finally {
-      setLoading(false);
-    }
+ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
+  try {
+    const { user } = await signInWithPassword(email, password);
+    // New users without a role go to onboarding; others to the library.
+    const profile = user ? await getProfile(user.id) : null;
+    navigate({ to: profile?.role ? '/bibliotheque' : '/onboarding' });
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Identifiants incorrects');
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-white">
@@ -63,13 +66,11 @@ function LoginPage() {
         }}
       >
         <div className="relative size-full">
-          <motion.img
+          <img
             src="/assets/blob_22.svg"
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
-            animate={{ y: [0, -14, 0] }}
-            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
           />
         </div>
       </div>
@@ -88,18 +89,11 @@ function LoginPage() {
         }}
       >
         <div className="relative size-full">
-          <motion.img
+          <img
             src="/assets/blob_23.svg"
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
-            animate={{ y: [0, 12, 0] }}
-            transition={{
-              duration: 7,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-              delay: 1.5,
-            }}
           />
         </div>
       </div>
@@ -107,19 +101,12 @@ function LoginPage() {
       {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
       <div className="relative hidden lg:flex lg:w-[48.4%] flex-col items-center justify-center overflow-hidden bg-neutral-50">
         {/* Blob 24 — left-center */}
-        <motion.img
+        <img
           src="/assets/blob_24.svg"
           alt=""
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
           style={{ left: -104, top: 188, width: 207, height: 215 }}
-          animate={{ x: [0, 8, 0], y: [0, -6, 0] }}
-          transition={{
-            duration: 9,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: 'easeInOut',
-            delay: 0.8,
-          }}
         />
 
         {/* Blob 25 — center, blurred */}
@@ -127,19 +114,12 @@ function LoginPage() {
           className="pointer-events-none absolute select-none"
           style={{ left: 440, top: 242, width: 103, height: 107 }}
         >
-          <motion.img
+          <img
             src="/assets/blob_25.svg"
             alt=""
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-15.98% -16.6%' }}
-            animate={{ rotate: [0, 8, 0] }}
-            transition={{
-              duration: 10,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-              delay: 2,
-            }}
           />
         </div>
 
@@ -148,19 +128,12 @@ function LoginPage() {
           className="pointer-events-none absolute select-none"
           style={{ left: 186, bottom: 110, width: 163, height: 154 }}
         >
-          <motion.img
+          <img
             src="/assets/blob_26.svg"
             alt=""
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-6.43% -6.07%' }}
-            animate={{ scale: [1, 1.08, 1] }}
-            transition={{
-              duration: 6,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-              delay: 0.4,
-            }}
           />
         </div>
 
@@ -290,7 +263,7 @@ function LoginPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2.5">
-                    <button
+                    {/* <button
                       type="submit"
                       disabled={loading}
                       className={
@@ -301,7 +274,15 @@ function LoginPage() {
                       style={{ fontSize: 'var(--text-button)', lineHeight: '16px' }}
                     >
                       {loading ? '…' : 'Se connecter'}
-                    </button>
+                    </button> */}
+                    <MicButton
+                      type="submit"
+                      fullWidth
+                      variant="brand"
+                      disabled={!email || !password || loading}
+                    >
+                      {loading ? '…' : 'Se connecter'}
+                    </MicButton>
 
                     <p
                       className="text-center text-text-secondary"
