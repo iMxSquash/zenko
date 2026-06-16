@@ -2,6 +2,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signInWithPassword } from '@/lib/supabase/auth';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { motion } from 'motion/react';
 import { useState } from 'react';
 
 type Search = { mode?: 'login' | 'signup' };
@@ -62,11 +63,13 @@ function LoginPage() {
         }}
       >
         <div className="relative size-full">
-          <img
+          <motion.img
             src="/assets/blob_22.svg"
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
           />
         </div>
       </div>
@@ -85,11 +88,18 @@ function LoginPage() {
         }}
       >
         <div className="relative size-full">
-          <img
+          <motion.img
             src="/assets/blob_23.svg"
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
+            animate={{ y: [0, 12, 0] }}
+            transition={{
+              duration: 7,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+              delay: 1.5,
+            }}
           />
         </div>
       </div>
@@ -97,12 +107,19 @@ function LoginPage() {
       {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
       <div className="relative hidden lg:flex lg:w-[48.4%] flex-col items-center justify-center overflow-hidden bg-neutral-50">
         {/* Blob 24 — left-center */}
-        <img
+        <motion.img
           src="/assets/blob_24.svg"
           alt=""
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
           style={{ left: -104, top: 188, width: 207, height: 215 }}
+          animate={{ x: [0, 8, 0], y: [0, -6, 0] }}
+          transition={{
+            duration: 9,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut',
+            delay: 0.8,
+          }}
         />
 
         {/* Blob 25 — center, blurred */}
@@ -110,12 +127,19 @@ function LoginPage() {
           className="pointer-events-none absolute select-none"
           style={{ left: 440, top: 242, width: 103, height: 107 }}
         >
-          <img
+          <motion.img
             src="/assets/blob_25.svg"
             alt=""
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-15.98% -16.6%' }}
+            animate={{ rotate: [0, 8, 0] }}
+            transition={{
+              duration: 10,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+              delay: 2,
+            }}
           />
         </div>
 
@@ -124,12 +148,19 @@ function LoginPage() {
           className="pointer-events-none absolute select-none"
           style={{ left: 186, bottom: 110, width: 163, height: 154 }}
         >
-          <img
+          <motion.img
             src="/assets/blob_26.svg"
             alt=""
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-6.43% -6.07%' }}
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{
+              duration: 6,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+              delay: 0.4,
+            }}
           />
         </div>
 
