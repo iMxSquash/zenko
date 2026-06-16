@@ -1,8 +1,8 @@
 import { MessageBubble } from '@/components/assistant/MessageBubble';
 import { useChatMessages } from '@/hooks/useAssistant';
 import type { AssistantSource } from '@/types';
+import { ArrowLeft } from '@phosphor-icons/react';
 import { Link, createFileRoute } from '@tanstack/react-router';
-import { ArrowLeft } from 'lucide-react';
 
 export const Route = createFileRoute('/_app/_protected/assistant/$sessionId')({
   component: SessionReplayPage,
