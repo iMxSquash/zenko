@@ -43,13 +43,14 @@ La DB n'est pas dupliquée. Zenko lit la même instance Supabase :
 - Les politiques RLS sont identiques — pas de double maintenance
 - Les Edge Functions (`/embed`, `/chat`) sont déployées une seule fois, utilisées par les deux apps
 
-### Vercel AI SDK + `@ai-sdk/anthropic`
+### Vercel AI SDK + `@ai-sdk/google`
 
 Le chatbot RAG tourne dans une **Supabase Edge Function** (Deno), pas dans un route handler Next.js. La SPA appelle directement l'Edge Function via `fetch` avec streaming.
 
-- `ai` + `@ai-sdk/anthropic` dans l'Edge Function pour `streamText` avec Anthropic Sonnet
+- `ai` + `@ai-sdk/google` dans l'Edge Function pour `streamText` avec **Gemini 2.5 Flash Lite**
 - `@ai-sdk/react` côté client pour `useChat` (gestion du stream, historique messages)
-- La clé `ANTHROPIC_API_KEY` reste dans les secrets Supabase — **jamais exposée au client**
+- La clé `GEMINI_API_KEY` reste dans les secrets Supabase — **jamais exposée au client**
+- Les embeddings sont générés par **`gte-small`** via `Supabase.ai.Session` — sans clé API externe
 
 ### Web Speech API (couche abstraite)
 
@@ -58,6 +59,17 @@ Défaut voix : `SpeechRecognition` (STT) + `SpeechSynthesis` (TTS) natifs du nav
 - Aucune clé API, aucun coût, privacy-first
 - `fr-FR` natif sur Chrome, Edge, Safari iOS
 - Interfaces abstraites `SpeechToText` / `TextToSpeech` dans `src/lib/voice/` : Magnific ou ElevenLabs se branchent sans toucher à l'UI
+
+### Lenis + Motion — scroll et animations
+
+La landing page utilise deux librairies pour l'expérience de scroll :
+
+- **Lenis** (`lenis`) : smooth scroll rapide (`lerp: 0.3, duration: 1`) avec snapping magnétique via `lenis/snap`. Chaque section de 100 vh snap automatiquement en vue — l'utilisateur ne peut jamais rester bloqué entre deux sections. La navbar et la section hero sont groupées dans un seul snap target pour éviter le recouvrement sticky.
+- **Motion** (`motion`) : parallaxe verticale sur les éléments décoratifs SVG de la landing (`useScroll` + `useTransform`). Les formes en bordure de section flottent devant le contenu ; les accents intérieurs passent derrière. La navbar reste toujours au premier plan (z-50).
+
+Encapsulés dans `src/lib/scroll/` :
+- `SmoothScrollProvider.tsx` — wrapper `<ReactLenis>` à poser sur la page
+- `useSectionSnap.ts` — enregistre les éléments `[data-snap-section]` auprès de `Snap`
 
 ### Tailwind CSS v4 + `@tailwindcss/vite`
 
@@ -141,12 +153,194 @@ src/
       webspeech.ts               # Implémentation Web Speech API
       useVoice.ts                # Hook React couche voix
     query.ts                     # QueryClient partagé (TanStack Query)
+    scroll/
+      SmoothScrollProvider.tsx   # Wrapper Lenis (smooth scroll + snapping)
+      useSectionSnap.ts          # Enregistre les sections [data-snap-section]
     env.ts                       # requireEnv()
     utils.ts                     # cn()
   types/                         # Types partagés
   tests/
     setup.ts
 ```
+
+---
+
+## Schéma de base de données
+
+### Tables
+
+#### `profiles`
+Extension de `auth.users` — créée automatiquement à l'inscription via trigger.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK, FK → `auth.users` |
+| `email` | `text` | |
+| `first_name` | `text` | |
+| `last_name` | `text` | |
+| `avatar_url` | `text` | URL Supabase Storage |
+| `role` | `text` | `parent` \| `prof` \| `expert` |
+| `linkedin_url` | `text` | |
+| `instagram_url` | `text` | |
+| `twitter_url` | `text` | |
+| `doctolib_url` | `text` | Obligatoire si `role = 'expert'` |
+| `created_at` | `timestamptz` | |
+| `updated_at` | `timestamptz` | Auto-mis à jour par trigger |
+
+Vue publique `public_profiles` : expose toutes les colonnes sauf `email`.
+
+---
+
+#### `fiches`
+Bibliothèque de fiches — contenu géré par les admins, lecture seule pour les utilisateurs.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `slug` | `text` | Unique |
+| `title` | `text` | |
+| `description` | `text` | |
+| `content` | `text` | Corps long de la fiche |
+| `category` | `text` | `TSA` \| `TDAH` \| `DYS` \| `TDI` |
+| `author` | `text` | |
+| `author_avatar_url` | `text` | |
+| `created_at` | `timestamptz` | |
+| `updated_at` | `timestamptz` | Auto-mis à jour par trigger |
+
+---
+
+#### `saved_resources`
+Fiches mises en favoris par un utilisateur.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `user_id` | `uuid` | FK → `auth.users` |
+| `resource_slug` | `text` | Slug de la fiche |
+| `saved_at` | `timestamptz` | |
+
+Contrainte unique sur `(user_id, resource_slug)`.
+
+---
+
+#### `reading_progress`
+Progression de lecture d'une fiche par un utilisateur.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `user_id` | `uuid` | FK → `auth.users` |
+| `resource_slug` | `text` | |
+| `started_at` | `timestamptz` | |
+| `completed_at` | `timestamptz` | `null` jusqu'à la fin |
+
+Contrainte unique sur `(user_id, resource_slug)`.
+
+---
+
+#### `forum_threads`
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `user_id` | `uuid` | FK → `auth.users` |
+| `title` | `text` | |
+| `content` | `text` | |
+| `category` | `text` | `TDAH` \| `TSA` \| `DYS` \| `TDI` |
+| `author_name` | `text` | |
+| `author_role` | `text` | `parent` \| `prof` \| `expert` |
+| `is_pinned` | `boolean` | `false` par défaut |
+| `created_at` | `timestamptz` | |
+
+---
+
+#### `forum_replies`
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `thread_id` | `uuid` | FK → `forum_threads` (cascade delete) |
+| `user_id` | `uuid` | FK → `auth.users` |
+| `author_name` | `text` | |
+| `author_role` | `text` | `parent` \| `prof` \| `expert` |
+| `content` | `text` | |
+| `created_at` | `timestamptz` | |
+
+---
+
+#### `chat_sessions`
+Sessions de l'assistant vocal, une par conversation.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `user_id` | `uuid` | FK → `auth.users` |
+| `title` | `text` | `'Nouvelle conversation'` par défaut |
+| `created_at` | `timestamptz` | |
+
+---
+
+#### `chat_messages`
+Messages persistés par session.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `session_id` | `uuid` | FK → `chat_sessions` (cascade delete) |
+| `role` | `text` | `user` \| `assistant` |
+| `content` | `text` | |
+| `sources` | `jsonb` | Documents RAG utilisés (`null` si aucun) |
+| `created_at` | `timestamptz` | |
+
+---
+
+#### `documents`
+Corpus vectorisé pour le RAG de l'assistant (pgvector).
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `source_type` | `text` | `fiche` \| `forum_thread` \| `forum_reply` |
+| `source_id` | `text` | ID de la source |
+| `content` | `text` | Texte indexé |
+| `metadata` | `jsonb` | Titre, catégorie, etc. |
+| `embedding` | `vector(384)` | Embedding `gte-small` |
+| `created_at` | `timestamptz` | |
+
+Index HNSW sur `embedding` (cosine). Alimentée automatiquement via trigger → Edge Function `autoembed` sur insert dans `forum_threads` et `forum_replies`.
+
+---
+
+#### `admins`
+Table de rôle admin, alimentée manuellement.
+
+| Colonne | Type | Notes |
+|---|---|---|
+| `user_id` | `uuid` | PK, FK → `profiles` |
+| `created_at` | `timestamptz` | |
+
+---
+
+### Storage
+
+| Bucket | Public | Usage |
+|---|---|---|
+| `avatars` | Oui | Avatars préenregistrés, uploadés manuellement par l'équipe (lecture publique, écriture service_role) |
+
+### Fonctions SQL
+
+| Fonction | Accès | Usage |
+|---|---|---|
+| `match_documents(embedding, count, filter)` | `service_role` | Recherche sémantique cosine (appelée par l'Edge Function `/chat`) |
+| `search_documents_by_keyword(query, count)` | `service_role` | Recherche full-text FTS French (OR) sur fiches + forum (appelée par l'Edge Function `/chat`) |
+| `is_admin(uid)` | `authenticated` | Vérifie si un utilisateur est admin |
+| `handle_new_user()` | trigger | Crée un profil à chaque inscription |
+| `handle_updated_at()` | trigger | Met à jour `updated_at` automatiquement |
+| `trigger_autoembed_thread/reply()` | trigger | Indexe les nouveaux posts dans `documents` via Edge Function `autoembed` |
+
+### Accès public (anon)
+
+Les pages publiques sont lisibles sans compte : `fiches`, `forum_threads`, `forum_replies` et `public_profiles` autorisent le `SELECT` pour le rôle `anon`. Les actions d'écriture (publier, répondre, sauvegarder) restent réservées au rôle `authenticated`.
 
 ---
 
@@ -181,4 +375,4 @@ Identique à AlemAgency :
 |---|---|---|
 | `VITE_SUPABASE_URL` | URL projet Supabase | Client |
 | `VITE_SUPABASE_ANON_KEY` | Clé publique Supabase | Client |
-| `ANTHROPIC_API_KEY` | LLM Anthropic | Supabase Edge Function secrets **uniquement** |
+| `GEMINI_API_KEY` | LLM Google Gemini | Supabase Edge Function secrets **uniquement** |
