@@ -1,6 +1,3 @@
-import { motion, useScroll, useTransform } from 'motion/react';
-import type { RefObject } from 'react';
-
 /**
  * Shared decorative shapes for the landing page.
  *
@@ -9,17 +6,13 @@ import type { RefObject } from 'react';
  * the figma.com URLs for local paths (e.g. '/assets/x.svg').
  *
  * Positions are translated from the Figma frames (each section is 1440px wide)
- * and may need small nudges. Each shape renders absolutely-positioned,
- * pointer-events-none, aria-hidden. Accents are desktop-only by default.
+ * and may need small nudges. Each shape renders absolutely-positioned, behind
+ * content, pointer-events-none, aria-hidden. Accents are desktop-only by default.
  *
  * Set `behind: true` on a shape to push it BEHIND the section content (uses
  * -z-10). Only works in sections whose <section> has the `isolate` class, so
  * the negative z-index stays within the section instead of dropping behind the
- * page background. Shapes without `behind` float ABOVE all section content
- * (below the navbar).
- *
- * `parallax` gives the shape a vertical travel (in px) as its section scrolls
- * through the viewport, for the parallax scroll effect.
+ * page background.
  */
 
 export interface DecorShape {
@@ -35,8 +28,6 @@ export interface DecorShape {
   desktopOnly?: boolean;
   /** Push behind section content (-z-10). Requires `isolate` on the <section>. */
   behind?: boolean;
-  /** Vertical parallax travel in px as the section crosses the viewport. */
-  parallax?: number;
   /** For debugging / mapping back to Figma. */
   node?: string;
 }
@@ -45,8 +36,6 @@ export interface DecorShape {
 export const HERO_DECOR: DecorShape[] = [
   {
     node: 'Vector 25 (orange blob, inline)',
-    behind: true,
-    parallax: 100,
     style: { left: -386, top: -398, width: 596, height: 561 },
     svg: {
       viewBox: '-386 -402 596 566',
@@ -60,7 +49,7 @@ export const HERO_DECOR: DecorShape[] = [
   },
   {
     node: 'Vector 23 (blue blob TR)',
-    parallax: 130,
+    behind: true,
     style: { right: -108, top: -161, width: 344, height: 358 },
     svg: {
       viewBox: '0 0 344 358',
@@ -74,7 +63,7 @@ export const HERO_DECOR: DecorShape[] = [
   },
   {
     node: 'Vector 24 (blue blob BL)',
-    parallax: 130,
+    behind: true,
     style: { left: -199, bottom: -149, width: 344, height: 358 },
     svg: {
       viewBox: '0 0 344 358',
@@ -88,24 +77,18 @@ export const HERO_DECOR: DecorShape[] = [
   },
   {
     node: 'Vector 22 (accent)',
-    behind: true,
-    parallax: 300,
     src: '/assets/Vector_22.svg',
     style: { right: 331, top: 400, width: 108, height: 112 },
     desktopOnly: true,
   },
   {
     node: 'Vector 27 (accent)',
-    behind: true,
-    parallax: 220,
     src: '/assets/Vector_27.svg',
     style: { right: 146, top: 480, width: 87, height: 83 },
     desktopOnly: true,
   },
   {
     node: 'Vector 26 (accent)',
-    behind: true,
-    parallax: 380,
     src: '/assets/Vector_26.svg',
     style: { left: 720, top: 460, width: 48, height: 50 },
     desktopOnly: true,
@@ -116,30 +99,24 @@ export const HERO_DECOR: DecorShape[] = [
 export const PROBLEM_DECOR: DecorShape[] = [
   {
     node: 'Group 2',
-    parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
     style: { right: -120, top: -90, width: 320, height: 313 },
     desktopOnly: true,
   },
   {
     node: 'Group 1',
-    parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
     style: { left: -130, bottom: -50, width: 320, height: 313, transform: 'scaleX(-1)' },
     desktopOnly: true,
   },
   {
     node: 'Group 3',
-    behind: true,
-    parallax: 300,
     src: 'https://www.figma.com/api/mcp/asset/1ec3f756-1180-497d-98d3-a1564d178d9c',
     style: { right: 90, bottom: 30, width: 158, height: 158 },
     desktopOnly: true,
   },
   {
     node: 'Group 4',
-    behind: true,
-    parallax: 300,
     src: 'https://www.figma.com/api/mcp/asset/61219c4d-b94d-448b-8298-dc8c6bb05b64',
     style: { left: 134, top: 100, width: 87, height: 88 },
     desktopOnly: true,
@@ -150,28 +127,22 @@ export const PROBLEM_DECOR: DecorShape[] = [
 export const SOLUTION_DECOR: DecorShape[] = [
   {
     node: 'Vector 20',
-    parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/bef8f92b-f611-4cdc-b1aa-92a2b5558514',
     style: { right: -120, top: -103, width: 429, height: 446 },
   },
   {
     node: 'Vector 21',
-    parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/3cfd035f-cd62-4a26-aea9-e176db472d7e',
     style: { left: -104, bottom: -120, width: 429, height: 446 },
   },
   {
     node: 'Vector 22',
-    behind: true,
-    parallax: 250,
     src: 'https://www.figma.com/api/mcp/asset/87df9ce9-a1f7-4297-99f8-53fe74035667',
     style: { left: 180, top: 40, width: 192, height: 200 },
     desktopOnly: true,
   },
   {
     node: 'Vector 23',
-    behind: true,
-    parallax: 320,
     src: 'https://www.figma.com/api/mcp/asset/35b21305-fb30-4c15-9694-235d3469cec0',
     style: { right: 280, bottom: 60, width: 90, height: 94 },
     desktopOnly: true,
@@ -182,91 +153,57 @@ export const SOLUTION_DECOR: DecorShape[] = [
 export const TESTIMONIALS_DECOR: DecorShape[] = [
   {
     node: 'Vector 21',
-    parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/c970de54-3421-4ac8-ae96-6ba9bddd5ac2',
     style: { left: -310, bottom: -154, width: 596, height: 561 },
   },
   {
     node: 'Vector 22',
-    parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/a565b2c7-82dd-4c70-8682-b2fc147a94f0',
     style: { right: -213, top: -251, width: 596, height: 561 },
   },
 ];
 
-/** Shapes without `behind` float above all section content (but below the
- *  sticky navbar, which sits at z-50). */
-const FRONT_Z_INDEX = 40;
-
-function ParallaxShape({
-  shape: s,
-  sectionRef,
-  className,
-  style,
-}: {
-  shape: DecorShape;
-  sectionRef: RefObject<HTMLElement | null>;
-  className: string;
-  style: React.CSSProperties;
-}) {
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const distance = s.parallax ?? 0;
-  const y = useTransform(scrollYProgress, [0, 1], [-distance, distance]);
-  const motionStyle = { ...style, y };
-
-  if (s.color) {
-    return (
-      <motion.div
-        aria-hidden="true"
-        className={className}
-        style={{ ...motionStyle, backgroundColor: s.color }}
-      />
-    );
-  }
-  if (s.svg) {
-    return (
-      <motion.svg
-        viewBox={s.svg.viewBox}
-        aria-hidden="true"
-        className={className}
-        style={motionStyle}
-      >
-        {s.svg.children}
-      </motion.svg>
-    );
-  }
-  return (
-    <motion.img src={s.src} alt="" aria-hidden="true" className={className} style={motionStyle} />
-  );
-}
-
 /** Renders a section's decorative shapes. Place as the first child of a
- *  `relative overflow-hidden` section, before the content wrapper. `sectionRef`
- *  drives the parallax travel as the section scrolls through the viewport. */
-export function SectionDecor({
-  shapes,
-  sectionRef,
-}: {
-  shapes: DecorShape[];
-  sectionRef: RefObject<HTMLElement | null>;
-}) {
+ *  `relative overflow-hidden` section, before the content wrapper. */
+export function SectionDecor({ shapes }: { shapes: DecorShape[] }) {
   return (
     <>
       {shapes.map((s, i) => {
         const cls = `pointer-events-none absolute select-none${
           s.desktopOnly ? ' hidden lg:block' : ''
         }`;
-        const zIndex = s.behind ? -1 : FRONT_Z_INDEX;
+        const styleWithZ = { ...s.style, zIndex: s.behind ? -1 : 0 };
+        if (s.color) {
+          return (
+            <div
+              key={s.node ?? i}
+              aria-hidden="true"
+              className={cls}
+              style={{ ...styleWithZ, backgroundColor: s.color }}
+            />
+          );
+        }
+        if (s.svg) {
+          return (
+            <svg
+              key={s.node ?? i}
+              viewBox={s.svg.viewBox}
+              aria-hidden="true"
+              className={cls}
+              style={styleWithZ}
+            >
+              {s.svg.children}
+            </svg>
+          );
+        }
         return (
-          <ParallaxShape
+          <img
             key={s.node ?? i}
-            shape={s}
-            sectionRef={sectionRef}
+            src={s.src}
+            alt=""
+            aria-hidden="true"
             className={cls}
-            style={{ ...s.style, zIndex }}
+            style={styleWithZ}
           />
         );
       })}
