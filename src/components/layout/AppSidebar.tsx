@@ -6,8 +6,16 @@ import { signOut } from '@/lib/supabase/auth';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/ui';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { BookOpen, LogIn, LogOut, MessageSquare, Mic, Shield } from 'lucide-react';
+import {
+  BookOpen,
+  ChatCircle,
+  Microphone,
+  type Icon as PhosphorIcon,
+  Shield,
+  SignIn,
+  SignOut,
+} from '@phosphor-icons/react';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 
 function getInitials(name: string) {
   return name
@@ -50,6 +58,21 @@ const iconLinkBase =
 const iconActiveClass = 'bg-teacher-bg text-teacher';
 const iconInactiveClass = 'hover:bg-neutral-100 hover:text-text-primary';
 
+function IconNavLink({ to, icon: Icon, title }: { to: string; icon: PhosphorIcon; title: string }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isActive = pathname === to || pathname.startsWith(`${to}/`);
+
+  return (
+    <Link
+      to={to}
+      title={title}
+      className={cn(iconLinkBase, isActive ? iconActiveClass : iconInactiveClass)}
+    >
+      <Icon size={20} weight={isActive ? 'fill' : 'regular'} />
+    </Link>
+  );
+}
+
 export function AppSidebar() {
   const { user } = useAuth();
   const { data: inProgressFiches = [] } = useInProgressFiches(!!user);
@@ -86,49 +109,10 @@ export function AppSidebar() {
         </button>
 
         <nav className="flex flex-1 flex-col items-center gap-6">
-          <Link
-            to="/bibliotheque"
-            title="Fiches"
-            className={iconLinkBase}
-            activeProps={{ className: iconActiveClass }}
-            inactiveProps={{ className: iconInactiveClass }}
-          >
-            <BookOpen size={20} />
-          </Link>
-
-          <Link
-            to="/forum"
-            title="Forum"
-            className={iconLinkBase}
-            activeProps={{ className: iconActiveClass }}
-            inactiveProps={{ className: iconInactiveClass }}
-          >
-            <MessageSquare size={20} />
-          </Link>
-
-          {user && (
-            <Link
-              to="/assistant"
-              title="Assistant vocal"
-              className={iconLinkBase}
-              activeProps={{ className: iconActiveClass }}
-              inactiveProps={{ className: iconInactiveClass }}
-            >
-              <Mic size={20} />
-            </Link>
-          )}
-
-          {isAdmin && (
-            <Link
-              to="/admin"
-              title="Administration"
-              className={iconLinkBase}
-              activeProps={{ className: iconActiveClass }}
-              inactiveProps={{ className: iconInactiveClass }}
-            >
-              <Shield size={20} />
-            </Link>
-          )}
+          <IconNavLink to="/bibliotheque" icon={BookOpen} title="Fiches" />
+          <IconNavLink to="/forum" icon={ChatCircle} title="Forum" />
+          {user && <IconNavLink to="/assistant" icon={Microphone} title="Assistant vocal" />}
+          {isAdmin && <IconNavLink to="/admin" icon={Shield} title="Administration" />}
         </nav>
 
         {user ? (
@@ -151,7 +135,7 @@ export function AppSidebar() {
             title="Se connecter"
             className={cn(iconLinkBase, 'text-brand hover:bg-neutral-100')}
           >
-            <LogIn size={20} />
+            <SignIn size={20} />
           </Link>
         )}
       </aside>
@@ -339,7 +323,7 @@ export function AppSidebar() {
             aria-label="Déconnexion"
             className="flex size-9 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
           >
-            <LogOut size={18} />
+            <SignOut size={18} />
           </button>
         </div>
       ) : (
@@ -347,7 +331,7 @@ export function AppSidebar() {
           to="/login"
           className="flex w-full items-center justify-center gap-2 rounded-nav bg-brand px-3 py-3 text-body-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
-          <LogIn size={18} />
+          <SignIn size={18} />
           Se connecter
         </Link>
       )}

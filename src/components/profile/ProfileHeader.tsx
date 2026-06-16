@@ -1,7 +1,13 @@
 import { Button } from '@/components/ui';
 import type { Profile, PublicProfile } from '@/types';
+import {
+  InstagramLogo,
+  LinkedinLogo,
+  type Icon as PhosphorIcon,
+  Stethoscope,
+  TwitterLogo,
+} from '@phosphor-icons/react';
 import { Link } from '@tanstack/react-router';
-import { Instagram, Linkedin, Stethoscope, Twitter } from 'lucide-react';
 
 interface ProfileHeaderProps {
   profile: Profile | PublicProfile;
@@ -11,12 +17,12 @@ interface ProfileHeaderProps {
 const SOCIAL_LINKS: Array<{
   key: keyof Pick<PublicProfile, 'linkedinUrl' | 'instagramUrl' | 'twitterUrl' | 'doctolibUrl'>;
   label: string;
-  icon: typeof Linkedin;
+  icon: PhosphorIcon;
   expertOnly?: boolean;
 }> = [
-  { key: 'linkedinUrl', label: 'LinkedIn', icon: Linkedin },
-  { key: 'instagramUrl', label: 'Instagram', icon: Instagram },
-  { key: 'twitterUrl', label: 'Twitter / X', icon: Twitter },
+  { key: 'linkedinUrl', label: 'LinkedIn', icon: LinkedinLogo },
+  { key: 'instagramUrl', label: 'Instagram', icon: InstagramLogo },
+  { key: 'twitterUrl', label: 'Twitter / X', icon: TwitterLogo },
   { key: 'doctolibUrl', label: 'Doctolib', icon: Stethoscope, expertOnly: true },
 ];
 

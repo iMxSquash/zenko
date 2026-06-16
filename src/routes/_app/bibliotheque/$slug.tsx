@@ -15,8 +15,8 @@ import {
 } from '@/lib/seo/jsonld';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
+import { Bookmark, Clock } from '@phosphor-icons/react';
 import { Link, createFileRoute } from '@tanstack/react-router';
-import { Bookmark, BookmarkCheck, Clock } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -103,7 +103,7 @@ function FicheDetailPage() {
                 : 'border border-border bg-surface text-text-active hover:bg-neutral-100'
             )}
           >
-            {isSaved ? <BookmarkCheck size={15} /> : <Bookmark size={15} />}
+            {isSaved ? <Bookmark weight="fill" size={15} /> : <Bookmark size={15} />}
             {isSaved ? 'Enregistré' : 'Enregistrer'}
           </button>
         ) : (

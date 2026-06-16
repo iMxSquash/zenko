@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Mic, MicOff } from 'lucide-react';
+import { Microphone, MicrophoneSlash } from '@phosphor-icons/react';
 
 interface MicButtonProps {
   isListening: boolean;
@@ -22,7 +22,7 @@ export function MicButton({ isListening, disabled, onClick }: MicButtonProps) {
         disabled && 'cursor-not-allowed opacity-50'
       )}
     >
-      {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+      {isListening ? <MicrophoneSlash size={18} /> : <Microphone size={18} />}
     </button>
   );
 }

@@ -1,7 +1,7 @@
 import { useAssistant } from '@/hooks/useAssistant';
 import type { AssistantSource } from '@/types';
 import type { Message } from '@ai-sdk/react';
-import { SendHorizontal, Volume2, VolumeX } from 'lucide-react';
+import { PaperPlaneTilt, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
 import { useEffect, useRef } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { MicButton } from './MicButton';
@@ -106,7 +106,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
           aria-label="Envoyer"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand text-white transition-opacity disabled:opacity-40"
         >
-          <SendHorizontal size={16} />
+          <PaperPlaneTilt size={16} />
         </button>
 
         <button
@@ -115,7 +115,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
           onClick={toggleMute}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-muted hover:text-brand transition-colors"
         >
-          {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          {muted ? <SpeakerSlash size={18} /> : <SpeakerHigh size={18} />}
         </button>
       </form>
     </div>

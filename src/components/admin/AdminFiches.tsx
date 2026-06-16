@@ -1,8 +1,8 @@
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog';
 import { useAdminFiches, useDeleteFiche } from '@/hooks/useAdmin';
 import type { AdminFiche } from '@/hooks/useAdmin';
+import { PencilSimple, Plus, Trash } from '@phosphor-icons/react';
 import { Link } from '@tanstack/react-router';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 export function AdminFiches() {
@@ -104,7 +104,7 @@ function FicheRow({
             className="flex size-8 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-background hover:text-text-primary"
             title="Éditer"
           >
-            <Pencil size={15} />
+            <PencilSimple size={15} />
           </Link>
           <button
             type="button"
@@ -112,7 +112,7 @@ function FicheRow({
             className="flex size-8 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-danger/10 hover:text-danger"
             title="Supprimer"
           >
-            <Trash2 size={15} />
+            <Trash size={15} />
           </button>
         </div>
       </td>
