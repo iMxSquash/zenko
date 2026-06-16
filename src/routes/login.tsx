@@ -1,10 +1,10 @@
 import { MicButton } from '@/components/assistant/MicButton';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
+import { getProfile } from '@/lib/profile/profile';
 import { signInWithPassword } from '@/lib/supabase/auth';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { getProfile } from '@/lib/profile/profile';
 
 type Search = { mode?: 'login' | 'signup' };
 
