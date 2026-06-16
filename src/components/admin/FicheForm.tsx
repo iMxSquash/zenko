@@ -4,7 +4,7 @@ import { useUploadFicheCover } from '@/hooks/useAdmin';
 import type { FicheInput } from '@/hooks/useAdmin';
 import { cn } from '@/lib/utils';
 import type { ResourceCategory } from '@/types';
-import { ImagePlus, X } from 'lucide-react';
+import { Image, X } from '@phosphor-icons/react';
 import { useId, useRef, useState } from 'react';
 
 const CATEGORIES: ResourceCategory[] = ['TSA', 'TDAH', 'DYS', 'TDI'];
@@ -154,7 +154,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
             disabled={uploadCover.isPending}
             className="flex h-32 w-full items-center justify-center gap-3 rounded-card border-2 border-dashed border-border bg-background text-text-muted transition-colors hover:border-brand hover:text-brand disabled:opacity-50"
           >
-            <ImagePlus size={20} />
+            <Image size={20} />
             <span className="text-body-sm font-medium">
               {uploadCover.isPending ? 'Upload en cours…' : 'Ajouter une image (max 5 Mo)'}
             </span>

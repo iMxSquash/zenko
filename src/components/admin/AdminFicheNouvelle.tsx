@@ -13,7 +13,10 @@ export function AdminFicheNouvelle() {
     setSaveError(null);
     createFiche.mutate(input, {
       onSuccess: () => navigate({ to: '/admin/fiches' }),
-      onError: (err) => setSaveError(err instanceof Error ? err.message : 'Erreur inconnue'),
+      onError: (err) =>
+        setSaveError(
+          (err as { message?: string })?.message ?? (err instanceof Error ? err.message : 'Erreur inconnue')
+        ),
     });
   }
 
