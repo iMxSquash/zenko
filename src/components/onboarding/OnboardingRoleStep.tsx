@@ -16,8 +16,8 @@ interface OnboardingRoleStepProps {
 export function OnboardingRoleStep({
   selectedRole,
   onSelectRole,
-  doctolibUrl,
-  onDoctolibUrlChange,
+  // doctolibUrl,
+  // onDoctolibUrlChange,
   error,
   isPending,
   onContinue,
