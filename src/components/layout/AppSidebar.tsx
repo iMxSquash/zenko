@@ -4,8 +4,10 @@ import { useInProgressFiches, useSavedFiches } from '@/hooks/useBibliotheque';
 import { useProfile } from '@/hooks/useProfile';
 import { signOut } from '@/lib/supabase/auth';
 import { useAuth } from '@/lib/supabase/use-auth';
+import { cn } from '@/lib/utils';
+import { useUIStore } from '@/store/ui';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { LogIn, LogOut } from 'lucide-react';
+import { BookOpen, LogIn, LogOut, MessageSquare, Mic, Shield } from 'lucide-react';
 
 function getInitials(name: string) {
   return name
@@ -17,6 +19,37 @@ function getInitials(name: string) {
     .slice(0, 2);
 }
 
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="13"
+      height="22"
+      viewBox="0 0 13 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0.487951 9.42838L9.91628 4.3663e-05L12.273 2.35671L4.02295 10.6067L12.2729 18.8567L9.91628 21.2134L0.487951 11.785C0.175499 11.4725 -2.67679e-05 11.0487 -2.67293e-05 10.6067C-2.66907e-05 10.1648 0.175499 9.74092 0.487951 9.42838Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+const navLinkBase =
+  'flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors';
+const activeClass = 'bg-teacher-bg font-semibold text-teacher';
+const inactiveClass = 'font-medium text-text-active hover:bg-neutral-100';
+
+const iconLinkBase =
+  'flex size-10 items-center justify-center rounded-nav transition-colors text-text-muted';
+const iconActiveClass = 'bg-teacher-bg text-teacher';
+const iconInactiveClass = 'hover:bg-neutral-100 hover:text-text-primary';
+
 export function AppSidebar() {
   const { user } = useAuth();
   const { data: inProgressFiches = [] } = useInProgressFiches(!!user);
@@ -24,6 +57,7 @@ export function AppSidebar() {
   const { data: profile } = useProfile();
   const { data: isAdmin } = useIsAdmin();
   const navigate = useNavigate();
+  const { sidebarCollapsed, toggleSidebarCollapsed } = useUIStore();
 
   const profileName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
   const displayName =
@@ -39,11 +73,106 @@ export function AppSidebar() {
     }
   }
 
+  if (sidebarCollapsed) {
+    return (
+      <aside className="flex h-screen w-[57px] shrink-0 flex-col items-center border-r border-border bg-surface py-6 gap-8">
+        <button
+          type="button"
+          onClick={toggleSidebarCollapsed}
+          aria-label="Déplier la sidebar"
+          className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+        >
+          <ChevronIcon className="rotate-180" />
+        </button>
+
+        <nav className="flex flex-1 flex-col items-center gap-6">
+          <Link
+            to="/bibliotheque"
+            title="Fiches"
+            className={iconLinkBase}
+            activeProps={{ className: iconActiveClass }}
+            inactiveProps={{ className: iconInactiveClass }}
+          >
+            <BookOpen size={20} />
+          </Link>
+
+          <Link
+            to="/forum"
+            title="Forum"
+            className={iconLinkBase}
+            activeProps={{ className: iconActiveClass }}
+            inactiveProps={{ className: iconInactiveClass }}
+          >
+            <MessageSquare size={20} />
+          </Link>
+
+          {user && (
+            <Link
+              to="/assistant"
+              title="Assistant vocal"
+              className={iconLinkBase}
+              activeProps={{ className: iconActiveClass }}
+              inactiveProps={{ className: iconInactiveClass }}
+            >
+              <Mic size={20} />
+            </Link>
+          )}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              title="Administration"
+              className={iconLinkBase}
+              activeProps={{ className: iconActiveClass }}
+              inactiveProps={{ className: iconInactiveClass }}
+            >
+              <Shield size={20} />
+            </Link>
+          )}
+        </nav>
+
+        {user ? (
+          <Link to="/profile" title={displayName}>
+            {profile?.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt=""
+                className="size-9 shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
+                <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
+              </div>
+            )}
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            title="Se connecter"
+            className={cn(iconLinkBase, 'text-brand hover:bg-neutral-100')}
+          >
+            <LogIn size={20} />
+          </Link>
+        )}
+      </aside>
+    );
+  }
+
   return (
     <aside className="flex h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
-      <Link to={user ? '/bibliotheque' : '/'} className="block px-2 pb-6 pt-1">
-        <ZenkoLogo width={110} />
-      </Link>
+      <div className="flex items-center justify-between px-2 pb-6 pt-1">
+        <Link to={user ? '/bibliotheque' : '/'} className="block">
+          <ZenkoLogo width={110} />
+        </Link>
+        <button
+          type="button"
+          onClick={toggleSidebarCollapsed}
+          aria-label="Réduire la sidebar"
+          className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+        >
+          <ChevronIcon />
+        </button>
+      </div>
 
       <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
         {/* Fiches section */}
@@ -54,9 +183,9 @@ export function AppSidebar() {
 
           <Link
             to="/bibliotheque"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
           >
             <span className="min-w-0 flex-1">Tableau de bord</span>
           </Link>
@@ -65,9 +194,9 @@ export function AppSidebar() {
             <>
               <Link
                 to="/en-cours"
-                className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-                activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-                inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+                className={navLinkBase}
+                activeProps={{ className: activeClass }}
+                inactiveProps={{ className: inactiveClass }}
               >
                 <span className="min-w-0 flex-1">En cours…</span>
                 {inProgressFiches.length > 0 && (
@@ -79,9 +208,9 @@ export function AppSidebar() {
 
               <Link
                 to="/favoris"
-                className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-                activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-                inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+                className={navLinkBase}
+                activeProps={{ className: activeClass }}
+                inactiveProps={{ className: inactiveClass }}
               >
                 <span className="min-w-0 flex-1">Favoris</span>
                 {savedFiches.length > 0 && (
@@ -102,9 +231,9 @@ export function AppSidebar() {
 
           <Link
             to="/forum"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-            activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-            inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
           >
             <span className="min-w-0 flex-1">Explorer</span>
           </Link>
@@ -119,9 +248,9 @@ export function AppSidebar() {
 
             <Link
               to="/assistant"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Assistant vocal</span>
             </Link>
@@ -137,45 +266,45 @@ export function AppSidebar() {
 
             <Link
               to="/admin"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Tableau de bord</span>
             </Link>
 
             <Link
               to="/admin/fiches"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Fiches</span>
             </Link>
 
             <Link
               to="/admin/forum"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Modération</span>
             </Link>
 
             <Link
               to="/admin/utilisateurs"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Utilisateurs</span>
             </Link>
 
             <Link
               to="/admin/avatars"
-              className="flex w-full items-center gap-3 overflow-hidden rounded-nav px-3 py-3 text-body-sm transition-colors"
-              activeProps={{ className: 'bg-teacher-bg font-semibold text-teacher' }}
-              inactiveProps={{ className: 'font-medium text-text-active hover:bg-neutral-100' }}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               <span className="min-w-0 flex-1">Avatars</span>
             </Link>
