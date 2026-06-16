@@ -14,7 +14,7 @@
  * the negative z-index stays within the section instead of dropping behind the
  * page background.
  */
-
+import type { RefObject } from 'react';
 export interface DecorShape {
   /** Image path for shapes loaded from /public/assets/. Optional if `svg` or `color` is set. */
   src?: string;
@@ -165,7 +165,12 @@ export const TESTIMONIALS_DECOR: DecorShape[] = [
 
 /** Renders a section's decorative shapes. Place as the first child of a
  *  `relative overflow-hidden` section, before the content wrapper. */
-export function SectionDecor({ shapes }: { shapes: DecorShape[] }) {
+export function SectionDecor({
+  shapes,
+}: {
+  shapes: DecorShape[];
+  sectionRef?: RefObject<HTMLElement | null>;
+}) {
   return (
     <>
       {shapes.map((s, i) => {
