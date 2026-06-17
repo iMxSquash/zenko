@@ -23,7 +23,8 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadCover = useUploadFicheCover();
-  const { data: users = [] } = useAdminUsers();
+  const { data: allUsers = [] } = useAdminUsers();
+  const users = allUsers.filter((u) => u.role === 'expert');
 
   const [slug, setSlug] = useState(initial?.slug ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
