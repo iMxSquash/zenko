@@ -16,12 +16,12 @@ function AppLayout() {
     <div className="flex h-screen overflow-hidden bg-background">
       <AppSidebar />
 
-      <main className="relative flex-1 overflow-y-auto pt-14 lg:pt-0">
+      <div className="relative flex-1 pt-14 lg:pt-0">
         {showBlob && <BlobBackground />}
-        <div className="relative z-10 h-full">
+        <main className="relative z-10 h-full overflow-y-auto">
           <Outlet />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
