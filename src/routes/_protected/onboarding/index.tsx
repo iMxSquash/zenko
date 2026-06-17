@@ -12,11 +12,7 @@ export const Route = createFileRoute('/_protected/onboarding/')({
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+    const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
 
     if (data?.role) throw redirect({ to: '/bibliotheque' });
   },
