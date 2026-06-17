@@ -1,6 +1,7 @@
+import { AvatarPicker } from '@/components/ui/AvatarPicker/AvatarPicker';
 import { Button } from '@/components/ui/Button/Button';
 import { TextInput } from '@/components/ui/TextInput/TextInput';
-import { useUploadFicheCover } from '@/hooks/useAdmin';
+import { useAdminAvatars, useUploadFicheCover } from '@/hooks/useAdmin';
 import type { FicheInput } from '@/hooks/useAdmin';
 import { cn } from '@/lib/utils';
 import type { ResourceCategory } from '@/types';
@@ -23,6 +24,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadCover = useUploadFicheCover();
+  const { data: avatarsData = [] } = useAdminAvatars();
 
   const [slug, setSlug] = useState(initial?.slug ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
@@ -34,6 +36,9 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
     initial?.readingTimeMinutes != null ? String(initial.readingTimeMinutes) : ''
   );
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initial?.coverImageUrl ?? null);
+  const [authorAvatarUrl, setAuthorAvatarUrl] = useState<string | null>(
+    initial?.authorAvatarUrl ?? null
+  );
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -72,6 +77,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
       description: description.trim(),
       category,
       author: author.trim(),
+      authorAvatarUrl: authorAvatarUrl ?? null,
       coverImageUrl: coverImageUrl ?? null,
       content: content.trim() || null,
       readingTimeMinutes: readingTime ? Number(readingTime) : null,
@@ -128,6 +134,30 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
         placeholder="Nom de l'auteur"
         error={errors.author}
       />
+
+      {/* Author avatar */}
+      <div className="flex flex-col gap-2">
+        <span className="text-label font-semibold uppercase tracking-label text-text-secondary">
+          Photo de l'auteur
+        </span>
+        {authorAvatarUrl && (
+          <div className="flex items-center gap-3">
+            <img src={authorAvatarUrl} alt="" className="size-12 rounded-full object-cover" />
+            <button
+              type="button"
+              onClick={() => setAuthorAvatarUrl(null)}
+              className="text-body-sm text-danger hover:underline"
+            >
+              Retirer
+            </button>
+          </div>
+        )}
+        <AvatarPicker
+          avatars={avatarsData.map((a) => a.url)}
+          value={authorAvatarUrl}
+          onChange={setAuthorAvatarUrl}
+        />
+      </div>
 
       {/* Cover image */}
       <div className="flex flex-col gap-1.5">
