@@ -49,6 +49,23 @@ function toProgress(row: ProgressRow): ReadingProgress {
   };
 }
 
+export function useFichesByAuthor(userId: string) {
+  return useQuery({
+    queryKey: ['fiches', 'by-author', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fiches')
+        .select('*')
+        .eq('author_user_id', userId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data as FicheRow[]).map(toFiche);
+    },
+    staleTime: 1000 * 60 * 5,
+    enabled: !!userId,
+  });
+}
+
 export function useFiches() {
   return useQuery({
     queryKey: ['fiches'],

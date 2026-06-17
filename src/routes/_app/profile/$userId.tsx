@@ -1,3 +1,4 @@
+import { ProfileFichesList } from '@/components/profile/ProfileFichesList';
 import { ProfileForumActivity } from '@/components/profile/ProfileForumActivity';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -35,6 +36,7 @@ function PublicProfilePage() {
       {profile && (
         <>
           <ProfileHeader profile={profile} editable={false} />
+          <ProfileFichesList userId={userId} />
           <ProfileForumActivity userId={userId} />
         </>
       )}
