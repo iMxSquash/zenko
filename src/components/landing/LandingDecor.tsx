@@ -134,14 +134,14 @@ export const PROBLEM_DECOR: DecorShape[] = [
     parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
     style: { right: -120, top: -90, width: 320, height: 313 },
-    desktopOnly: true,
+    mobileStyle: { right: -200, top: -130, width: 320, height: 313 },
   },
   {
     node: 'Group 1',
     parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
     style: { left: -130, bottom: -50, width: 320, height: 313, transform: 'scaleX(-1)' },
-    desktopOnly: true,
+    mobileStyle: { left: -160, bottom: -70, width: 320, height: 313, transform: 'scaleX(-1)' },
   },
   {
     node: 'Group 3',
@@ -168,7 +168,7 @@ export const SOLUTION_DECOR: DecorShape[] = [
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/bef8f92b-f611-4cdc-b1aa-92a2b5558514',
     style: { right: -120, top: -103, width: 429, height: 446 },
-    mobileStyle: { right: -110, top: -340, width: 429, height: 446 },
+    mobileStyle: { right: -130, top: -340, width: 429, height: 446 },
   },
   {
     node: 'Vector 21',
@@ -209,7 +209,7 @@ export const TESTIMONIALS_DECOR: DecorShape[] = [
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/a565b2c7-82dd-4c70-8682-b2fc147a94f0',
     style: { right: -213, top: -251, width: 596, height: 561 },
-    mobileStyle: { right: -300, top: -300, width: 596, height: 561 },
+    mobileStyle: { right: -320, top: -300, width: 596, height: 561 },
   },
 ];
 
