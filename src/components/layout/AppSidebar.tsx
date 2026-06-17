@@ -349,7 +349,7 @@ export function AppSidebar() {
 
       {/* ── Desktop collapsed sidebar ── */}
       {sidebarCollapsed ? (
-        <aside className="hidden h-screen w-[57px] shrink-0 flex-col items-center gap-8 border-r border-border bg-surface py-6 lg:flex">
+        <aside className="hidden h-screen w-14.25 shrink-0 flex-col items-center gap-8 border-r border-border bg-surface py-6 lg:flex">
           <button
             type="button"
             onClick={toggleSidebarCollapsed}
