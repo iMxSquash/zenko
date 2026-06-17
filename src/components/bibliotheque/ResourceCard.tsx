@@ -15,7 +15,11 @@ export function ResourceCard({ fiche, className }: ResourceCardProps) {
         className
       )}
     >
-      <div className={cn('h-35 w-full shrink-0', CATEGORY_COVER_BG[fiche.category])} />
+      {fiche.coverImageUrl ? (
+        <img src={fiche.coverImageUrl} alt="" className="h-35 w-full shrink-0 object-cover" />
+      ) : (
+        <div className={cn('h-35 w-full shrink-0', CATEGORY_COVER_BG[fiche.category])} />
+      )}
 
       <div className="flex flex-col gap-2.5 p-5">
         <div className="self-start rounded-[6px] bg-neutral-100 px-2 py-0.75">

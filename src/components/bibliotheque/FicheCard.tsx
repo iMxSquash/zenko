@@ -13,7 +13,11 @@ export function FicheCard({ fiche, className }: FicheCardProps) {
     <article
       className={cn('overflow-hidden rounded-card border border-border bg-surface', className)}
     >
-      <div className={cn('h-35 w-full', CATEGORY_COVER_BG[fiche.category])} />
+      {fiche.coverImageUrl ? (
+        <img src={fiche.coverImageUrl} alt="" className="h-35 w-full object-cover" />
+      ) : (
+        <div className={cn('h-35 w-full', CATEGORY_COVER_BG[fiche.category])} />
+      )}
 
       <div className="flex flex-col gap-2.5 p-5">
         <CapsuleFiche category={fiche.category} />

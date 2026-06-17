@@ -25,7 +25,11 @@ export function AdminFicheEdit({ slug }: AdminFicheEditProps) {
       { slug, input },
       {
         onSuccess: () => navigate({ to: '/admin/fiches' }),
-        onError: (err) => setSaveError(err instanceof Error ? err.message : 'Erreur inconnue'),
+        onError: (err) =>
+          setSaveError(
+            (err as { message?: string })?.message ??
+              (err instanceof Error ? err.message : 'Erreur inconnue')
+          ),
       }
     );
   }
@@ -49,6 +53,9 @@ export function AdminFicheEdit({ slug }: AdminFicheEditProps) {
             description: fiche.description,
             category: fiche.category,
             author: fiche.author,
+            authorUserId: fiche.authorUserId,
+            authorAvatarUrl: fiche.authorAvatarUrl,
+            coverImageUrl: fiche.coverImageUrl,
             content: fiche.content,
             readingTimeMinutes: fiche.readingTimeMinutes,
           }}

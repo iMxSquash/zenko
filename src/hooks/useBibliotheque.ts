@@ -9,7 +9,9 @@ type FicheRow = {
   description: string;
   category: ResourceCategory;
   author: string;
+  author_user_id: string | null;
   author_avatar_url: string | null;
+  cover_image_url: string | null;
   created_at: string;
   updated_at: string;
   content: string | null;
@@ -29,7 +31,9 @@ function toFiche(row: FicheRow): Fiche {
     description: row.description,
     category: row.category,
     author: row.author,
+    authorUserId: row.author_user_id,
     authorAvatarUrl: row.author_avatar_url ?? undefined,
+    coverImageUrl: row.cover_image_url,
     content: row.content ?? undefined,
     readingTimeMinutes: row.reading_time_minutes ?? undefined,
     createdAt: row.created_at,
@@ -43,6 +47,23 @@ function toProgress(row: ProgressRow): ReadingProgress {
     startedAt: row.started_at,
     completedAt: row.completed_at,
   };
+}
+
+export function useFichesByAuthor(userId: string) {
+  return useQuery({
+    queryKey: ['fiches', 'by-author', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fiches')
+        .select('*')
+        .eq('author_user_id', userId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data as FicheRow[]).map(toFiche);
+    },
+    staleTime: 1000 * 60 * 5,
+    enabled: !!userId,
+  });
 }
 
 export function useFiches() {
