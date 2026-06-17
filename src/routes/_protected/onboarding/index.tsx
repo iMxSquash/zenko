@@ -1,10 +1,25 @@
 import { OnboardingRoleStep } from '@/components/onboarding/OnboardingRoleStep';
 import { useUpdateRole } from '@/hooks/useProfile';
+import { supabase } from '@/lib/supabase/client';
 import type { ForumUserRole } from '@/types';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/_protected/onboarding/')({
+  beforeLoad: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (data?.role) throw redirect({ to: '/bibliotheque' });
+  },
   component: OnboardingPage,
 });
 

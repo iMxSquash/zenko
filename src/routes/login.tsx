@@ -2,13 +2,20 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { getProfile } from '@/lib/profile/profile';
 import { signInWithPassword } from '@/lib/supabase/auth';
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { supabase } from '@/lib/supabase/client';
+import { Link, createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useState } from 'react';
 
 type Search = { mode?: 'login' | 'signup' };
 
 export const Route = createFileRoute('/login')({
+  beforeLoad: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) throw redirect({ to: '/bibliotheque' });
+  },
   validateSearch: (s: Record<string, unknown>): Search => ({
     mode: s.mode === 'signup' ? 'signup' : 'login',
   }),

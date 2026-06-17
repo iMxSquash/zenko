@@ -1,10 +1,17 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signUpWithPassword } from '@/lib/supabase/auth';
-import { Link, createFileRoute } from '@tanstack/react-router';
+import { supabase } from '@/lib/supabase/client';
+import { Link, createFileRoute, redirect } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/signup')({
+  beforeLoad: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) throw redirect({ to: '/bibliotheque' });
+  },
   component: SignupPage,
 });
 
