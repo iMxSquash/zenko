@@ -36,6 +36,9 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
     initial?.readingTimeMinutes != null ? String(initial.readingTimeMinutes) : ''
   );
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initial?.coverImageUrl ?? null);
+  const [authorUserId, setAuthorUserId] = useState<string | null>(
+    initial?.authorUserId ?? null
+  );
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState<string | null>(
     initial?.authorAvatarUrl ?? null
   );
@@ -77,6 +80,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
       description: description.trim(),
       category,
       author: author.trim(),
+      authorUserId: authorUserId ?? null,
       authorAvatarUrl: authorAvatarUrl ?? null,
       coverImageUrl: coverImageUrl ?? null,
       content: content.trim() || null,
@@ -142,6 +146,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
             const user = users.find((u) => u.id === e.target.value);
             if (user) {
               setAuthor([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email);
+              setAuthorUserId(user.id);
               setAuthorAvatarUrl(user.avatarUrl ?? null);
             }
           }}

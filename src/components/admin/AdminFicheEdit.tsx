@@ -52,6 +52,7 @@ export function AdminFicheEdit({ slug }: AdminFicheEditProps) {
             description: fiche.description,
             category: fiche.category,
             author: fiche.author,
+            authorUserId: fiche.authorUserId,
             authorAvatarUrl: fiche.authorAvatarUrl,
             coverImageUrl: fiche.coverImageUrl,
             content: fiche.content,

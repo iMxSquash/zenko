@@ -12,6 +12,7 @@ type FicheRow = {
   description: string;
   category: ResourceCategory;
   author: string;
+  author_user_id: string | null;
   author_avatar_url: string | null;
   cover_image_url: string | null;
   created_at: string;
@@ -59,6 +60,7 @@ export interface AdminFiche {
   description: string;
   category: ResourceCategory;
   author: string;
+  authorUserId: string | null;
   authorAvatarUrl: string | null;
   coverImageUrl: string | null;
   content: string | null;
@@ -106,6 +108,7 @@ export interface FicheInput {
   description: string;
   category: ResourceCategory;
   author: string;
+  authorUserId?: string | null;
   authorAvatarUrl?: string | null;
   coverImageUrl?: string | null;
   content?: string | null;
@@ -122,6 +125,7 @@ function toAdminFiche(row: FicheRow): AdminFiche {
     description: row.description,
     category: row.category,
     author: row.author,
+    authorUserId: row.author_user_id,
     authorAvatarUrl: row.author_avatar_url,
     coverImageUrl: row.cover_image_url,
     content: row.content,
@@ -177,6 +181,7 @@ export function useCreateFiche() {
           description: input.description,
           category: input.category,
           author: input.author,
+          author_user_id: input.authorUserId ?? null,
           author_avatar_url: input.authorAvatarUrl ?? null,
           cover_image_url: input.coverImageUrl ?? null,
           content: input.content ?? null,
@@ -203,6 +208,7 @@ export function useUpdateFiche() {
       if (input.description !== undefined) payload.description = input.description;
       if (input.category !== undefined) payload.category = input.category;
       if (input.author !== undefined) payload.author = input.author;
+      if (input.authorUserId !== undefined) payload.author_user_id = input.authorUserId;
       if (input.authorAvatarUrl !== undefined) payload.author_avatar_url = input.authorAvatarUrl;
       if (input.coverImageUrl !== undefined) payload.cover_image_url = input.coverImageUrl;
       if (input.content !== undefined) payload.content = input.content;

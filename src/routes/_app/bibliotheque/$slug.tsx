@@ -249,10 +249,19 @@ function FicheDetailPage() {
                   </div>
                 )}
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-0.5">
                   <span className="text-[17px] font-medium text-text-secondary">
                     {fiche.author}
                   </span>
+                  {fiche.authorUserId && (
+                    <Link
+                      to="/profile/$userId"
+                      params={{ userId: fiche.authorUserId }}
+                      className="text-[13px] font-medium text-brand hover:underline"
+                    >
+                      Voir le profil
+                    </Link>
+                  )}
                   {fiche.readingTimeMinutes && (
                     <div className="flex items-center gap-1.5">
                       <Clock size={13} className="shrink-0 text-text-muted" />

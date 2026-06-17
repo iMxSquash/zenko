@@ -9,6 +9,7 @@ type FicheRow = {
   description: string;
   category: ResourceCategory;
   author: string;
+  author_user_id: string | null;
   author_avatar_url: string | null;
   cover_image_url: string | null;
   created_at: string;
@@ -30,6 +31,7 @@ function toFiche(row: FicheRow): Fiche {
     description: row.description,
     category: row.category,
     author: row.author,
+    authorUserId: row.author_user_id,
     authorAvatarUrl: row.author_avatar_url ?? undefined,
     coverImageUrl: row.cover_image_url,
     content: row.content ?? undefined,
