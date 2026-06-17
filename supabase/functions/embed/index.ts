@@ -1,5 +1,5 @@
 // POST { input: string } → { embedding: number[] }
-// Génère un embedding gte-small (384 dims) via Supabase AI — sans clé API externe.
+// Génère un embedding gte-small (384 dims) via Supabase AI - sans clé API externe.
 // Appelé en interne par /chat, /autoembed et le script de backfill (service_role uniquement).
 
 const corsHeaders = {
@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
   }
 
   // Réservé aux appelants internes : /chat, /autoembed, script de backfill.
-  // Un JWT anon valide ne suffit pas — seule la service_role key est acceptée.
+  // Un JWT anon valide ne suffit pas - seule la service_role key est acceptée.
   const serviceKey = requireEnv('SUPABASE_SERVICE_ROLE_KEY');
   const authHeader = req.headers.get('Authorization');
   if (!authHeader || authHeader !== `Bearer ${serviceKey}`) {
@@ -40,7 +40,10 @@ Deno.serve(async (req) => {
     }
 
     const session = new Supabase.ai.Session('gte-small');
-    const embedding = await session.run(input, { mean_pool: true, normalize: true });
+    const embedding = await session.run(input, {
+      mean_pool: true,
+      normalize: true,
+    });
 
     if (!embedding || !Array.isArray(embedding)) {
       throw new Error("La génération de l'embedding a échoué.");
@@ -51,8 +54,13 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Erreur interne' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({
+        error: err instanceof Error ? err.message : 'Erreur interne',
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
     );
   }
 });

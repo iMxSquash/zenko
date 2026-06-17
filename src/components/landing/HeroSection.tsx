@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 // Avatars are local SVG files in public/assets/ (served from the site root, so
 // referenced as '/assets/...'). Map each Ellipse file to the right person by
-// opening them in a browser — they are named generically by the Figma export.
+// opening them in a browser - they are named generically by the Figma export.
 const ROLES = [
   {
     label: 'ENSEIGNANTE',
@@ -45,11 +45,11 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-6 py-14 pb-24 md:px-16 lg:py-24 lg:pb-48"
     >
-      {/* Decorative shapes — see LandingDecor.tsx (expiring URLs note there) */}
+      {/* Decorative shapes - see LandingDecor.tsx (expiring URLs note there) */}
       <SectionDecor shapes={HERO_DECOR} sectionRef={sectionRef} />
 
       <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center">
-        {/* Left — text + CTAs */}
+        {/* Left - text + CTAs */}
         <div className="flex max-w-165 flex-col gap-8">
           {/* Badge */}
           <div className="flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5">
@@ -73,7 +73,7 @@ export function HeroSection() {
               Matches the Figma structure (node 281:309): the literal "o" is
               transparent and holds the layout slot, while the hand-drawn
               scribble is absolutely positioned over that slot. This is the
-              responsive-safe equivalent of the design's frame-relative inset —
+              responsive-safe equivalent of the design's frame-relative inset -
               the overlay tracks the letter regardless of where the line wraps.
             */}
             <span className="relative inline-block select-none">
@@ -111,7 +111,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Right — role cards grid */}
+        {/* Right - role cards grid */}
         <div className="relative z-20 w-full lg:ml-auto lg:w-130 lg:shrink-0">
           <div className="relative grid grid-cols-2 gap-4">
             {ROLES.map((role) => (

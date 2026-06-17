@@ -238,7 +238,7 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
               )}
             >
               <span className="flex size-8 items-center justify-center rounded-xl bg-background text-text-muted">
-                —
+                -
               </span>
               Aucun
             </button>

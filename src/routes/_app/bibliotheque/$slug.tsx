@@ -355,7 +355,7 @@ function FicheDetailPage() {
                   </div>
                 )}
 
-                {/* Sentinel — IntersectionObserver fires when this is visible */}
+                {/* Sentinel - IntersectionObserver fires when this is visible */}
                 <div ref={bottomRef} className="h-px" />
               </div>
             </div>

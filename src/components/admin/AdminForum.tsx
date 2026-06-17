@@ -72,7 +72,7 @@ export function AdminForum() {
       <ConfirmDialog
         open={!!pending}
         title={pending?.type === 'thread' ? 'Supprimer le thread ?' : 'Supprimer la réponse ?'}
-        description={pending ? `"${pending.label}" — cette action est irréversible.` : ''}
+        description={pending ? `"${pending.label}" - cette action est irréversible.` : ''}
         confirmLabel="Supprimer"
         variant="danger"
         onConfirm={handleConfirm}

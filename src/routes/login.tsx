@@ -47,12 +47,12 @@ function LoginPage() {
         path="/login"
       />
 
-      {/* Logo absolu en haut à gauche — overlay sur tout le layout */}
+      {/* Logo absolu en haut à gauche - overlay sur tout le layout */}
       <div className="absolute left-16 top-16 z-20 hidden lg:block">
         <ZenkoLogo width={145} />
       </div>
 
-      {/* Blob 22 — top, brand, positionné sur <main> */}
+      {/* Blob 22 - top, brand, positionné sur <main> */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute hidden select-none lg:block"
@@ -71,12 +71,16 @@ function LoginPage() {
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
             animate={{ y: [0, -14, 0] }}
-            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
+            transition={{
+              duration: 5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+            }}
           />
         </div>
       </div>
 
-      {/* Blob 23 — chevauche les 2 panneaux, positionné sur <main> */}
+      {/* Blob 23 - chevauche les 2 panneaux, positionné sur <main> */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute hidden select-none lg:block"
@@ -106,9 +110,9 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
+      {/* ── Panneau gauche - branding (697/1440 = ~48%) ── */}
       <div className="relative hidden lg:flex lg:w-[48.4%] flex-col items-center justify-center overflow-hidden bg-neutral-50">
-        {/* Blob 24 — left-center */}
+        {/* Blob 24 - left-center */}
         <motion.img
           src="/assets/blob_24.svg"
           alt=""
@@ -124,7 +128,7 @@ function LoginPage() {
           }}
         />
 
-        {/* Blob 25 — center, blurred */}
+        {/* Blob 25 - center, blurred */}
         <div
           className="pointer-events-none absolute select-none"
           style={{ left: 440, top: 242, width: 103, height: 107 }}
@@ -145,7 +149,7 @@ function LoginPage() {
           />
         </div>
 
-        {/* Blob 26 — bottom-center, ancré en bas */}
+        {/* Blob 26 - bottom-center, ancré en bas */}
         <div
           className="pointer-events-none absolute select-none"
           style={{ left: 186, bottom: 110, width: 163, height: 154 }}
@@ -190,7 +194,7 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* ── Panneau droit — formulaire (743/1440 = ~51.6%) ── */}
+      {/* ── Panneau droit - formulaire (743/1440 = ~51.6%) ── */}
       <div className="flex flex-1 flex-col items-center justify-center overflow-hidden p-3 lg:w-[51.6%]">
         {/* Mobile logo */}
         <div className="lg:hidden mb-10 self-start pl-4">
@@ -300,14 +304,20 @@ function LoginPage() {
                           ? 'w-full rounded-full bg-brand px-6 py-4 font-display font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]'
                           : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline outline-1 outline-offset-[-1px] outline-border-default transition-all'
                       }
-                      style={{ fontSize: 'var(--text-button)', lineHeight: '16px' }}
+                      style={{
+                        fontSize: 'var(--text-button)',
+                        lineHeight: '16px',
+                      }}
                     >
                       {loading ? '…' : 'Se connecter'}
                     </button>
 
                     <p
                       className="text-center text-text-secondary"
-                      style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+                      style={{
+                        fontSize: 'var(--text-body-sm)',
+                        lineHeight: '20px',
+                      }}
                     >
                       Pas encore de compte ?{' '}
                       <Link to="/signup" className="font-bold text-brand hover:underline">

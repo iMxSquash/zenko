@@ -214,7 +214,7 @@ export function ThreadDetail({ threadId }: ThreadDetailProps) {
         ))}
         {thread.replies.length === 0 && (
           <p className="py-6 text-center text-body-sm text-text-muted">
-            Aucune réponse pour l'instant — soyez le premier·e à contribuer.
+            Aucune réponse pour l'instant - soyez le premier·e à contribuer.
           </p>
         )}
       </div>

@@ -81,7 +81,7 @@ function UserRow({ user }: { user: AdminUser }) {
             {ROLE_LABELS[user.role] ?? user.role}
           </span>
         ) : (
-          <span className="text-text-muted">—</span>
+          <span className="text-text-muted">-</span>
         )}
       </td>
       <td className="px-5 py-4 text-text-muted">{date}</td>
