@@ -226,7 +226,7 @@ function FicheDetailPage() {
             {/* Body: author sidebar + content */}
             <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
               {/* Author sidebar */}
-              <div className="flex shrink-0 flex-row items-center gap-4 lg:w-44 lg:flex-col lg:items-start">
+              <div className="flex shrink-0 flex-row items-center gap-4 lg:sticky lg:top-8 lg:w-44 lg:flex-col lg:items-start">
                 {fiche.authorAvatarUrl ? (
                   <img
                     src={fiche.authorAvatarUrl}
