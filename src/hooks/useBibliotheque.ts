@@ -8,9 +8,12 @@ type FicheRow = {
   title: string;
   description: string;
   category: ResourceCategory;
-  author: string;
   author_user_id: string | null;
-  author_avatar_url: string | null;
+  public_profiles: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
   cover_image_url: string | null;
   created_at: string;
   updated_at: string;
@@ -25,14 +28,15 @@ type ProgressRow = {
 };
 
 function toFiche(row: FicheRow): Fiche {
+  const p = row.public_profiles;
   return {
     slug: row.slug,
     title: row.title,
     description: row.description,
     category: row.category,
-    author: row.author,
+    author: [p?.first_name, p?.last_name].filter(Boolean).join(' '),
     authorUserId: row.author_user_id,
-    authorAvatarUrl: row.author_avatar_url ?? undefined,
+    authorAvatarUrl: p?.avatar_url ?? undefined,
     coverImageUrl: row.cover_image_url,
     content: row.content ?? undefined,
     readingTimeMinutes: row.reading_time_minutes ?? undefined,
@@ -55,7 +59,7 @@ export function useFichesByAuthor(userId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('fiches')
-        .select('*')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
         .eq('author_user_id', userId)
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -72,7 +76,7 @@ export function useFiches() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('fiches')
-        .select('*')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data as FicheRow[]).map(toFiche);
@@ -85,7 +89,11 @@ export function useFiche(slug: string) {
   return useQuery({
     queryKey: ['fiches', slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from('fiches').select('*').eq('slug', slug).single();
+      const { data, error } = await supabase
+        .from('fiches')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
+        .eq('slug', slug)
+        .single();
       if (error) throw error;
       return toFiche(data as FicheRow);
     },
@@ -125,7 +133,7 @@ export function useInProgressFiches(enabled = true) {
       const slugs = (progressRows as ProgressRow[]).map((r) => r.resource_slug);
       const { data: ficheRows, error: fichesError } = await supabase
         .from('fiches')
-        .select('*')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
         .in('slug', slugs);
       if (fichesError) throw fichesError;
 
@@ -220,7 +228,7 @@ export function useSavedFiches(enabled = true) {
       const slugs = (savedRows as { resource_slug: string }[]).map((r) => r.resource_slug);
       const { data: ficheRows, error: fichesError } = await supabase
         .from('fiches')
-        .select('*')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
         .in('slug', slugs);
       if (fichesError) throw fichesError;
 

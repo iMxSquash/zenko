@@ -1,4 +1,5 @@
 import { SEOHead } from '@/components/seo/SEOHead';
+import { CapsuleFiche } from '@/components/ui';
 import {
   useFiche,
   useIsSaved,
@@ -7,7 +8,7 @@ import {
   useSaveResource,
   useStartReading,
 } from '@/hooks/useBibliotheque';
-import { CATEGORY_BADGE_BG, CATEGORY_COVER_BG } from '@/lib/bibliotheque/bibliotheque';
+import { CATEGORY_COVER_BG } from '@/lib/bibliotheque/bibliotheque';
 import {
   generateBreadcrumbJsonLd,
   generateLearningResourceJsonLd,
@@ -179,16 +180,7 @@ function FicheDetailPage() {
 
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-start gap-3">
-                  <div
-                    className={cn(
-                      'shrink-0 self-center rounded-[6px] px-2 py-0.75',
-                      CATEGORY_BADGE_BG[fiche.category]
-                    )}
-                  >
-                    <span className="text-[20px] font-semibold tracking-[1.2px] text-text-secondary">
-                      {fiche.category}
-                    </span>
-                  </div>
+                  <CapsuleFiche category={fiche.category} size="lg" className="self-center" />
                   <h1 className="text-[44px] font-bold leading-[52px] tracking-[-0.44px] text-text-primary">
                     {fiche.title}
                   </h1>
@@ -234,7 +226,7 @@ function FicheDetailPage() {
             {/* Body: author sidebar + content */}
             <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
               {/* Author sidebar */}
-              <div className="flex shrink-0 flex-row items-center gap-4 lg:w-44 lg:flex-col lg:items-start">
+              <div className="flex shrink-0 flex-row items-center gap-4 lg:sticky lg:top-8 lg:w-44 lg:flex-col lg:items-start">
                 {fiche.authorAvatarUrl ? (
                   <img
                     src={fiche.authorAvatarUrl}
