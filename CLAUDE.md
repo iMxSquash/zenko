@@ -202,6 +202,7 @@ Ces skills doivent être invoqués **automatiquement** sans que l'utilisateur le
 /new-edge-function <nom>
 /supabase-rls    <table>
 /audit-conformite [accessibilite|rgpd|securite]
+/generate-fiches <count> "<thème>" [category:<TSA|TDAH|DYS|TDI>] [user:<user_id>]
 ```
 
 ## Variables d'environnement
