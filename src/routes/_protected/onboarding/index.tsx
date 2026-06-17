@@ -1,4 +1,3 @@
-import { OnboardingNav } from '@/components/onboarding/OnboardingNav';
 import { OnboardingRoleStep } from '@/components/onboarding/OnboardingRoleStep';
 import { useUpdateRole } from '@/hooks/useProfile';
 import type { ForumUserRole } from '@/types';
@@ -41,7 +40,6 @@ function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <OnboardingNav />
       <OnboardingRoleStep
         selectedRole={selectedRole}
         onSelectRole={handleSelectRole}

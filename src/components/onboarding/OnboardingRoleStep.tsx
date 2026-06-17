@@ -16,29 +16,28 @@ interface OnboardingRoleStepProps {
 export function OnboardingRoleStep({
   selectedRole,
   onSelectRole,
-  // doctolibUrl,
-  // onDoctolibUrlChange,
   error,
   isPending,
   onContinue,
 }: OnboardingRoleStepProps) {
   return (
     <main className="relative flex min-h-screen items-stretch overflow-hidden bg-white">
-      {/* Logo absolu en haut à gauche — overlay sur tout le layout */}
+      {/* Logo absolu en haut à gauche */}
       <div className="absolute left-16 top-16 z-20">
         <ZenkoLogo width={145} />
       </div>
 
-      {/* Blob cluster bottom-left — image unique (role_blob.png) */}
-      <img
-        src="/assets/role_blob.png"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 z-10 hidden w-[640px] select-none lg:block"
-      />
+      {/* ── Panneau gauche — branding 50% ── */}
+      <div className="relative hidden flex-col items-center justify-center self-stretch bg-[#fafaf9] lg:flex lg:w-1/2">
+        {/* Blob cluster */}
+        <img
+          src="/assets/role_blob.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 select-none"
+          style={{ left: 0, bottom: 0, width: '200%', transform: 'translate(5%, 60%)', zIndex: 5 }}
+        />
 
-      {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
-      <div className="relative hidden flex-col items-center justify-center self-stretch overflow-hidden bg-neutral-50 lg:flex lg:w-[697px]">
         {/* Texte central */}
         <div className="relative z-10 flex flex-col gap-2.5" style={{ width: 388 }}>
           <h2
@@ -68,15 +67,15 @@ export function OnboardingRoleStep({
         </div>
       </div>
 
-      {/* ── Panneau droit — choix du rôle (743/1440 = ~51.6%) ── */}
-      <div className="relative flex flex-1 flex-col items-center justify-start overflow-hidden p-3 pt-32">
-        {/* Pink swirl (Vector 24) top-right — image (role_swirl.png) */}
+      {/* ── Panneau droit — choix du rôle ── */}
+      <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-white p-3">
+        {/* Pink swirl — top-right, depuis Figma: left=492px top=53px dans un panneau de 743px */}
         <img
           src="/assets/role_swirl.png"
           alt=""
           aria-hidden="true"
           className="pointer-events-none absolute hidden select-none lg:block"
-          style={{ right: 40, top: 53, width: 265, height: 116 }}
+          style={{ right: -14, top: 53, width: 265, height: 116 }}
         />
 
         {/* Mobile logo */}
@@ -84,7 +83,7 @@ export function OnboardingRoleStep({
           <ZenkoLogo width={120} />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-6">
+        <div className="relative z-10 flex flex-col items-center gap-8">
           {/* Header */}
           <div className="flex w-[442px] max-w-full flex-col gap-2.5">
             <h1
@@ -120,7 +119,7 @@ export function OnboardingRoleStep({
                   type="button"
                   onClick={() => onSelectRole(role.id)}
                   aria-pressed={selected}
-                  className="flex w-[506px] max-w-full items-center justify-between rounded-[32px] bg-neutral-50 p-8 text-left transition-all"
+                  className="flex w-[506px] max-w-full items-center justify-between rounded-[32px] bg-[#fafaf9] p-8 text-left transition-all"
                   style={{
                     outline: selected ? `2px solid ${selColor}` : '1px solid transparent',
                     outlineOffset: selected ? '-2px' : '-1px',
