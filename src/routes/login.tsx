@@ -56,7 +56,9 @@ function LoginPage() {
 
       {/* Logo absolu en haut à gauche - overlay sur tout le layout */}
       <div className="absolute left-16 top-16 z-20 hidden lg:block">
-        <ZenkoLogo width={145} />
+        <Link to="/">
+          <ZenkoLogo width={145} />
+        </Link>
       </div>
 
       {/* Blob 22 - top, brand, positionné sur <main> */}
@@ -205,7 +207,9 @@ function LoginPage() {
       <div className="flex flex-1 flex-col items-center justify-center overflow-hidden p-3 lg:w-[51.6%]">
         {/* Mobile logo */}
         <div className="lg:hidden mb-10 self-start pl-4">
-          <ZenkoLogo width={120} />
+          <Link to="/">
+            <ZenkoLogo width={120} />
+          </Link>
         </div>
 
         {/* Card */}

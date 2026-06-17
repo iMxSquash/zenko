@@ -87,7 +87,9 @@ function SignupPage() {
     <main className="relative flex min-h-screen overflow-hidden bg-white">
       {/* Logo absolu en haut à gauche */}
       <div className="absolute left-16 top-16 z-20 hidden lg:block">
-        <ZenkoLogo width={145} />
+        <Link to="/">
+          <ZenkoLogo width={145} />
+        </Link>
       </div>
 
       {/* Blob bottom-right - positionné sur <main> pour éviter le clip */}
@@ -244,7 +246,9 @@ function SignupPage() {
       <div className="flex flex-1 flex-col items-center justify-center overflow-hidden p-3 lg:w-[51.6%]">
         {/* Mobile logo */}
         <div className="mb-10 self-start pl-4 lg:hidden">
-          <ZenkoLogo width={120} />
+          <Link to="/">
+            <ZenkoLogo width={120} />
+          </Link>
         </div>
 
         {/* Card */}
