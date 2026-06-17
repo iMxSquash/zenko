@@ -12,7 +12,11 @@ type FicheRow = {
   description: string;
   category: ResourceCategory;
   author_user_id: string | null;
-  public_profiles: { first_name: string | null; last_name: string | null; avatar_url: string | null } | null;
+  public_profiles: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
   cover_image_url: string | null;
   created_at: string;
   content: string | null;
@@ -66,7 +70,6 @@ export interface AdminFiche {
   readingTimeMinutes: number | null;
   createdAt: string;
 }
-
 
 export interface AdminUser {
   id: string;

@@ -9,7 +9,11 @@ type FicheRow = {
   description: string;
   category: ResourceCategory;
   author_user_id: string | null;
-  public_profiles: { first_name: string | null; last_name: string | null; avatar_url: string | null } | null;
+  public_profiles: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
   cover_image_url: string | null;
   created_at: string;
   updated_at: string;
@@ -85,7 +89,11 @@ export function useFiche(slug: string) {
   return useQuery({
     queryKey: ['fiches', slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from('fiches').select('*, public_profiles(first_name, last_name, avatar_url)').eq('slug', slug).single();
+      const { data, error } = await supabase
+        .from('fiches')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
+        .eq('slug', slug)
+        .single();
       if (error) throw error;
       return toFiche(data as FicheRow);
     },

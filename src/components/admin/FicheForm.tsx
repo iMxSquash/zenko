@@ -146,23 +146,30 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
           ))}
         </select>
         {errors.authorUserId && <p className="text-body-sm text-danger">{errors.authorUserId}</p>}
-        {authorUserId && (() => {
-          const selectedUser = users.find((u) => u.id === authorUserId);
-          if (!selectedUser) return null;
-          const name = [selectedUser.firstName, selectedUser.lastName].filter(Boolean).join(' ') || selectedUser.email;
-          return (
-            <div className="flex items-center gap-2 pt-1">
-              {selectedUser.avatarUrl ? (
-                <img src={selectedUser.avatarUrl} alt="" className="size-7 rounded-full object-cover" />
-              ) : (
-                <div className="flex size-7 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold text-text-muted">
-                  {name[0]?.toUpperCase()}
-                </div>
-              )}
-              <span className="text-body-sm text-text-secondary">{name}</span>
-            </div>
-          );
-        })()}
+        {authorUserId &&
+          (() => {
+            const selectedUser = users.find((u) => u.id === authorUserId);
+            if (!selectedUser) return null;
+            const name =
+              [selectedUser.firstName, selectedUser.lastName].filter(Boolean).join(' ') ||
+              selectedUser.email;
+            return (
+              <div className="flex items-center gap-2 pt-1">
+                {selectedUser.avatarUrl ? (
+                  <img
+                    src={selectedUser.avatarUrl}
+                    alt=""
+                    className="size-7 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex size-7 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold text-text-muted">
+                    {name[0]?.toUpperCase()}
+                  </div>
+                )}
+                <span className="text-body-sm text-text-secondary">{name}</span>
+              </div>
+            );
+          })()}
       </div>
 
       {/* Cover image */}

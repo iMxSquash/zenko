@@ -1,5 +1,5 @@
-import { CapsuleFiche } from '@/components/ui';
 import { SEOHead } from '@/components/seo/SEOHead';
+import { CapsuleFiche } from '@/components/ui';
 import {
   useFiche,
   useIsSaved,
