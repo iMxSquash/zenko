@@ -1,3 +1,4 @@
+import { CapsuleFiche } from '@/components/ui';
 import { CATEGORY_COVER_BG } from '@/lib/bibliotheque/bibliotheque';
 import { cn } from '@/lib/utils';
 import type { Fiche } from '@/types';
@@ -22,11 +23,7 @@ export function ResourceCard({ fiche, className }: ResourceCardProps) {
       )}
 
       <div className="flex flex-col gap-2.5 p-5">
-        <div className="self-start rounded-[6px] bg-neutral-100 px-2 py-0.75">
-          <span className="text-capsule font-semibold uppercase tracking-[0.06em] text-text-secondary">
-            {fiche.category}
-          </span>
-        </div>
+        <CapsuleFiche category={fiche.category} />
 
         <p className="text-[16px] font-semibold leading-5.5 text-text-primary">{fiche.title}</p>
 
