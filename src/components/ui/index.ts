@@ -1,4 +1,5 @@
 export { AvatarPicker } from './AvatarPicker/AvatarPicker';
+export { BlobBackground } from './BlobBackground';
 export { Button } from './Button/Button';
 export { Capsule } from './Capsule/Capsule';
 export { CapsuleFiche } from './CapsuleFiche/CapsuleFiche';
