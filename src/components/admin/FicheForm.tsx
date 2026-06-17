@@ -36,9 +36,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
     initial?.readingTimeMinutes != null ? String(initial.readingTimeMinutes) : ''
   );
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initial?.coverImageUrl ?? null);
-  const [authorUserId, setAuthorUserId] = useState<string | null>(
-    initial?.authorUserId ?? null
-  );
+  const [authorUserId, setAuthorUserId] = useState<string | null>(initial?.authorUserId ?? null);
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState<string | null>(
     initial?.authorAvatarUrl ?? null
   );
@@ -137,11 +135,13 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
           Auteur
         </span>
         <select
-          value={users.find(
-            (u) =>
-              [u.firstName, u.lastName].filter(Boolean).join(' ') === author &&
-              (u.avatarUrl ?? null) === authorAvatarUrl
-          )?.id ?? ''}
+          value={
+            users.find(
+              (u) =>
+                [u.firstName, u.lastName].filter(Boolean).join(' ') === author &&
+                (u.avatarUrl ?? null) === authorAvatarUrl
+            )?.id ?? ''
+          }
           onChange={(e) => {
             const user = users.find((u) => u.id === e.target.value);
             if (user) {

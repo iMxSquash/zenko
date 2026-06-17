@@ -1,7 +1,7 @@
 import { CapsuleFiche } from '@/components/ui';
+import { useFichesByAuthor } from '@/hooks/useBibliotheque';
 import { CATEGORY_COVER_BG } from '@/lib/bibliotheque/bibliotheque';
 import { cn } from '@/lib/utils';
-import { useFichesByAuthor } from '@/hooks/useBibliotheque';
 import { Clock } from '@phosphor-icons/react';
 import { Link } from '@tanstack/react-router';
 
@@ -41,11 +41,7 @@ export function ProfileFichesList({ userId }: ProfileFichesListProps) {
                 )}
               >
                 {fiche.coverImageUrl && (
-                  <img
-                    src={fiche.coverImageUrl}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
+                  <img src={fiche.coverImageUrl} alt="" className="h-full w-full object-cover" />
                 )}
               </div>
 

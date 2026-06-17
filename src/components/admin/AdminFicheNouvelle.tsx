@@ -15,7 +15,8 @@ export function AdminFicheNouvelle() {
       onSuccess: () => navigate({ to: '/admin/fiches' }),
       onError: (err) =>
         setSaveError(
-          (err as { message?: string })?.message ?? (err instanceof Error ? err.message : 'Erreur inconnue')
+          (err as { message?: string })?.message ??
+            (err instanceof Error ? err.message : 'Erreur inconnue')
         ),
     });
   }
