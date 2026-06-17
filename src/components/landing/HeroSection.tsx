@@ -104,8 +104,7 @@ export function HeroSection() {
               Créer mon compte gratuitement
             </Link>
             <div className="flex flex-wrap gap-6 text-[13px] font-medium text-text-muted">
-              <span>✓ RGPD conforme</span>
-              <span>✓ Gratuit pour les enseignants</span>
+              <span>✓ Complètement gratuit</span>
               <span>✓ Sans engagement</span>
             </div>
           </div>
