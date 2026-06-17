@@ -65,7 +65,7 @@ export function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[30px] font-bold leading-[1.25] tracking-display text-dark md:text-[52px] md:leading-[1.1] lg:text-display-xl lg:leading-20">
+          <h1 className="text-[30px] font-bold leading-tight tracking-display text-dark md:text-[52px] md:leading-[1.1] lg:text-display-xl lg:leading-20">
             Même enfant.
             <br />
             Mêmes m

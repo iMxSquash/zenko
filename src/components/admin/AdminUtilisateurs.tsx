@@ -77,7 +77,7 @@ function UserRow({ user }: { user: AdminUser }) {
       <td className="px-5 py-4 text-text-secondary">{user.email}</td>
       <td className="px-5 py-4">
         {user.role ? (
-          <span className="rounded-full bg-background px-3 py-1 text-[12px] font-semibold text-text-secondary">
+          <span className="rounded-full bg-background px-3 py-1 text-label font-semibold text-text-secondary">
             {ROLE_LABELS[user.role] ?? user.role}
           </span>
         ) : (
@@ -87,7 +87,7 @@ function UserRow({ user }: { user: AdminUser }) {
       <td className="px-5 py-4 text-text-muted">{date}</td>
       <td className="px-5 py-4">
         {user.isAdmin && (
-          <span className="rounded-full bg-brand-100/10 px-3 py-1 text-[12px] font-semibold text-brand-100">
+          <span className="rounded-full bg-brand-100/10 px-3 py-1 text-label font-semibold text-brand-100">
             Admin
           </span>
         )}

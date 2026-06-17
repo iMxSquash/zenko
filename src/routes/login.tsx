@@ -202,8 +202,8 @@ function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-[32px] bg-[rgba(207,231,245,0.12)] p-8">
-          <div className="flex w-full flex-col gap-8 lg:w-[442px]">
+        <div className="rounded-4xl bg-[rgba(207,231,245,0.12)] p-8">
+          <div className="flex w-full flex-col gap-8 lg:w-110.5">
             {/* Header */}
             <div className="flex flex-col gap-2.5">
               <h1
@@ -302,7 +302,7 @@ function LoginPage() {
                       className={
                         email && password && !loading
                           ? 'w-full rounded-full bg-brand px-6 py-4 font-display font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]'
-                          : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline outline-1 outline-offset-[-1px] outline-border-default transition-all'
+                          : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline -outline-offset-1 outline-border-default transition-all'
                       }
                       style={{
                         fontSize: 'var(--text-button)',

@@ -147,13 +147,13 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
             <div className="flex items-center gap-2">
               <p className="truncate text-h3 font-bold text-text-primary">{displayName}</p>
               {user.isAdmin && (
-                <span className="shrink-0 rounded-full bg-brand-100/10 px-3 py-1 text-[12px] font-semibold text-brand-100">
+                <span className="shrink-0 rounded-full bg-brand-100/10 px-3 py-1 text-label font-semibold text-brand-100">
                   Admin
                 </span>
               )}
             </div>
             <p className="text-body-sm text-text-secondary">{user.email}</p>
-            <p className="text-[12px] text-text-muted">Inscrit le {createdAt}</p>
+            <p className="text-label text-text-muted">Inscrit le {createdAt}</p>
           </div>
 
           {/* Toggle admin button */}
@@ -306,7 +306,7 @@ export function AdminUserDetail({ userId }: AdminUserDetailProps) {
             Supprimer le compte
           </Button>
           {user.isAdmin && !isSelf && (
-            <p className="mt-2 text-[12px] text-text-muted">
+            <p className="mt-2 text-label text-text-muted">
               Retirez d'abord les droits admin avant de supprimer ce compte.
             </p>
           )}

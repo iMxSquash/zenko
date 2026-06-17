@@ -115,7 +115,7 @@ function ThreadBlock({
 
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="font-semibold text-text-primary truncate">{thread.title}</span>
-          <span className="text-[12px] text-text-muted">
+          <span className="text-label text-text-muted">
             {thread.authorName} · {date} ·{' '}
             <span className={cn('font-medium', thread.replyCount > 0 && 'text-brand-100')}>
               {thread.replyCount} réponse{thread.replyCount !== 1 ? 's' : ''}
@@ -123,7 +123,7 @@ function ThreadBlock({
           </span>
         </div>
 
-        <span className="shrink-0 rounded-full bg-background px-3 py-1 text-[12px] font-semibold text-text-secondary">
+        <span className="shrink-0 rounded-full bg-background px-3 py-1 text-label font-semibold text-text-secondary">
           {thread.category}
         </span>
 
@@ -145,7 +145,7 @@ function ThreadBlock({
               className="flex items-start gap-3 border-b border-border last:border-0 px-5 py-3 pl-12"
             >
               <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="text-[12px] font-semibold text-text-secondary">
+                <span className="text-label font-semibold text-text-secondary">
                   {reply.authorName}
                 </span>
                 <p className="text-body-sm text-text-primary line-clamp-2">{reply.content}</p>

@@ -241,7 +241,7 @@ function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-[32px] bg-emerald-100/10 p-8">
+        <div className="rounded-4xl bg-emerald-100/10 p-8">
           <div className="flex w-full flex-col gap-8 lg:w-96">
             {/* Header */}
             <div className="flex flex-col gap-2.5">
@@ -301,7 +301,7 @@ function SignupPage() {
                     placeholder="mail@exemple.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -327,7 +327,7 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -354,7 +354,7 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={confirmation}
                     onChange={(e) => setConfirmation(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -367,7 +367,7 @@ function SignupPage() {
                     className={
                       isFormFilled && !loading
                         ? 'w-full rounded-full bg-brand-green px-6 py-4 font-display font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]'
-                        : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline outline-1 outline-offset-[-1px] outline-border-default transition-all'
+                        : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline  -outline-offset-1 outline-border-default transition-all'
                     }
                     style={{
                       fontSize: 'var(--text-button)',

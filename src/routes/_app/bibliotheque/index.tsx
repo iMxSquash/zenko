@@ -123,7 +123,7 @@ function BibliothequePage() {
           <span className="font-semibold">Toutes</span>
           <span
             className={cn(
-              'text-[12px] font-medium',
+              'text-label font-medium',
               activeCategory === 'Toutes' ? 'text-teacher-bg' : 'text-text-muted'
             )}
           >
@@ -146,7 +146,7 @@ function BibliothequePage() {
             <span className="font-semibold">{cat}</span>
             <span
               className={cn(
-                'text-[12px] font-medium',
+                'text-label font-medium',
                 activeCategory === cat ? 'text-teacher-bg' : 'text-text-muted'
               )}
             >
@@ -158,34 +158,34 @@ function BibliothequePage() {
 
       {/* Hero banner */}
       <div className="relative flex items-center gap-8 overflow-hidden rounded-card-lg bg-brand p-8">
-        <div className="absolute left-8 top-8 size-[300px] rounded-full bg-brand-green opacity-30" />
+        <div className="absolute left-8 top-8 size-75 rounded-full bg-brand-green opacity-30" />
 
         <div className="relative flex flex-1 flex-col gap-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.88px] text-white">
             Parcours à la une
           </p>
-          <p className="text-[28px] font-bold tracking-[-0.01em] text-white">
+          <p className="text-h2 font-bold tracking-[-0.01em] text-white">
             Accompagner un élève TSA en CM1
           </p>
-          <p className="text-[14px] text-white opacity-90">
+          <p className="text-body-sm text-white opacity-90">
             8 modules · 2h au total. Conçu avec le Dr Lambert et 12 enseignants du terrain.
           </p>
           <button
             type="button"
             className="self-start rounded-full bg-white px-5 py-3 transition-opacity hover:opacity-90"
           >
-            <span className="text-[14px] font-semibold text-teacher">Commencer le parcours →</span>
+            <span className="text-body-sm font-semibold text-teacher">Commencer le parcours →</span>
           </button>
         </div>
 
         <div className="relative flex w-[320px] shrink-0 flex-col gap-3 rounded-card bg-[rgba(255,255,255,0.15)] p-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white opacity-70">
+          <p className="text-capsule font-semibold uppercase tracking-[0.06em] text-white opacity-70">
             Modules
           </p>
           {HERO_MODULES.map((mod, i) => (
             <div key={mod.title} className="flex items-center gap-3">
               <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white">
-                <span className="text-[10px] font-bold text-teacher">{i + 1}</span>
+                <span className="text-capsule font-bold text-teacher">{i + 1}</span>
               </div>
               <span className="min-w-0 flex-1 text-[13px] font-medium text-white">{mod.title}</span>
               <span className="shrink-0 text-[11px] text-white opacity-70">{mod.duration}</span>
@@ -201,7 +201,8 @@ function BibliothequePage() {
             {activeCategory === 'Toutes' ? 'Toutes les fiches' : `Fiches ${activeCategory}`}
           </p>
           <span className="shrink-0 text-[13px] font-medium text-text-muted">
-            {searchedFiches.length} résultat{searchedFiches.length !== 1 ? 's' : ''}
+            {searchedFiches.length} résultat
+            {searchedFiches.length !== 1 ? 's' : ''}
           </span>
         </div>
 
@@ -212,7 +213,7 @@ function BibliothequePage() {
                 key={i}
                 className="animate-pulse overflow-hidden rounded-card border border-border bg-surface"
               >
-                <div className="h-[140px] w-full bg-neutral-100" />
+                <div className="h-35 w-full bg-neutral-100" />
                 <div className="flex flex-col gap-2.5 p-5">
                   <div className="h-4 w-12 rounded bg-neutral-100" />
                   <div className="h-5 w-full rounded bg-neutral-100" />
@@ -224,13 +225,13 @@ function BibliothequePage() {
         )}
 
         {error && (
-          <p className="text-[14px] text-text-muted">
+          <p className="text-body-sm text-text-muted">
             Une erreur est survenue lors du chargement des fiches.
           </p>
         )}
 
         {!isLoading && !error && searchedFiches.length === 0 && (
-          <p className="text-[14px] text-text-muted">Aucune fiche trouvée.</p>
+          <p className="text-body-sm text-text-muted">Aucune fiche trouvée.</p>
         )}
 
         {!isLoading && !error && searchedFiches.length > 0 && (
