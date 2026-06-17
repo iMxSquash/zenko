@@ -16,6 +16,8 @@ interface OnboardingRoleStepProps {
 export function OnboardingRoleStep({
   selectedRole,
   onSelectRole,
+  doctolibUrl,
+  onDoctolibUrlChange,
   error,
   isPending,
   onContinue,
@@ -167,6 +169,27 @@ export function OnboardingRoleStep({
               );
             })}
           </div>
+
+          {/* Doctolib input - affiche uniquement pour Expert */}
+          {selectedRole === 'expert' && (
+            <div className="flex w-full flex-col gap-2">
+              <label
+                htmlFor="doctolib-url"
+                className="font-bold text-black"
+                style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', lineHeight: '20px' }}
+              >
+                Lien Doctolib
+              </label>
+              <input
+                id="doctolib-url"
+                type="url"
+                value={doctolibUrl}
+                onChange={(e) => onDoctolibUrlChange(e.target.value)}
+                placeholder="https://www.doctolib.fr/..."
+                className="w-full rounded-2xl border border-border-default bg-white px-4 py-3 text-sm text-text-primary outline-none transition-colors focus:border-[#f7a4c0] focus:ring-2 focus:ring-[#f7a4c0]/30"
+              />
+            </div>
+          )}
 
           {error && <p className="w-full text-body-sm text-danger">{error}</p>}
 
