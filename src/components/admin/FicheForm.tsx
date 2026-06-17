@@ -30,16 +30,12 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [category, setCategory] = useState<ResourceCategory>(initial?.category ?? 'TSA');
-  const [author, setAuthor] = useState(initial?.author ?? '');
   const [content, setContent] = useState(initial?.content ?? '');
   const [readingTime, setReadingTime] = useState(
     initial?.readingTimeMinutes != null ? String(initial.readingTimeMinutes) : ''
   );
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initial?.coverImageUrl ?? null);
   const [authorUserId, setAuthorUserId] = useState<string | null>(initial?.authorUserId ?? null);
-  const [authorAvatarUrl, setAuthorAvatarUrl] = useState<string | null>(
-    initial?.authorAvatarUrl ?? null
-  );
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -50,7 +46,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
     if (isCreating && slug && !/^[a-z0-9-]+$/.test(slug))
       next.slug = 'Slug invalide (minuscules, chiffres, tirets uniquement).';
     if (!description.trim()) next.description = 'La description est requise.';
-    if (!author.trim()) next.author = "L'auteur est requis.";
+    if (!authorUserId) next.authorUserId = "L'auteur est requis.";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -77,9 +73,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
       title: title.trim(),
       description: description.trim(),
       category,
-      author: author.trim(),
       authorUserId: authorUserId ?? null,
-      authorAvatarUrl: authorAvatarUrl ?? null,
       coverImageUrl: coverImageUrl ?? null,
       content: content.trim() || null,
       readingTimeMinutes: readingTime ? Number(readingTime) : null,
@@ -135,20 +129,9 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
           Auteur
         </span>
         <select
-          value={
-            users.find(
-              (u) =>
-                [u.firstName, u.lastName].filter(Boolean).join(' ') === author &&
-                (u.avatarUrl ?? null) === authorAvatarUrl
-            )?.id ?? ''
-          }
+          value={authorUserId ?? ''}
           onChange={(e) => {
-            const user = users.find((u) => u.id === e.target.value);
-            if (user) {
-              setAuthor([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email);
-              setAuthorUserId(user.id);
-              setAuthorAvatarUrl(user.avatarUrl ?? null);
-            }
+            setAuthorUserId(e.target.value || null);
           }}
           className={cn(
             'rounded-search border border-border-default bg-surface px-4 py-3 text-body-sm text-text-primary outline-none transition-colors focus:border-brand',
@@ -162,19 +145,24 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
             </option>
           ))}
         </select>
-        {errors.author && <p className="text-body-sm text-danger">{errors.author}</p>}
-        {author && (
-          <div className="flex items-center gap-2 pt-1">
-            {authorAvatarUrl ? (
-              <img src={authorAvatarUrl} alt="" className="size-7 rounded-full object-cover" />
-            ) : (
-              <div className="flex size-7 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold text-text-muted">
-                {author[0]?.toUpperCase()}
-              </div>
-            )}
-            <span className="text-body-sm text-text-secondary">{author}</span>
-          </div>
-        )}
+        {errors.authorUserId && <p className="text-body-sm text-danger">{errors.authorUserId}</p>}
+        {authorUserId && (() => {
+          const selectedUser = users.find((u) => u.id === authorUserId);
+          if (!selectedUser) return null;
+          const name = [selectedUser.firstName, selectedUser.lastName].filter(Boolean).join(' ') || selectedUser.email;
+          return (
+            <div className="flex items-center gap-2 pt-1">
+              {selectedUser.avatarUrl ? (
+                <img src={selectedUser.avatarUrl} alt="" className="size-7 rounded-full object-cover" />
+              ) : (
+                <div className="flex size-7 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold text-text-muted">
+                  {name[0]?.toUpperCase()}
+                </div>
+              )}
+              <span className="text-body-sm text-text-secondary">{name}</span>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Cover image */}

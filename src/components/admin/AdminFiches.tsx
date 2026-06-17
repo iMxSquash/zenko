@@ -94,7 +94,7 @@ function FicheRow({
           {fiche.category}
         </span>
       </td>
-      <td className="px-5 py-4 text-text-secondary">{fiche.author}</td>
+      <td className="px-5 py-4 text-text-secondary">{fiche.authorName}</td>
       <td className="px-5 py-4 text-text-muted">{date}</td>
       <td className="px-5 py-4">
         <div className="flex items-center justify-end gap-2">
