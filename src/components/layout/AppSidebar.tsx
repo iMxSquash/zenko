@@ -9,13 +9,16 @@ import { useUIStore } from '@/store/ui';
 import {
   BookOpen,
   ChatCircle,
+  List,
   Microphone,
   type Icon as PhosphorIcon,
   Shield,
   SignIn,
   SignOut,
+  X,
 } from '@phosphor-icons/react';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { useState } from 'react';
 
 function getInitials(name: string) {
   return name
@@ -81,6 +84,9 @@ export function AppSidebar() {
   const { data: isAdmin } = useIsAdmin();
   const navigate = useNavigate();
   const { sidebarCollapsed, toggleSidebarCollapsed } = useUIStore();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const close = () => setMobileOpen(false);
 
   const profileName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
   const displayName =
@@ -89,6 +95,7 @@ export function AppSidebar() {
 
   async function handleLogout() {
     try {
+      close();
       await signOut();
       navigate({ to: '/login' });
     } catch (err) {
@@ -96,77 +103,105 @@ export function AppSidebar() {
     }
   }
 
-  if (sidebarCollapsed) {
-    return (
-      <aside className="flex h-screen w-[57px] shrink-0 flex-col items-center border-r border-border bg-surface py-6 gap-8">
-        <button
-          type="button"
-          onClick={toggleSidebarCollapsed}
-          aria-label="Déplier la sidebar"
-          className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+  const navContent = (
+    <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
+      {/* Fiches section */}
+      <div className="flex flex-col gap-1">
+        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+          Fiches
+        </p>
+
+        <Link
+          to="/bibliotheque"
+          onClick={close}
+          className={navLinkBase}
+          activeProps={{ className: activeClass }}
+          inactiveProps={{ className: inactiveClass }}
         >
-          <ChevronIcon className="rotate-180" />
-        </button>
-
-        <nav className="flex flex-1 flex-col items-center gap-6">
-          <IconNavLink to="/bibliotheque" icon={BookOpen} title="Fiches" />
-          <IconNavLink to="/forum" icon={ChatCircle} title="Forum" />
-          {user && <IconNavLink to="/assistant" icon={Microphone} title="Assistant vocal" />}
-          {isAdmin && <IconNavLink to="/admin" icon={Shield} title="Administration" />}
-        </nav>
-
-        {user ? (
-          <Link to="/profile" title={displayName}>
-            {profile?.avatarUrl ? (
-              <img
-                src={profile.avatarUrl}
-                alt=""
-                className="size-9 shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
-                <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
-              </div>
-            )}
-          </Link>
-        ) : (
-          <Link
-            to="/login"
-            title="Se connecter"
-            className={cn(iconLinkBase, 'text-brand hover:bg-neutral-100')}
-          >
-            <SignIn size={20} />
-          </Link>
-        )}
-      </aside>
-    );
-  }
-
-  return (
-    <aside className="flex h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6">
-      <div className="flex items-center justify-between px-2 pb-6 pt-1">
-        <Link to={user ? '/bibliotheque' : '/'} className="block">
-          <ZenkoLogo width={110} />
+          <span className="min-w-0 flex-1">Tableau de bord</span>
         </Link>
-        <button
-          type="button"
-          onClick={toggleSidebarCollapsed}
-          aria-label="Réduire la sidebar"
-          className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
-        >
-          <ChevronIcon />
-        </button>
+
+        {user && (
+          <>
+            <Link
+              to="/en-cours"
+              onClick={close}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
+            >
+              <span className="min-w-0 flex-1">En cours…</span>
+              {inProgressFiches.length > 0 && (
+                <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
+                  {inProgressFiches.length}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              to="/favoris"
+              onClick={close}
+              className={navLinkBase}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
+            >
+              <span className="min-w-0 flex-1">Favoris</span>
+              {savedFiches.length > 0 && (
+                <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
+                  {savedFiches.length}
+                </span>
+              )}
+            </Link>
+          </>
+        )}
       </div>
 
-      <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
-        {/* Fiches section */}
+      {/* Forum section */}
+      <div className="flex flex-col gap-1">
+        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+          Forum
+        </p>
+
+        <Link
+          to="/forum"
+          onClick={close}
+          className={navLinkBase}
+          activeProps={{ className: activeClass }}
+          inactiveProps={{ className: inactiveClass }}
+        >
+          <span className="min-w-0 flex-1">Explorer</span>
+        </Link>
+      </div>
+
+      {/* Assistant section */}
+      {user && (
         <div className="flex flex-col gap-1">
           <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-            Fiches
+            Assistant
           </p>
 
           <Link
-            to="/bibliotheque"
+            to="/assistant"
+            onClick={close}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
+          >
+            <span className="min-w-0 flex-1">Assistant vocal</span>
+          </Link>
+        </div>
+      )}
+
+      {/* Administration section */}
+      {isAdmin && (
+        <div className="flex flex-col gap-1">
+          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+            Administration
+          </p>
+
+          <Link
+            to="/admin"
+            onClick={close}
             className={navLinkBase}
             activeProps={{ className: activeClass }}
             inactiveProps={{ className: inactiveClass }}
@@ -174,167 +209,207 @@ export function AppSidebar() {
             <span className="min-w-0 flex-1">Tableau de bord</span>
           </Link>
 
-          {user && (
-            <>
-              <Link
-                to="/en-cours"
-                className={navLinkBase}
-                activeProps={{ className: activeClass }}
-                inactiveProps={{ className: inactiveClass }}
-              >
-                <span className="min-w-0 flex-1">En cours…</span>
-                {inProgressFiches.length > 0 && (
-                  <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
-                    {inProgressFiches.length}
-                  </span>
-                )}
-              </Link>
-
-              <Link
-                to="/favoris"
-                className={navLinkBase}
-                activeProps={{ className: activeClass }}
-                inactiveProps={{ className: inactiveClass }}
-              >
-                <span className="min-w-0 flex-1">Favoris</span>
-                {savedFiches.length > 0 && (
-                  <span className="shrink-0 rounded-full bg-text-muted px-2 py-0.5 text-capsule font-bold text-white">
-                    {savedFiches.length}
-                  </span>
-                )}
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Forum section */}
-        <div className="flex flex-col gap-1">
-          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-            Forum
-          </p>
-
           <Link
-            to="/forum"
+            to="/admin/fiches"
+            onClick={close}
             className={navLinkBase}
             activeProps={{ className: activeClass }}
             inactiveProps={{ className: inactiveClass }}
           >
-            <span className="min-w-0 flex-1">Explorer</span>
+            <span className="min-w-0 flex-1">Fiches</span>
+          </Link>
+
+          <Link
+            to="/admin/forum"
+            onClick={close}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
+          >
+            <span className="min-w-0 flex-1">Modération</span>
+          </Link>
+
+          <Link
+            to="/admin/utilisateurs"
+            onClick={close}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
+          >
+            <span className="min-w-0 flex-1">Utilisateurs</span>
+          </Link>
+
+          <Link
+            to="/admin/avatars"
+            onClick={close}
+            className={navLinkBase}
+            activeProps={{ className: activeClass }}
+            inactiveProps={{ className: inactiveClass }}
+          >
+            <span className="min-w-0 flex-1">Avatars</span>
           </Link>
         </div>
+      )}
+    </nav>
+  );
 
-        {/* Assistant section */}
-        {user && (
-          <div className="flex flex-col gap-1">
-            <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-              Assistant
-            </p>
-
-            <Link
-              to="/assistant"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Assistant vocal</span>
-            </Link>
+  const userSection = user ? (
+    <div className="flex items-center gap-1">
+      <Link
+        to="/profile"
+        onClick={close}
+        className="flex w-full min-w-0 items-center gap-2.5 rounded-nav bg-background px-2 py-2.5 transition-colors hover:bg-neutral-100"
+      >
+        {profile?.avatarUrl ? (
+          <img
+            src={profile.avatarUrl}
+            alt=""
+            className="size-9 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
+            <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
           </div>
         )}
+        <span className="min-w-0 flex-1 truncate text-left text-[13px] font-semibold text-text-primary">
+          {displayName}
+        </span>
+      </Link>
+      <button
+        type="button"
+        onClick={handleLogout}
+        aria-label="Déconnexion"
+        className="flex size-9 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
+      >
+        <SignOut size={18} />
+      </button>
+    </div>
+  ) : (
+    <Link
+      to="/login"
+      onClick={close}
+      className="flex w-full items-center justify-center gap-2 rounded-nav bg-brand px-3 py-3 text-body-sm font-semibold text-white transition-opacity hover:opacity-90"
+    >
+      <SignIn size={18} />
+      Se connecter
+    </Link>
+  );
 
-        {/* Administration section */}
-        {isAdmin && (
-          <div className="flex flex-col gap-1">
-            <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
-              Administration
-            </p>
-
-            <Link
-              to="/admin"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Tableau de bord</span>
-            </Link>
-
-            <Link
-              to="/admin/fiches"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Fiches</span>
-            </Link>
-
-            <Link
-              to="/admin/forum"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Modération</span>
-            </Link>
-
-            <Link
-              to="/admin/utilisateurs"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Utilisateurs</span>
-            </Link>
-
-            <Link
-              to="/admin/avatars"
-              className={navLinkBase}
-              activeProps={{ className: activeClass }}
-              inactiveProps={{ className: inactiveClass }}
-            >
-              <span className="min-w-0 flex-1">Avatars</span>
-            </Link>
-          </div>
-        )}
+  return (
+    <>
+      {/* ── Mobile top nav ── */}
+      <nav className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-surface px-4 lg:hidden">
+        <Link to={user ? '/bibliotheque' : '/'} className="block">
+          <ZenkoLogo width={90} />
+        </Link>
+        <button
+          type="button"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Ouvrir le menu"
+          className="flex size-10 items-center justify-center rounded-nav text-text-primary transition-colors hover:bg-neutral-100"
+        >
+          <List size={22} />
+        </button>
       </nav>
 
-      {user ? (
-        <div className="flex items-center gap-1">
-          <Link
-            to="/profile"
-            className="flex w-full min-w-0 items-center gap-2.5 rounded-nav bg-background px-2 py-2.5 transition-colors hover:bg-neutral-100"
-          >
-            {profile?.avatarUrl ? (
-              <img
-                src={profile.avatarUrl}
-                alt=""
-                className="size-9 shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
-                <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
-              </div>
-            )}
-            <span className="min-w-0 flex-1 truncate text-left text-[13px] font-semibold text-text-primary">
-              {displayName}
-            </span>
+      {/* ── Mobile backdrop ── */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop is aria-hidden, X button handles keyboard */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          'fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden',
+          mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+        onClick={close}
+      />
+
+      {/* ── Mobile full-screen panel ── */}
+      <aside
+        className={cn(
+          'fixed inset-0 z-50 flex flex-col bg-surface px-4 py-6 transition-transform duration-300 lg:hidden',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        <div className="flex items-center justify-between px-2 pb-6 pt-1">
+          <Link to={user ? '/bibliotheque' : '/'} className="block" onClick={close}>
+            <ZenkoLogo width={110} />
           </Link>
           <button
             type="button"
-            onClick={handleLogout}
-            aria-label="Déconnexion"
-            className="flex size-9 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
+            onClick={close}
+            aria-label="Fermer le menu"
+            className="flex size-10 items-center justify-center rounded-nav text-text-muted transition-colors hover:text-text-primary"
           >
-            <SignOut size={18} />
+            <X size={20} />
           </button>
         </div>
+        {navContent}
+        {userSection}
+      </aside>
+
+      {/* ── Desktop collapsed sidebar ── */}
+      {sidebarCollapsed ? (
+        <aside className="hidden h-screen w-[57px] shrink-0 flex-col items-center gap-8 border-r border-border bg-surface py-6 lg:flex">
+          <button
+            type="button"
+            onClick={toggleSidebarCollapsed}
+            aria-label="Déplier la sidebar"
+            className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+          >
+            <ChevronIcon className="rotate-180" />
+          </button>
+
+          <nav className="flex flex-1 flex-col items-center gap-6">
+            <IconNavLink to="/bibliotheque" icon={BookOpen} title="Fiches" />
+            <IconNavLink to="/forum" icon={ChatCircle} title="Forum" />
+            {user && <IconNavLink to="/assistant" icon={Microphone} title="Assistant vocal" />}
+            {isAdmin && <IconNavLink to="/admin" icon={Shield} title="Administration" />}
+          </nav>
+
+          {user ? (
+            <Link to="/profile" title={displayName}>
+              {profile?.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt=""
+                  className="size-9 shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pedopsy-bg">
+                  <span className="text-[13px] font-semibold text-pedopsy">{userInitials}</span>
+                </div>
+              )}
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              title="Se connecter"
+              className={cn(iconLinkBase, 'text-brand hover:bg-neutral-100')}
+            >
+              <SignIn size={20} />
+            </Link>
+          )}
+        </aside>
       ) : (
-        <Link
-          to="/login"
-          className="flex w-full items-center justify-center gap-2 rounded-nav bg-brand px-3 py-3 text-body-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          <SignIn size={18} />
-          Se connecter
-        </Link>
+        /* ── Desktop expanded sidebar ── */
+        <aside className="hidden h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6 lg:flex">
+          <div className="flex items-center justify-between px-2 pb-6 pt-1">
+            <Link to={user ? '/bibliotheque' : '/'} className="block">
+              <ZenkoLogo width={110} />
+            </Link>
+            <button
+              type="button"
+              onClick={toggleSidebarCollapsed}
+              aria-label="Réduire la sidebar"
+              className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+            >
+              <ChevronIcon />
+            </button>
+          </div>
+          {navContent}
+          {userSection}
+        </aside>
       )}
-    </aside>
+    </>
   );
 }
