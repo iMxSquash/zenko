@@ -1,7 +1,6 @@
-import { AvatarPicker } from '@/components/ui/AvatarPicker/AvatarPicker';
 import { Button } from '@/components/ui/Button/Button';
 import { TextInput } from '@/components/ui/TextInput/TextInput';
-import { useAdminAvatars, useUploadFicheCover } from '@/hooks/useAdmin';
+import { useAdminUsers, useUploadFicheCover } from '@/hooks/useAdmin';
 import type { FicheInput } from '@/hooks/useAdmin';
 import { cn } from '@/lib/utils';
 import type { ResourceCategory } from '@/types';
@@ -24,7 +23,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadCover = useUploadFicheCover();
-  const { data: avatarsData = [] } = useAdminAvatars();
+  const { data: users = [] } = useAdminUsers();
 
   const [slug, setSlug] = useState(initial?.slug ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
@@ -127,36 +126,49 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
         </div>
       </fieldset>
 
-      <TextInput
-        label="Auteur"
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        placeholder="Nom de l'auteur"
-        error={errors.author}
-      />
-
-      {/* Author avatar */}
-      <div className="flex flex-col gap-2">
+      {/* Author — linked to a user profile */}
+      <div className="flex flex-col gap-1.5">
         <span className="text-label font-semibold uppercase tracking-label text-text-secondary">
-          Photo de l'auteur
+          Auteur
         </span>
-        {authorAvatarUrl && (
-          <div className="flex items-center gap-3">
-            <img src={authorAvatarUrl} alt="" className="size-12 rounded-full object-cover" />
-            <button
-              type="button"
-              onClick={() => setAuthorAvatarUrl(null)}
-              className="text-body-sm text-danger hover:underline"
-            >
-              Retirer
-            </button>
+        <select
+          value={users.find(
+            (u) =>
+              [u.firstName, u.lastName].filter(Boolean).join(' ') === author &&
+              (u.avatarUrl ?? null) === authorAvatarUrl
+          )?.id ?? ''}
+          onChange={(e) => {
+            const user = users.find((u) => u.id === e.target.value);
+            if (user) {
+              setAuthor([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email);
+              setAuthorAvatarUrl(user.avatarUrl ?? null);
+            }
+          }}
+          className={cn(
+            'rounded-search border border-border-default bg-surface px-4 py-3 text-body-sm text-text-primary outline-none transition-colors focus:border-brand',
+            errors.author && 'border-danger'
+          )}
+        >
+          <option value="">Choisir un auteur…</option>
+          {users.map((u) => (
+            <option key={u.id} value={u.id}>
+              {[u.firstName, u.lastName].filter(Boolean).join(' ') || u.email}
+            </option>
+          ))}
+        </select>
+        {errors.author && <p className="text-body-sm text-danger">{errors.author}</p>}
+        {author && (
+          <div className="flex items-center gap-2 pt-1">
+            {authorAvatarUrl ? (
+              <img src={authorAvatarUrl} alt="" className="size-7 rounded-full object-cover" />
+            ) : (
+              <div className="flex size-7 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold text-text-muted">
+                {author[0]?.toUpperCase()}
+              </div>
+            )}
+            <span className="text-body-sm text-text-secondary">{author}</span>
           </div>
         )}
-        <AvatarPicker
-          avatars={avatarsData.map((a) => a.url)}
-          value={authorAvatarUrl}
-          onChange={setAuthorAvatarUrl}
-        />
       </div>
 
       {/* Cover image */}
