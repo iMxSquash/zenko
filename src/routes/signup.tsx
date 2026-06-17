@@ -78,7 +78,7 @@ function SignupPage() {
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-white">
       {/* Logo absolu en haut à gauche */}
-      <div className="absolute left-16 top-16 z-20">
+      <div className="absolute left-16 top-16 z-20 hidden lg:block">
         <ZenkoLogo width={145} />
       </div>
 

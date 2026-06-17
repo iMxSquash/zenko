@@ -45,7 +45,7 @@ function LoginPage() {
       />
 
       {/* Logo absolu en haut à gauche — overlay sur tout le layout */}
-      <div className="absolute left-16 top-16 z-20">
+      <div className="absolute left-16 top-16 z-20 hidden lg:block">
         <ZenkoLogo width={145} />
       </div>
 
