@@ -43,7 +43,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-8 py-24 pb-48 md:px-16"
+      className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-6 py-14 pb-24 md:px-16 lg:py-24 lg:pb-48"
     >
       {/* Decorative shapes — see LandingDecor.tsx (expiring URLs note there) */}
       <SectionDecor shapes={HERO_DECOR} sectionRef={sectionRef} />
@@ -65,7 +65,7 @@ export function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[52px] font-bold leading-[1.1] tracking-display text-dark md:text-display-xl md:leading-20">
+          <h1 className="text-[30px] font-bold leading-[1.25] tracking-display text-dark md:text-[52px] md:leading-[1.1] lg:text-display-xl lg:leading-20">
             Même enfant.
             <br />
             Mêmes m
@@ -99,7 +99,7 @@ export function HeroSection() {
           <div className="flex flex-col gap-4">
             <Link
               to="/signup"
-              className="w-fit rounded-full bg-brand-100 px-6 py-4 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="w-full rounded-full bg-brand-100 px-6 py-4 text-center font-display text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:w-fit"
             >
               Créer mon compte gratuitement
             </Link>
@@ -112,7 +112,7 @@ export function HeroSection() {
         </div>
 
         {/* Right — role cards grid */}
-        <div className="relative z-20 ml-auto shrink-0 lg:w-130">
+        <div className="relative z-20 w-full lg:ml-auto lg:w-130 lg:shrink-0">
           <div className="relative grid grid-cols-2 gap-4">
             {ROLES.map((role) => (
               <RoleCard key={role.label} {...role} />
