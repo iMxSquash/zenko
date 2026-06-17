@@ -28,14 +28,14 @@ export function OnboardingRoleStep({
       </div>
 
       {/* ── Panneau gauche — branding 50% ── */}
-      <div className="relative hidden flex-col items-center justify-center self-stretch bg-[#fafaf9] lg:flex lg:w-1/2">
+      <div className="relative z-10 hidden flex-col items-center justify-center self-stretch bg-[#fafaf9] lg:flex lg:w-1/2">
         {/* Blob cluster */}
         <img
           src="/assets/role_blob.svg"
           alt=""
           aria-hidden="true"
           className="pointer-events-none absolute bottom-0 select-none"
-          style={{ left: 0, bottom: 0, width: '200%', transform: 'translate(5%, 60%)', zIndex: 5 }}
+          style={{ left: -40, bottom: -40, width: '156%', transform: 'translateY(56%)', zIndex: 5 }}
         />
 
         {/* Texte central */}
