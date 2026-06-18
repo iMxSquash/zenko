@@ -1,11 +1,22 @@
-import { OnboardingNav } from '@/components/onboarding/OnboardingNav';
 import { OnboardingRoleStep } from '@/components/onboarding/OnboardingRoleStep';
 import { useUpdateRole } from '@/hooks/useProfile';
+import { assertValidSocialUrl } from '@/lib/profile/socialLinks';
+import { supabase } from '@/lib/supabase/client';
 import type { ForumUserRole } from '@/types';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/_protected/onboarding/')({
+  beforeLoad: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+
+    if (data?.role) throw redirect({ to: '/bibliotheque' });
+  },
   component: OnboardingPage,
 });
 
@@ -24,6 +35,19 @@ function OnboardingPage() {
   const handleContinue = () => {
     if (!selectedRole) return;
 
+    if (selectedRole === 'expert') {
+      if (!doctolibUrl) {
+        setError('Le lien Doctolib est requis pour le rôle expert.');
+        return;
+      }
+      try {
+        assertValidSocialUrl(doctolibUrl, 'doctolib', 'Doctolib');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Lien Doctolib invalide.');
+        return;
+      }
+    }
+
     setError(undefined);
     updateRole.mutate(
       {
@@ -41,7 +65,6 @@ function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <OnboardingNav />
       <OnboardingRoleStep
         selectedRole={selectedRole}
         onSelectRole={handleSelectRole}

@@ -4,14 +4,16 @@ import type { ResourceCategory } from '@/types';
 
 interface CapsuleFicheProps {
   category: ResourceCategory;
+  size?: 'sm' | 'lg';
   className?: string;
 }
 
-export function CapsuleFiche({ category, className }: CapsuleFicheProps) {
+export function CapsuleFiche({ category, size = 'sm', className }: CapsuleFicheProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-capsule px-2 py-0.75 text-capsule font-semibold uppercase tracking-capsule text-text-secondary',
+        'inline-flex self-start items-center rounded-capsule font-semibold uppercase tracking-capsule text-text-secondary',
+        size === 'sm' ? 'px-2 py-0.75 text-capsule' : 'px-2 py-0.75 text-[20px] tracking-[1.2px]',
         CATEGORY_CAPSULE_BG[category],
         className
       )}

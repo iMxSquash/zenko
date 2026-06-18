@@ -24,7 +24,7 @@ export function useVoice() {
       sttRef.current.onResult((text) => {
         setTranscript(text);
         setInterimTranscript('');
-        // continuous mode — isListening stays true until stopListening() is called
+        // continuous mode - isListening stays true until stopListening() is called
       });
 
       sttRef.current.onInterimResult((text) => {

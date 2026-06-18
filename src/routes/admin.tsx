@@ -25,7 +25,7 @@ function AdminLayout() {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
         <Outlet />
       </main>
     </div>

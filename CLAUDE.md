@@ -1,13 +1,13 @@
 # Zenko
 
-PWA React + Vite — **V2 en cours**. Ce fichier documente les conventions du projet pour Claude Code.
+PWA React + Vite - **V2 en cours**. Ce fichier documente les conventions du projet pour Claude Code.
 
 ## Contexte
 
-Zenko est la V2 d'AlemAgency. Application web progressive (PWA) avec assistant vocal pour l'accompagnement des enfants neurodivergents. Contrairement à AlemAgency (Next.js, MVP rapide), Zenko est une SPA Vite — il n'y a **pas de route handlers ni de Server Components**.
+Zenko est la V2 d'AlemAgency. Application web progressive (PWA) avec assistant vocal pour l'accompagnement des enfants neurodivergents. Contrairement à AlemAgency (Next.js, MVP rapide), Zenko est une SPA Vite - il n'y a **pas de route handlers ni de Server Components**.
 
 La couche serveur est assurée par Supabase :
-- **PostgREST** (via `@supabase/supabase-js`) pour toutes les données : forum, fiches, profil — protégées par RLS.
+- **PostgREST** (via `@supabase/supabase-js`) pour toutes les données : forum, fiches, profil - protégées par RLS.
 - **Edge Functions** uniquement quand une clé secrète est nécessaire côté serveur : `/chat` (ANTHROPIC_API_KEY) et `/embed` (indexation pgvector).
 
 ## Règles V2
@@ -17,9 +17,9 @@ Ce projet est une V2 : l'hypothèse produit est validée, on construit pour dure
 ### Ce qu'on fait
 
 - **Séparer les responsabilités** : composant = affichage, hook = logique, `lib/` = accès données.
-- **TanStack Query pour tout le server state** : forum, fiches, profil utilisateur — pas de `useState` + `useEffect` pour fetcher.
+- **TanStack Query pour tout le server state** : forum, fiches, profil utilisateur - pas de `useState` + `useEffect` pour fetcher.
 - **Zustand uniquement pour l'état client pur** : UI (sidebar, mute, mic) sans source serveur.
-- **Couche voix abstraite** : toujours passer par `useVoice` — jamais appeler `SpeechRecognition` directement dans un composant.
+- **Couche voix abstraite** : toujours passer par `useVoice` - jamais appeler `SpeechRecognition` directement dans un composant.
 - **Clés API serveur dans Supabase Edge Function secrets** : `ANTHROPIC_API_KEY` n'est jamais côté client.
 - **Utiliser des librairies existantes** : ne pas réimplémenter ce qu'un package fiable fait déjà.
 
@@ -31,7 +31,7 @@ Ce projet est une V2 : l'hypothèse produit est validée, on construit pour dure
 - **Pas de logique métier dans les routes** : les fichiers `src/routes/` assemblent et passent des props, c'est tout.
 - **Pas de feature flags** : changer le code directement.
 - **Pas de i18n** : tout en français.
-- **Pas d'optimisation sans mesure** : TanStack Query gère le cache — ne pas en ajouter une couche par-dessus.
+- **Pas d'optimisation sans mesure** : TanStack Query gère le cache - ne pas en ajouter une couche par-dessus.
 - **Pas de `console.log` oublié** : `console.error` pour les erreurs aux frontières, rien d'autre.
 
 ### Arbitrages fréquents
@@ -42,7 +42,7 @@ Ce projet est une V2 : l'hypothèse produit est validée, on construit pour dure
 | Pagination ou tout charger ? | Tout charger jusqu'à ce que ça rame |
 | State local ou Zustand ? | Local (`useState`) si l'état ne sort pas du composant |
 | State local ou TanStack Query ? | TanStack Query dès que la donnée vient de Supabase |
-| Composant client ou serveur ? | Tout est client (SPA) — pas de distinction à faire |
+| Composant client ou serveur ? | Tout est client (SPA) - pas de distinction à faire |
 | Gestion des erreurs réseau ? | `error` de `useQuery`, message générique affiché, log en console |
 
 ## Stack
@@ -66,22 +66,22 @@ Ce projet est une V2 : l'hypothèse produit est validée, on construit pour dure
 src/
   routes/
     __root.tsx              # Layout racine
-    index.tsx               # / — landing page (publique)
+    index.tsx               # / - landing page (publique)
     login.tsx               # /login
     signup.tsx              # /signup
-    signup.role.tsx         # /signup/role — choix du rôle après inscription
+    signup.role.tsx         # /signup/role - choix du rôle après inscription
     _protected.tsx          # Layout auth-guard (redirige si non connecté)
     _protected/
       bibliotheque/
         index.tsx           # /bibliotheque
-        $slug.tsx           # /bibliotheque/:slug — détail fiche + progression
+        $slug.tsx           # /bibliotheque/:slug - détail fiche + progression
       forum/
         index.tsx           # /forum
-        $threadId.tsx       # /forum/:threadId — thread + messages temps réel
+        $threadId.tsx       # /forum/:threadId - thread + messages temps réel
       assistant/
-        index.tsx          # /assistant — chat principal
-        history.tsx        # /assistant/history — historique des sessions
-        $sessionId.tsx     # /assistant/:sessionId — replay d'une session
+        index.tsx          # /assistant - chat principal
+        history.tsx        # /assistant/history - historique des sessions
+        $sessionId.tsx     # /assistant/:sessionId - replay d'une session
   components/
     layout/                 # Sidebar, Header, BottomNav (mobile)
     ui/                     # Composants génériques (Button, Card, Badge, etc.)
@@ -94,7 +94,7 @@ src/
     useForum.ts             # threads, replies, Supabase Realtime
     useAssistant.ts         # useChat (AI SDK) + état vocal
   store/
-    ui.ts                   # Zustand — sidebar, mic actif, mute
+    ui.ts                   # Zustand - sidebar, mic actif, mute
   lib/
     supabase/
       client.ts             # createClient() browser
@@ -113,22 +113,22 @@ src/
 - Imports : toujours avec `@/` (alias `src/`)
 - Composants : PascalCase, un fichier = un composant
 - Hooks : camelCase avec préfixe `use`
-- Tout est Client Component (SPA) — pas de `"use client"` à ajouter
+- Tout est Client Component (SPA) - pas de `"use client"` à ajouter
 - `cn()` de `@/lib/utils` pour les classes conditionnelles
 - Pas de commentaires évidents ; un commentaire = une contrainte non-obvie
 
 ## State management
 
 - **TanStack Query** : toute donnée qui vient de Supabase (forum, fiches, profil). Configurer `staleTime` selon la fraîcheur nécessaire.
-- **Zustand** (`src/store/ui.ts`) : état UI pur sans source serveur — sidebar, mic actif, mute.
+- **Zustand** (`src/store/ui.ts`) : état UI pur sans source serveur - sidebar, mic actif, mute.
 - **`useState`** : état local qui ne sort pas du composant (valeur d'un input, toggle local).
-- **`useChat`** (@ai-sdk/react) : état du chat streaming — ne pas dupliquer dans Zustand.
+- **`useChat`** (@ai-sdk/react) : état du chat streaming - ne pas dupliquer dans Zustand.
 
 ## Routing (TanStack Router)
 
-- Routes dans `src/routes/` — le plugin Vite génère `routeTree.gen.ts` automatiquement (ne pas éditer).
+- Routes dans `src/routes/` - le plugin Vite génère `routeTree.gen.ts` automatiquement (ne pas éditer).
 - Préfixe `_` pour les layouts sans segment d'URL : `_protected.tsx` → layout auth, pas de `/protected` dans l'URL.
-- Paramètres dynamiques : `$slug.tsx`, `$threadId.tsx` — typés automatiquement.
+- Paramètres dynamiques : `$slug.tsx`, `$threadId.tsx` - typés automatiquement.
 - Redirection auth dans `_protected.tsx` via `beforeLoad`.
 
 ## Cycle de développement
@@ -150,7 +150,7 @@ Toujours suivre ce cycle, sans exception :
 ## Commits
 
 - **Langue** : toujours en anglais.
-- **Convention** : Conventional Commits — `type(scope): description` en minuscules.
+- **Convention** : Conventional Commits - `type(scope): description` en minuscules.
   - Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `style`, `perf`, `ci`.
   - Exemple : `feat(forum): add real-time message subscription`
 - **Pas de mention Co-Authored-By** : ne jamais ajouter `Co-Authored-By: Claude` dans les messages de commit.
@@ -190,7 +190,7 @@ Ces skills doivent être invoqués **automatiquement** sans que l'utilisateur le
 | `/new-feature` | Demande de créer une feature complète (plusieurs fichiers liés) |
 | `/new-migration` | Demande de créer une table, modifier le schéma, écrire du SQL dans `supabase/migrations/` |
 | `/new-edge-function` | Création ou modification d'un fichier dans `supabase/functions/` |
-| `/supabase-rls` | Toute nouvelle table créée — vérifier et générer le RLS systématiquement |
+| `/supabase-rls` | Toute nouvelle table créée - vérifier et générer le RLS systématiquement |
 | `/supabase-postgres-best-practices` | Toute écriture ou révision de SQL (migrations, seeds, requêtes dans les Edge Functions) |
 
 ### Invocation manuelle
@@ -202,6 +202,7 @@ Ces skills doivent être invoqués **automatiquement** sans que l'utilisateur le
 /new-edge-function <nom>
 /supabase-rls    <table>
 /audit-conformite [accessibilite|rgpd|securite]
+/generate-fiches <count> "<thème>" [category:<TSA|TDAH|DYS|TDI>] [user:<user_id>]
 ```
 
 ## Variables d'environnement
@@ -216,6 +217,6 @@ Voir `.env.example`. Ne jamais committer `.env.local`.
 
 ## PWA
 
-- Le service worker est généré par Workbox au `npm run build` — ne pas en créer un manuellement.
+- Le service worker est généré par Workbox au `npm run build` - ne pas en créer un manuellement.
 - En dev (`npm run dev`), le SW n'est pas actif. Tester le comportement offline avec `npm run build && npm run preview`.
 - Si la page semble servir du cache d'une autre app : DevTools → Application → Service Workers → Unregister.

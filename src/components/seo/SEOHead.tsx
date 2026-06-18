@@ -30,7 +30,7 @@ function setLinkTag(rel: string, href: string) {
 }
 
 /** Sets per-page title, meta description, canonical and Open Graph/Twitter tags.
- * Zenko is a client-rendered SPA, so this runs after the initial render — non-JS
+ * Zenko is a client-rendered SPA, so this runs after the initial render - non-JS
  * crawlers will only see the defaults from `index.html`. */
 export function SEOHead({ title, description, path = '/', image, noIndex }: SEOHeadProps) {
   useEffect(() => {

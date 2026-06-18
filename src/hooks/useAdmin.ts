@@ -11,8 +11,13 @@ type FicheRow = {
   title: string;
   description: string;
   category: ResourceCategory;
-  author: string;
-  author_avatar_url: string | null;
+  author_user_id: string | null;
+  public_profiles: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
+  cover_image_url: string | null;
   created_at: string;
   content: string | null;
   reading_time_minutes: number | null;
@@ -57,8 +62,10 @@ export interface AdminFiche {
   title: string;
   description: string;
   category: ResourceCategory;
-  author: string;
+  authorUserId: string | null;
   authorAvatarUrl: string | null;
+  authorName: string;
+  coverImageUrl: string | null;
   content: string | null;
   readingTimeMinutes: number | null;
   createdAt: string;
@@ -103,8 +110,8 @@ export interface FicheInput {
   title: string;
   description: string;
   category: ResourceCategory;
-  author: string;
-  authorAvatarUrl?: string | null;
+  authorUserId?: string | null;
+  coverImageUrl?: string | null;
   content?: string | null;
   readingTimeMinutes?: number | null;
 }
@@ -112,14 +119,17 @@ export interface FicheInput {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function toAdminFiche(row: FicheRow): AdminFiche {
+  const p = row.public_profiles;
   return {
     id: row.id,
     slug: row.slug,
     title: row.title,
     description: row.description,
     category: row.category,
-    author: row.author,
-    authorAvatarUrl: row.author_avatar_url,
+    authorName: [p?.first_name, p?.last_name].filter(Boolean).join(' '),
+    authorUserId: row.author_user_id,
+    authorAvatarUrl: p?.avatar_url ?? null,
+    coverImageUrl: row.cover_image_url,
     content: row.content,
     readingTimeMinutes: row.reading_time_minutes,
     createdAt: row.created_at,
@@ -153,7 +163,7 @@ export function useAdminFiches() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('fiches')
-        .select('*')
+        .select('*, public_profiles(first_name, last_name, avatar_url)')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data as FicheRow[]).map(toAdminFiche);
@@ -172,8 +182,8 @@ export function useCreateFiche() {
           title: input.title,
           description: input.description,
           category: input.category,
-          author: input.author,
-          author_avatar_url: input.authorAvatarUrl ?? null,
+          author_user_id: input.authorUserId ?? null,
+          cover_image_url: input.coverImageUrl ?? null,
           content: input.content ?? null,
           reading_time_minutes: input.readingTimeMinutes ?? null,
         })
@@ -197,8 +207,8 @@ export function useUpdateFiche() {
       if (input.title !== undefined) payload.title = input.title;
       if (input.description !== undefined) payload.description = input.description;
       if (input.category !== undefined) payload.category = input.category;
-      if (input.author !== undefined) payload.author = input.author;
-      if (input.authorAvatarUrl !== undefined) payload.author_avatar_url = input.authorAvatarUrl;
+      if (input.authorUserId !== undefined) payload.author_user_id = input.authorUserId;
+      if (input.coverImageUrl !== undefined) payload.cover_image_url = input.coverImageUrl;
       if (input.content !== undefined) payload.content = input.content;
       if (input.readingTimeMinutes !== undefined)
         payload.reading_time_minutes = input.readingTimeMinutes;
@@ -457,6 +467,18 @@ export function useAdminDeleteUser() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+    },
+  });
+}
+
+export function useUploadFicheCover() {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const ext = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from('fiche-covers').upload(fileName, file);
+      if (error) throw error;
+      return supabase.storage.from('fiche-covers').getPublicUrl(fileName).data.publicUrl;
     },
   });
 }

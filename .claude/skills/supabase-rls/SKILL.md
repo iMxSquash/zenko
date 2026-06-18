@@ -3,9 +3,10 @@
 ## Auto-invoke
 
 Invoquer automatiquement quand :
+
 - Une nouvelle table est créée dans une migration (vérifier que RLS est définie)
 - L'utilisateur demande de sécuriser une table (`"sécurise la table …"`, `"ajoute le RLS …"`)
-- Une migration ne contient pas de politiques RLS — les ajouter systématiquement
+- Une migration ne contient pas de politiques RLS - les ajouter systématiquement
 - L'utilisateur expose des données via PostgREST sans RLS visible
 
 Génère les politiques RLS Supabase complètes pour une table du projet Zenko.
@@ -19,13 +20,14 @@ L'utilisateur donne le nom d'une table (ex: `/supabase-rls chat_sessions`).
 ### 1. Identifier la structure de la table
 
 Lire le fichier de migration correspondant dans `supabase/migrations/` pour comprendre :
+
 - Les colonnes de la table
 - La colonne qui référence l'utilisateur (typiquement `user_id` → `profiles.id`)
 - Si la table est partagée entre utilisateurs (forum, resources)
 
 ### 2. Générer les politiques
 
-#### Cas standard — table appartenant à un utilisateur (`user_id`)
+#### Cas standard - table appartenant à un utilisateur (`user_id`)
 
 ```sql
 alter table public.<table> enable row level security;
@@ -108,4 +110,4 @@ create policy "<table>_select_by_role"
 - Chaque opération nécessaire (select/insert/update/delete) a sa politique
 - Noms de politiques uniques et descriptifs (snake_case)
 - `using()` pour SELECT/UPDATE/DELETE, `with check()` pour INSERT
-- Les Edge Functions qui utilisent `SUPABASE_SERVICE_ROLE_KEY` bypassent RLS — pas besoin de politique spéciale pour elles
+- Les Edge Functions qui utilisent `SUPABASE_SERVICE_ROLE_KEY` bypassent RLS - pas besoin de politique spéciale pour elles

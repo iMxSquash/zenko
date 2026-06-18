@@ -226,7 +226,7 @@ Deno.serve(async (req) => {
       const items = (fiches ?? [])
         .map(
           (f) =>
-            `<li><a href="${SITE_URL}/bibliotheque/${escapeHtml(f.slug)}">${escapeHtml(f.title)}</a> — ${escapeHtml(f.description)}</li>`
+            `<li><a href="${SITE_URL}/bibliotheque/${escapeHtml(f.slug)}">${escapeHtml(f.title)}</a> - ${escapeHtml(f.description)}</li>`
         )
         .join('\n');
 
@@ -350,7 +350,9 @@ ${replyItems}
     });
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Internal error' }),
+      JSON.stringify({
+        error: err instanceof Error ? err.message : 'Internal error',
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -90,11 +90,11 @@ function FicheRow({
     <tr className="border-b border-border last:border-0 hover:bg-background transition-colors">
       <td className="px-5 py-4 font-medium text-text-primary">{fiche.title}</td>
       <td className="px-5 py-4">
-        <span className="rounded-full bg-background px-3 py-1 text-[12px] font-semibold text-text-secondary">
+        <span className="rounded-full bg-background px-3 py-1 text-label font-semibold text-text-secondary">
           {fiche.category}
         </span>
       </td>
-      <td className="px-5 py-4 text-text-secondary">{fiche.author}</td>
+      <td className="px-5 py-4 text-text-secondary">{fiche.authorName}</td>
       <td className="px-5 py-4 text-text-muted">{date}</td>
       <td className="px-5 py-4">
         <div className="flex items-center justify-end gap-2">

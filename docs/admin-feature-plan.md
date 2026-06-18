@@ -1,4 +1,4 @@
-# Espace admin — plan de feature
+# Espace admin - plan de feature
 
 ## Objectif
 
@@ -57,7 +57,7 @@ grant execute on function public.is_admin(uuid) to authenticated;
 
 ### Policies à ajouter sur les tables existantes
 
-**`fiches`** — actuellement lecture seule pour tous les authentifiés, pas d'écriture possible. Ajouter :
+**`fiches`** - actuellement lecture seule pour tous les authentifiés, pas d'écriture possible. Ajouter :
 
 ```sql
 create policy "fiches_admin_all"
@@ -69,7 +69,7 @@ create policy "fiches_admin_all"
 
 Idem pour `fiches_content` (table de contenu détaillé créée en 00017) si les admins doivent éditer le contenu des fiches.
 
-**`forum_threads` / `forum_replies`** — modération : un admin peut supprimer n'importe quel thread/réponse (pas seulement les siens).
+**`forum_threads` / `forum_replies`** - modération : un admin peut supprimer n'importe quel thread/réponse (pas seulement les siens).
 
 ```sql
 create policy "forum_threads_admin_delete"
@@ -83,7 +83,7 @@ create policy "forum_replies_admin_delete"
   using (public.is_admin(auth.uid()));
 ```
 
-**`profiles`** — un admin doit pouvoir lister tous les profils (page "Utilisateurs"). La policy `select` actuelle limite à `auth.uid() = id`. Ajouter :
+**`profiles`** - un admin doit pouvoir lister tous les profils (page "Utilisateurs"). La policy `select` actuelle limite à `auth.uid() = id`. Ajouter :
 
 ```sql
 create policy "profiles_admin_select_all"
@@ -92,9 +92,9 @@ create policy "profiles_admin_select_all"
   using (public.is_admin(auth.uid()));
 ```
 
-> Pas de policy `update`/`delete` sur `profiles` pour les admins dans un premier temps — pas de besoin produit identifié (pas d'édition de profil d'autrui).
+> Pas de policy `update`/`delete` sur `profiles` pour les admins dans un premier temps - pas de besoin produit identifié (pas d'édition de profil d'autrui).
 
-**Bucket Storage `avatars`** — créé en 00022 avec lecture publique et écriture réservée à `service_role` (upload manuel). Ajouter des policies pour permettre aux admins d'ajouter/supprimer des avatars depuis `/admin/avatars` :
+**Bucket Storage `avatars`** - créé en 00022 avec lecture publique et écriture réservée à `service_role` (upload manuel). Ajouter des policies pour permettre aux admins d'ajouter/supprimer des avatars depuis `/admin/avatars` :
 
 ```sql
 create policy "avatars_admin_insert"
@@ -119,7 +119,7 @@ Pas d'UI d'auto-promotion. Deux options, à trancher selon le besoin :
    insert into public.admins (user_id)
    values ('<uuid-du-compte>');
    ```
-2. **Edge Function `admin-manage-users`** (si on veut une UI "promouvoir/rétrograder" dans `/admin/utilisateurs`) — appelée avec le `service_role` côté serveur, vérifie d'abord que l'appelant est admin via `is_admin`, puis insère/supprime dans `admins`. Nécessaire car le client n'a aucune policy insert/delete sur `admins`.
+2. **Edge Function `admin-manage-users`** (si on veut une UI "promouvoir/rétrograder" dans `/admin/utilisateurs`) - appelée avec le `service_role` côté serveur, vérifie d'abord que l'appelant est admin via `is_admin`, puis insère/supprime dans `admins`. Nécessaire car le client n'a aucune policy insert/delete sur `admins`.
 
 Recommandation : démarrer avec l'option 1 (un seul admin pour bootstrap), ajouter l'Edge Function seulement si l'équipe grandit.
 
@@ -132,17 +132,17 @@ src/routes/
   _protected/
     _admin.tsx                # layout + guard is_admin
     _admin/
-      index.tsx                # /admin — dashboard (stats rapides)
+      index.tsx                # /admin - dashboard (stats rapides)
       utilisateurs/
-        index.tsx               # /admin/utilisateurs — liste + rôle admin
+        index.tsx               # /admin/utilisateurs - liste + rôle admin
       fiches/
-        index.tsx               # /admin/fiches — liste + CRUD
-        $slug.tsx               # /admin/fiches/:slug — édition contenu
-        nouvelle.tsx             # /admin/fiches/nouvelle — création
+        index.tsx               # /admin/fiches - liste + CRUD
+        $slug.tsx               # /admin/fiches/:slug - édition contenu
+        nouvelle.tsx             # /admin/fiches/nouvelle - création
       forum/
-        index.tsx               # /admin/forum — modération threads/réponses
+        index.tsx               # /admin/forum - modération threads/réponses
       avatars/
-        index.tsx               # /admin/avatars — galerie + ajout/suppression d'avatars
+        index.tsx               # /admin/avatars - galerie + ajout/suppression d'avatars
 ```
 
 ### Guard `_admin.tsx`
@@ -165,7 +165,7 @@ export const Route = createFileRoute('/_protected/_admin')({
 });
 ```
 
-`_protected.tsx` fait déjà le check "connecté". `_admin.tsx` ajoute le check "est admin" et redirige vers la bibliothèque sinon (pas de message d'erreur exposé — on évite de révéler que `/admin` existe).
+`_protected.tsx` fait déjà le check "connecté". `_admin.tsx` ajoute le check "est admin" et redirige vers la bibliothèque sinon (pas de message d'erreur exposé - on évite de révéler que `/admin` existe).
 
 ## 3. Hooks (`src/hooks/useAdmin.ts`)
 
@@ -205,12 +205,12 @@ Dans `AppSidebar.tsx`, ajouter une section "Administration" affichée uniquement
 
 ### Pages
 
-- **`/admin`** — quelques compteurs (nb fiches, nb threads, nb utilisateurs) via des requêtes `count` simples. Pas de vraie dashboard analytics pour le V2.
-- **`/admin/fiches`** — table (titre, catégorie, auteur, date) avec actions éditer/supprimer + bouton "Nouvelle fiche". `ConfirmDialog` existant pour la suppression.
-- **`/admin/fiches/$slug`** et **`/admin/fiches/nouvelle`** — formulaire (titre, description, catégorie, auteur, contenu) réutilisant `TextInput`, `RoleSelector`/`Capsule` pour la catégorie.
-- **`/admin/forum`** — liste des threads avec nombre de réponses et bouton supprimer (le `ConfirmDialog` existe déjà pour ce pattern).
-- **`/admin/utilisateurs`** — table des profils (nom, email, rôle, badge "Admin" si présent dans `admins`). Pas d'action de promotion dans une première itération (cf. section 1).
-- **`/admin/avatars`** — galerie des avatars du bucket `avatars` (réutilise `listAvatars`/`AvatarPicker` pour l'affichage), bouton "Ajouter un avatar" (upload fichier image vers le bucket) et action supprimer par avatar avec `ConfirmDialog` (vérifier qu'un avatar utilisé par un profil reste affichable même après suppression — l'URL publique cassée doit être gérée côté `ProfileAvatarSection`/`AvatarPicker` avec un fallback).
+- **`/admin`** - quelques compteurs (nb fiches, nb threads, nb utilisateurs) via des requêtes `count` simples. Pas de vraie dashboard analytics pour le V2.
+- **`/admin/fiches`** - table (titre, catégorie, auteur, date) avec actions éditer/supprimer + bouton "Nouvelle fiche". `ConfirmDialog` existant pour la suppression.
+- **`/admin/fiches/$slug`** et **`/admin/fiches/nouvelle`** - formulaire (titre, description, catégorie, auteur, contenu) réutilisant `TextInput`, `RoleSelector`/`Capsule` pour la catégorie.
+- **`/admin/forum`** - liste des threads avec nombre de réponses et bouton supprimer (le `ConfirmDialog` existe déjà pour ce pattern).
+- **`/admin/utilisateurs`** - table des profils (nom, email, rôle, badge "Admin" si présent dans `admins`). Pas d'action de promotion dans une première itération (cf. section 1).
+- **`/admin/avatars`** - galerie des avatars du bucket `avatars` (réutilise `listAvatars`/`AvatarPicker` pour l'affichage), bouton "Ajouter un avatar" (upload fichier image vers le bucket) et action supprimer par avatar avec `ConfirmDialog` (vérifier qu'un avatar utilisé par un profil reste affichable même après suppression - l'URL publique cassée doit être gérée côté `ProfileAvatarSection`/`AvatarPicker` avec un fallback).
 
 ## 5. Ordre de travail recommandé
 
@@ -218,14 +218,14 @@ Dans `AppSidebar.tsx`, ajouter une section "Administration" affichée uniquement
 2. Insertion manuelle du premier admin (ton `user_id`) via Supabase Studio.
 3. `useIsAdmin` + lien conditionnel dans `AppSidebar`.
 4. Layout `_admin.tsx` + guard.
-5. `/admin/fiches` (CRUD complet) — c'est la valeur la plus immédiate.
+5. `/admin/fiches` (CRUD complet) - c'est la valeur la plus immédiate.
 6. `/admin/forum` (modération).
 7. `/admin/utilisateurs` (lecture seule au départ).
 8. `/admin/avatars` (ajout/suppression d'avatars).
-9. `/admin` (dashboard, en dernier — purement cosmétique).
+9. `/admin` (dashboard, en dernier - purement cosmétique).
 
 ## 6. Hors scope (V2)
 
 - Promotion/rétrogradation d'admin depuis l'UI (Edge Function dédiée si besoin plus tard).
 - Logs d'audit des actions admin.
-- Gestion fine des permissions (rôles admin différenciés) — un seul niveau "admin" pour l'instant.
+- Gestion fine des permissions (rôles admin différenciés) - un seul niveau "admin" pour l'instant.

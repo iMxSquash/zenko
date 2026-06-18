@@ -31,7 +31,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
-            // Supabase REST API: NetworkFirst — données fraîches, fallback cache
+            // Supabase REST API: NetworkFirst - données fraîches, fallback cache
             urlPattern: /^https:\/\/.*\.supabase\.co\/rest\//,
             handler: 'NetworkFirst',
             options: {
@@ -40,12 +40,12 @@ export default defineConfig({
             },
           },
           {
-            // Supabase Auth: NetworkOnly — jamais cacher les tokens
+            // Supabase Auth: NetworkOnly - jamais cacher les tokens
             urlPattern: /^https:\/\/.*\.supabase\.co\/auth\//,
             handler: 'NetworkOnly',
           },
           {
-            // Supabase Edge Functions (chatbot, embed): NetworkOnly — streaming
+            // Supabase Edge Functions (chatbot, embed): NetworkOnly - streaming
             urlPattern: /^https:\/\/.*\.supabase\.co\/functions\//,
             handler: 'NetworkOnly',
           },

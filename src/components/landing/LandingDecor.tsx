@@ -1,5 +1,18 @@
 import { motion, useScroll, useTransform } from 'motion/react';
-import type { RefObject } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return isDesktop;
+}
 
 /**
  * Shared decorative shapes for the landing page.
@@ -31,6 +44,8 @@ export interface DecorShape {
   color?: string;
   /** Inline position/size styles applied to the <img>/<svg>/<div>. */
   style: React.CSSProperties;
+  /** Overrides `style` on mobile/tablet (< lg). */
+  mobileStyle?: React.CSSProperties;
   /** Desktop-only (hidden on small screens). Defaults true for small accents. */
   desktopOnly?: boolean;
   /** Push behind section content (-z-10). Requires `isolate` on the <section>. */
@@ -112,21 +127,33 @@ export const HERO_DECOR: DecorShape[] = [
   },
 ];
 
-// ── Problem (Figma frame 1:370) — orange scribbles both corners ─────────────
+// ── Problem (Figma frame 1:370) - orange scribbles both corners ─────────────
 export const PROBLEM_DECOR: DecorShape[] = [
   {
     node: 'Group 2',
     parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
     style: { right: -120, top: -90, width: 320, height: 313 },
-    desktopOnly: true,
+    mobileStyle: { right: -200, top: -130, width: 320, height: 313 },
   },
   {
     node: 'Group 1',
     parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
-    style: { left: -130, bottom: -50, width: 320, height: 313, transform: 'scaleX(-1)' },
-    desktopOnly: true,
+    style: {
+      left: -130,
+      bottom: -50,
+      width: 320,
+      height: 313,
+      transform: 'scaleX(-1)',
+    },
+    mobileStyle: {
+      left: -160,
+      bottom: -70,
+      width: 320,
+      height: 313,
+      transform: 'scaleX(-1)',
+    },
   },
   {
     node: 'Group 3',
@@ -153,12 +180,14 @@ export const SOLUTION_DECOR: DecorShape[] = [
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/bef8f92b-f611-4cdc-b1aa-92a2b5558514',
     style: { right: -120, top: -103, width: 429, height: 446 },
+    mobileStyle: { right: -130, top: -340, width: 429, height: 446 },
   },
   {
     node: 'Vector 21',
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/3cfd035f-cd62-4a26-aea9-e176db472d7e',
     style: { left: -104, bottom: -120, width: 429, height: 446 },
+    mobileStyle: { left: -200, bottom: -220, width: 429, height: 446 },
   },
   {
     node: 'Vector 22',
@@ -178,19 +207,21 @@ export const SOLUTION_DECOR: DecorShape[] = [
   },
 ];
 
-// ── Testimonials (Figma frame 10:164) — two large blobs ─────────────────────
+// ── Testimonials (Figma frame 10:164) - two large blobs ─────────────────────
 export const TESTIMONIALS_DECOR: DecorShape[] = [
   {
     node: 'Vector 21',
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/c970de54-3421-4ac8-ae96-6ba9bddd5ac2',
     style: { left: -310, bottom: -154, width: 596, height: 561 },
+    mobileStyle: { left: -280, bottom: -200, width: 596, height: 561 },
   },
   {
     node: 'Vector 22',
     parallax: 100,
     src: 'https://www.figma.com/api/mcp/asset/a565b2c7-82dd-4c70-8682-b2fc147a94f0',
     style: { right: -213, top: -251, width: 596, height: 561 },
+    mobileStyle: { right: -320, top: -300, width: 596, height: 561 },
   },
 ];
 
@@ -203,18 +234,21 @@ function ParallaxShape({
   sectionRef,
   className,
   style,
+  isDesktop,
 }: {
   shape: DecorShape;
   sectionRef: RefObject<HTMLElement | null>;
   className: string;
   style: React.CSSProperties;
+  isDesktop: boolean;
 }) {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
   const distance = s.parallax ?? 0;
-  const y = useTransform(scrollYProgress, [0, 1], [-distance, distance]);
+  // Parallax is desktop-only - motion on mobile causes disorientation and hurts perf
+  const y = useTransform(scrollYProgress, [0, 1], isDesktop ? [-distance, distance] : [0, 0]);
   const motionStyle = { ...style, y };
 
   if (s.color) {
@@ -253,20 +287,28 @@ export function SectionDecor({
   shapes: DecorShape[];
   sectionRef: RefObject<HTMLElement | null>;
 }) {
+  const isDesktop = useIsDesktop();
+
   return (
     <>
       {shapes.map((s, i) => {
         const cls = `pointer-events-none absolute select-none${
           s.desktopOnly ? ' hidden lg:block' : ''
         }`;
-        const zIndex = s.behind ? -1 : FRONT_Z_INDEX;
+        // On mobile/tablet all blobs go behind content to avoid overlapping text
+        const zIndex = s.behind || !isDesktop ? -1 : FRONT_Z_INDEX;
+        const resolvedStyle = {
+          ...(isDesktop ? s.style : (s.mobileStyle ?? s.style)),
+          zIndex,
+        };
         return (
           <ParallaxShape
             key={s.node ?? i}
             shape={s}
             sectionRef={sectionRef}
             className={cls}
-            style={{ ...s.style, zIndex }}
+            style={resolvedStyle}
+            isDesktop={isDesktop}
           />
         );
       })}

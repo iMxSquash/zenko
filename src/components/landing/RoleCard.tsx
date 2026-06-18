@@ -15,7 +15,7 @@ interface RoleCardProps {
 export function RoleCard({ label, name, bg, color, avatar }: RoleCardProps) {
   return (
     <div
-      className="flex h-35 flex-col justify-end gap-3 overflow-hidden rounded-card-lg p-6 lg:h-38.5"
+      className="flex h-auto flex-col gap-3 overflow-hidden rounded-card-lg p-4 lg:p-6"
       style={{ background: bg }}
     >
       {avatar ? (

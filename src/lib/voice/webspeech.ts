@@ -1,6 +1,6 @@
 import type { SpeechToText, TextToSpeech } from './types';
 
-// Web Speech API — non incluse dans les types DOM TypeScript standard
+// Web Speech API - non incluse dans les types DOM TypeScript standard
 interface ISpeechRecognition extends EventTarget {
   lang: string;
   continuous: boolean;

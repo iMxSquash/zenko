@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 // Avatars are local SVG files in public/assets/ (served from the site root, so
 // referenced as '/assets/...'). Map each Ellipse file to the right person by
-// opening them in a browser — they are named generically by the Figma export.
+// opening them in a browser - they are named generically by the Figma export.
 const ROLES = [
   {
     label: 'ENSEIGNANTE',
@@ -43,13 +43,13 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-8 py-24 pb-48 md:px-16"
+      className="relative isolate flex flex-col justify-center overflow-hidden bg-background px-6 py-14 pb-24 md:px-16 lg:py-24 lg:pb-48"
     >
-      {/* Decorative shapes — see LandingDecor.tsx (expiring URLs note there) */}
+      {/* Decorative shapes - see LandingDecor.tsx (expiring URLs note there) */}
       <SectionDecor shapes={HERO_DECOR} sectionRef={sectionRef} />
 
       <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center">
-        {/* Left — text + CTAs */}
+        {/* Left - text + CTAs */}
         <div className="flex max-w-165 flex-col gap-8">
           {/* Badge */}
           <div className="flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5">
@@ -65,7 +65,7 @@ export function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[52px] font-bold leading-[1.1] tracking-display text-dark md:text-display-xl md:leading-20">
+          <h1 className="text-[30px] font-bold leading-tight tracking-display text-dark md:text-[52px] md:leading-[1.1] lg:text-display-xl lg:leading-20">
             Même enfant.
             <br />
             Mêmes m
@@ -73,7 +73,7 @@ export function HeroSection() {
               Matches the Figma structure (node 281:309): the literal "o" is
               transparent and holds the layout slot, while the hand-drawn
               scribble is absolutely positioned over that slot. This is the
-              responsive-safe equivalent of the design's frame-relative inset —
+              responsive-safe equivalent of the design's frame-relative inset -
               the overlay tracks the letter regardless of where the line wraps.
             */}
             <span className="relative inline-block select-none">
@@ -99,20 +99,19 @@ export function HeroSection() {
           <div className="flex flex-col gap-4">
             <Link
               to="/signup"
-              className="w-fit rounded-full bg-brand-100 px-6 py-4 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="w-full rounded-full bg-brand-100 px-6 py-4 text-center font-display text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:w-fit"
             >
               Créer mon compte gratuitement
             </Link>
             <div className="flex flex-wrap gap-6 text-[13px] font-medium text-text-muted">
-              <span>✓ RGPD conforme</span>
-              <span>✓ Gratuit pour les enseignants</span>
+              <span>✓ Complètement gratuit</span>
               <span>✓ Sans engagement</span>
             </div>
           </div>
         </div>
 
-        {/* Right — role cards grid */}
-        <div className="relative z-20 ml-auto shrink-0 lg:w-130">
+        {/* Right - role cards grid */}
+        <div className="relative z-20 w-full lg:ml-auto lg:w-130 lg:shrink-0">
           <div className="relative grid grid-cols-2 gap-4">
             {ROLES.map((role) => (
               <RoleCard key={role.label} {...role} />

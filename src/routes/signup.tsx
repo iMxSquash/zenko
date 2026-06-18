@@ -1,10 +1,17 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signUpWithPassword } from '@/lib/supabase/auth';
-import { Link, createFileRoute } from '@tanstack/react-router';
+import { supabase } from '@/lib/supabase/client';
+import { Link, createFileRoute, redirect } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/signup')({
+  beforeLoad: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) throw redirect({ to: '/bibliotheque' });
+  },
   component: SignupPage,
 });
 
@@ -79,11 +86,13 @@ function SignupPage() {
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-white">
       {/* Logo absolu en haut à gauche */}
-      <div className="absolute left-16 top-16 z-20">
-        <ZenkoLogo width={145} />
+      <div className="absolute left-16 top-16 z-20 hidden lg:block">
+        <Link to="/">
+          <ZenkoLogo width={145} />
+        </Link>
       </div>
 
-      {/* Blob bottom-right — positionné sur <main> pour éviter le clip */}
+      {/* Blob bottom-right - positionné sur <main> pour éviter le clip */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute hidden select-none lg:block"
@@ -102,12 +111,16 @@ function SignupPage() {
             aria-hidden="true"
             className="block size-full max-w-none"
             animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
+            transition={{
+              duration: 5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut',
+            }}
           />
         </div>
       </div>
 
-      {/* Blob top-right — chevauche les 2 panneaux, positionné sur <main> */}
+      {/* Blob top-right - chevauche les 2 panneaux, positionné sur <main> */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute hidden select-none lg:block"
@@ -136,9 +149,9 @@ function SignupPage() {
         />
       </div>
 
-      {/* ── Panneau gauche — branding (697/1440 = ~48%) ── */}
+      {/* ── Panneau gauche - branding (697/1440 = ~48%) ── */}
       <div className="relative hidden lg:flex lg:w-[48.4%] flex-col items-center justify-center overflow-hidden bg-neutral-50">
-        {/* Blob top-center — grand flou (Vector24) */}
+        {/* Blob top-center - grand flou (Vector24) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
@@ -161,7 +174,7 @@ function SignupPage() {
           </div>
         </div>
 
-        {/* Blob left-center — avec overflow */}
+        {/* Blob left-center - avec overflow */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
@@ -184,7 +197,7 @@ function SignupPage() {
           </div>
         </div>
 
-        {/* Blob bottom-left — grand, ancré en bas */}
+        {/* Blob bottom-left - grand, ancré en bas */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
@@ -229,15 +242,17 @@ function SignupPage() {
         </div>
       </div>
 
-      {/* ── Panneau droit — formulaire (743/1440 = ~51.6%) ── */}
+      {/* ── Panneau droit - formulaire (743/1440 = ~51.6%) ── */}
       <div className="flex flex-1 flex-col items-center justify-center overflow-hidden p-3 lg:w-[51.6%]">
         {/* Mobile logo */}
         <div className="mb-10 self-start pl-4 lg:hidden">
-          <ZenkoLogo width={120} />
+          <Link to="/">
+            <ZenkoLogo width={120} />
+          </Link>
         </div>
 
         {/* Card */}
-        <div className="rounded-[32px] bg-emerald-100/10 p-8">
+        <div className="rounded-4xl bg-emerald-100/10 p-8">
           <div className="flex w-full flex-col gap-8 lg:w-96">
             {/* Header */}
             <div className="flex flex-col gap-2.5">
@@ -297,7 +312,7 @@ function SignupPage() {
                     placeholder="mail@exemple.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -323,7 +338,7 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -339,7 +354,8 @@ function SignupPage() {
                       lineHeight: '24px',
                     }}
                   >
-                    CONFIRMER LE MOT DE PASSE<span className="text-danger">*</span>
+                    CONFIRMER LE MOT DE PASSE
+                    <span className="text-danger">*</span>
                   </label>
                   <input
                     id="confirmation"
@@ -349,7 +365,7 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={confirmation}
                     onChange={(e) => setConfirmation(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline outline-1 outline-offset-[-1px] outline-border-default transition-all focus:outline-brand-green"
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -362,16 +378,22 @@ function SignupPage() {
                     className={
                       isFormFilled && !loading
                         ? 'w-full rounded-full bg-brand-green px-6 py-4 font-display font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]'
-                        : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline outline-1 outline-offset-[-1px] outline-border-default transition-all'
+                        : 'w-full rounded-full px-6 py-4 font-display font-semibold text-text-muted outline  -outline-offset-1 outline-border-default transition-all'
                     }
-                    style={{ fontSize: 'var(--text-button)', lineHeight: '16px' }}
+                    style={{
+                      fontSize: 'var(--text-button)',
+                      lineHeight: '16px',
+                    }}
                   >
                     {loading ? '…' : 'Créer mon compte'}
                   </button>
 
                   <p
                     className="text-center text-text-secondary"
-                    style={{ fontSize: 'var(--text-body-sm)', lineHeight: '20px' }}
+                    style={{
+                      fontSize: 'var(--text-body-sm)',
+                      lineHeight: '20px',
+                    }}
                   >
                     Déjà un compte ?{' '}
                     <Link to="/login" className="font-bold text-brand hover:underline">

@@ -11,7 +11,7 @@ avant de passer à la suivante.
 
 ---
 
-## Étape 0 — Cadrage des champs profil
+## Étape 0 - Cadrage des champs profil
 
 **Objectif** : figer le modèle de données avant de toucher au code, pour
 éviter une migration à refaire.
@@ -38,7 +38,7 @@ schéma final avant d'écrire la migration.
 
 ---
 
-## Étape 1 — Migration : étendre la table `profiles`
+## Étape 1 - Migration : étendre la table `profiles`
 
 **Objectif** : ajouter les colonnes nécessaires (identité, rôle, réseaux
 sociaux) + contrainte CHECK expert/doctolib + RLS.
@@ -66,7 +66,7 @@ sans modifier une migration déjà appliquée.
 
 ---
 
-## Étape 2 — Storage bucket pour les avatars préenregistrés
+## Étape 2 - Storage bucket pour les avatars préenregistrés
 
 **Objectif** : créer un bucket Supabase Storage public en lecture pour
 stocker un set d'avatars prédéfinis que l'utilisateur choisit (pas
@@ -93,7 +93,7 @@ côté front.
 
 ---
 
-## Étape 3 — Couche données : hooks `useProfile` et `useAvatars`
+## Étape 3 - Couche données : hooks `useProfile` et `useAvatars`
 
 **Objectif** : créer la couche `lib/`/`hooks/` pour lire/écrire le profil et
 lister les avatars disponibles, réutilisable par la page profil ET par
@@ -126,7 +126,7 @@ Type tout avec TypeScript strict. Pas de useEffect pour fetcher.
 
 ---
 
-## Étape 4 — Composants UI réutilisables
+## Étape 4 - Composants UI réutilisables
 
 **Objectif** : construire les briques UI manquantes (AvatarPicker,
 sélecteur de rôle, champs de formulaire, bouton de confirmation) en
@@ -147,7 +147,7 @@ CVA + clsx déjà utilisé par Button/Capsule :
   (regarde src/routes/_protected/onboarding/index.tsx pour le style des
   cartes de rôle déjà existant et réutilise/adapte ce pattern)
 - ConfirmDialog : modale de confirmation générique (titre, description,
-  bouton confirmer/annuler) — sera utilisée pour la suppression de compte
+  bouton confirmer/annuler) - sera utilisée pour la suppression de compte
 
 Pas de logique métier dans ces composants, uniquement de l'affichage et des
 callbacks.
@@ -155,7 +155,7 @@ callbacks.
 
 ---
 
-## Étape 5 — Edge Function suppression de compte (RGPD)
+## Étape 5 - Edge Function suppression de compte (RGPD)
 
 **Objectif** : la suppression d'un compte `auth.users` nécessite la clé
 service_role, donc une Edge Function dédiée.
@@ -179,7 +179,7 @@ deleteAccount() qui appelle cette Edge Function, et déconnecte/redirige vers
 
 ---
 
-## Étape 6 — Réutiliser le endpoint de rôle dans l'onboarding
+## Étape 6 - Réutiliser le endpoint de rôle dans l'onboarding
 
 **Objectif** : factoriser pour que `/signup/role` (ou l'étape onboarding
 équivalente) et la page profil utilisent le même hook `useUpdateRole`,
@@ -201,7 +201,7 @@ rôle, utilisé à la fois ici et dans la page profil de l'étape 7.
 
 ---
 
-## Étape 7 — Route `/profile/edit` : formulaire d'édition complet
+## Étape 7 - Route `/profile/edit` : formulaire d'édition complet
 
 **Objectif** : la page de modification du profil avec tous les champs
 demandés.
@@ -224,7 +224,7 @@ qu'assembler) :
 4. Réseaux sociaux : champs linkedin_url, instagram_url, twitter_url,
    doctolib_url (optionnels sauf si role === 'expert', voir point 5)
 5. Rôle : RoleSelector + useUpdateRole (même logique que l'onboarding,
-   étape 6) — si "expert" sélectionné, doctolib_url devient obligatoire
+   étape 6) - si "expert" sélectionné, doctolib_url devient obligatoire
 6. RGPD :
    - bouton "Supprimer mon compte" -> ConfirmDialog -> deleteAccount()
      (étape 5)
@@ -239,7 +239,7 @@ unique avec un seul bouton "Enregistrer").
 
 ---
 
-## Étape 8 — Route `/profile` : page profil (lecture seule)
+## Étape 8 - Route `/profile` : page profil (lecture seule)
 
 **Objectif** : page d'affichage du profil avec photo, identité, réseaux et
 participation au forum.
@@ -266,7 +266,7 @@ participation.
 
 ---
 
-## Étape 9 — Sidebar : lien vers le profil
+## Étape 9 - Sidebar : lien vers le profil
 
 **Objectif** : rendre la page profil accessible depuis la sidebar.
 
@@ -282,7 +282,7 @@ déconnexion reste bien présent et fonctionnel.
 
 ---
 
-## Étape 10 — Vérifications finales
+## Étape 10 - Vérifications finales
 
 **Objectif** : valider l'ensemble avant la PR vers `develop`.
 

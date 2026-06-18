@@ -14,6 +14,9 @@ export function useSectionSnap(containerRef: RefObject<HTMLElement | null>) {
     const container = containerRef.current;
     if (!lenis || !container) return;
 
+    // Desktop-only: snap conflicts with native touch momentum scrolling on mobile/tablet
+    if (!window.matchMedia('(min-width: 1024px)').matches) return;
+
     const snap = new Snap(lenis, { type: 'mandatory' });
     const sections = container.querySelectorAll<HTMLElement>('[data-snap-section]');
     const removeSnaps = Array.from(sections).map((section) =>

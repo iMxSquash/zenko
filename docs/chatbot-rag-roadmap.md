@@ -1,4 +1,4 @@
-# Roadmap — Chatbot RAG (assistant vocal neurodivergence)
+# Roadmap - Chatbot RAG (assistant vocal neurodivergence)
 
 L'assistant permet à un utilisateur connecté de poser une question sur l'accompagnement des enfants neurodivergents. Au lieu de chercher manuellement dans les fiches et le forum, il pose la question et le chatbot va chercher les informations pertinentes à sa place, rédige une réponse en citant les sources utilisées.
 
@@ -23,7 +23,7 @@ Question envoyée à l'Edge Function /chat
 UI ChatAssistant
   ├── Affichage texte streamé
   ├── Liste des sources (fiches + threads forum)
-  └── Web Speech API (TTS) — lecture vocale de la réponse
+  └── Web Speech API (TTS) - lecture vocale de la réponse
 ```
 
 Le bot n'a pas accès à internet. On lui pré-mâche le travail : l'embedding de la question permet de retrouver les documents les plus proches sémantiquement dans la base. Gemini reçoit uniquement ces documents comme contexte et rédige une synthèse. Il ne peut pas inventer d'informations hors corpus.
@@ -37,7 +37,7 @@ Le bot n'a pas accès à internet. On lui pré-mâche le travail : l'embedding d
 | RAG | pgvector natif Supabase + recherche cosine | Tout reste dans la DB existante, RLS inclus |
 | Embeddings | `gte-small` via Supabase Edge Function (keyless, 384 dims) | Pas de clé API supplémentaire |
 | LLM | Vercel AI SDK + `@ai-sdk/google` (Gemini 2.0 Flash), streaming | Aligné avec le reste de la stack |
-| API | Supabase Edge Function `/chat` | SPA Vite — pas de route handler disponible |
+| API | Supabase Edge Function `/chat` | SPA Vite - pas de route handler disponible |
 | Voix | Web Speech API (STT + TTS) avec couche abstraite | Keyless, privacy-first, Magnific/ElevenLabs branchables |
 | Mode | Hybride voix + texte | Robuste si le micro échoue |
 | Sources | Toujours retournées avec la réponse | Transparence + citabilité |
@@ -72,8 +72,8 @@ supabase/
     002_documents_embeddings.sql
     003_forum_autoembed.sql
   functions/
-    embed/index.ts       # Edge Function — génère un embedding gte-small
-    chat/index.ts        # Edge Function — pipeline RAG complet
+    embed/index.ts       # Edge Function - génère un embedding gte-small
+    chat/index.ts        # Edge Function - pipeline RAG complet
   seed/
     index-documents.ts   # Backfill fiches + forum → documents
 
@@ -102,7 +102,7 @@ src/
 
 ---
 
-## Phase 0 — Setup : pgvector + variables d'env
+## Phase 0 - Setup : pgvector + variables d'env
 
 **Livrables :** migration `001_enable_pgvector.sql`, `GEMINI_API_KEY` dans les secrets Supabase Edge Functions (pas dans `.env.local`).
 
@@ -115,14 +115,14 @@ Crée supabase/migrations/001_enable_pgvector.sql qui active l'extension
 vector (create extension if not exists vector with schema extensions).
 
 Documente dans .env.example que GEMINI_API_KEY est une variable
-Supabase Edge Function secret uniquement — ne jamais la mettre en VITE_.
+Supabase Edge Function secret uniquement - ne jamais la mettre en VITE_.
 
 Lance npm run lint, type-check et build. PR vers develop.
 ```
 
 ---
 
-## Phase 1 — Schéma DB : table documents + fonction de recherche
+## Phase 1 - Schéma DB : table documents + fonction de recherche
 
 **Livrables :** migration `002_documents_embeddings.sql` avec la table `documents`, index HNSW, RLS et la fonction `match_documents`.
 
@@ -162,9 +162,9 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 2 — Edge Function /embed
+## Phase 2 - Edge Function /embed
 
-**Livrables :** `supabase/functions/embed/index.ts` — prend `{ input: string }`, retourne l'embedding 384 dims via `gte-small`.
+**Livrables :** `supabase/functions/embed/index.ts` - prend `{ input: string }`, retourne l'embedding 384 dims via `gte-small`.
 
 **Prompt :**
 
@@ -183,7 +183,7 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 3 — Backfill : indexation des fiches et du forum
+## Phase 3 - Backfill : indexation des fiches et du forum
 
 **Livrables :** script `supabase/seed/index-documents.ts` qui chunk et indexe toutes les fiches et tous les messages du forum dans `documents`. Trigger auto pour les nouveaux posts.
 
@@ -213,9 +213,9 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 4 — Edge Function /chat : pipeline RAG complet
+## Phase 4 - Edge Function /chat : pipeline RAG complet
 
-**Livrables :** `supabase/functions/chat/index.ts` — pipeline complet : embed question → match_documents → prompt → stream Anthropic. Retourne la réponse streamée + les sources utilisées.
+**Livrables :** `supabase/functions/chat/index.ts` - pipeline complet : embed question → match_documents → prompt → stream Anthropic. Retourne la réponse streamée + les sources utilisées.
 
 **Prompt :**
 
@@ -231,7 +231,7 @@ Crée supabase/functions/chat/index.ts (Deno) :
 
 3. Embedding : appelle l'Edge Function /embed avec la question.
 
-4. Recherche : appelle match_documents(embedding, 6) — retourne top-6 chunks
+4. Recherche : appelle match_documents(embedding, 6) - retourne top-6 chunks
    (fiches + threads + replies mélangés).
 
 5. Prompt système (en français) :
@@ -252,9 +252,9 @@ Headers CORS. Lance les checks. PR vers develop.
 
 ---
 
-## Phase 5 — Couche voix (Web Speech API)
+## Phase 5 - Couche voix (Web Speech API)
 
-**Livrables :** `src/lib/voice/types.ts`, `webspeech.ts`, `useVoice.ts` — couche abstraite STT + TTS, défaut Web Speech API, Magnific/ElevenLabs branchables.
+**Livrables :** `src/lib/voice/types.ts`, `webspeech.ts`, `useVoice.ts` - couche abstraite STT + TTS, défaut Web Speech API, Magnific/ElevenLabs branchables.
 
 **Prompt :**
 
@@ -280,7 +280,7 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 6 — Composants UI assistant
+## Phase 6 - Composants UI assistant
 
 **Livrables :** `ChatAssistant.tsx`, `MicButton.tsx`, `VoiceStatus.tsx`, `SourceList.tsx` et la route `/assistant`.
 
@@ -316,7 +316,7 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 7 — Historique des sessions
+## Phase 7 - Historique des sessions
 
 **Livrables :** table `chat_sessions` + `chat_messages` en DB, hooks `useAssistant.ts`, routes `/assistant/history` et `/assistant/:sessionId`.
 
@@ -343,7 +343,7 @@ Lance les checks. PR vers develop.
 
 ---
 
-## Phase 8 — Tests et finalisation
+## Phase 8 - Tests et finalisation
 
 **Livrables :** tests Vitest sur le chemin critique, vérification end-to-end manuelle.
 
