@@ -44,7 +44,7 @@ export function ProfileAccountSection({ className }: ProfileAccountSectionProps)
         </p>
         <div>
           <Button
-            variant="secondary"
+            variant="outline"
             onClick={() => exportData.mutate()}
             disabled={exportData.isPending}
           >
