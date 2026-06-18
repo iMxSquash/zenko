@@ -17,13 +17,17 @@ export function useVoice() {
   const isListeningRef = useRef(false);
 
   const restartIfListening = useCallback(() => {
-    if (isListeningRef.current && sttRef.current) {
-      try {
-        sttRef.current.start();
-      } catch {
-        // ignore - peut arriver si stop() a été appelé entre-temps
+    if (!isListeningRef.current || !sttRef.current) return;
+    // Small delay to avoid rapid restart loops (Chrome Mac fires onend immediately on no-speech)
+    setTimeout(() => {
+      if (isListeningRef.current && sttRef.current) {
+        try {
+          sttRef.current.start();
+        } catch {
+          // ignore - peut arriver si stop() a été appelé entre-temps
+        }
       }
-    }
+    }, 150);
   }, []);
 
   useEffect(() => {
@@ -44,18 +48,19 @@ export function useVoice() {
 
       sttRef.current.onError((err) => {
         setInterimTranscript('');
-        isListeningRef.current = false;
-        setIsListening(false);
-        if (err === 'not-allowed' || err === 'audio-capture') {
+        // Fatal errors: stop and surface a message
+        if (err === 'not-allowed' || err === 'audio-capture' || err === 'network') {
+          isListeningRef.current = false;
+          setIsListening(false);
           setVoiceError(
             err === 'audio-capture'
               ? 'Aucun microphone détecté.'
-              : 'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.'
+              : err === 'network'
+                ? 'Connexion réseau requise pour la reconnaissance vocale.'
+                : 'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.'
           );
-        } else if (err === 'network') {
-          setVoiceError('Connexion réseau requise pour la reconnaissance vocale.');
         }
-        // no-speech / aborted sont normaux, pas d'erreur à afficher
+        // no-speech / aborted: benign — onEnd will restart if still listening
       });
 
       // Chrome/Mac arrête la reconnaissance silencieusement après silence :
