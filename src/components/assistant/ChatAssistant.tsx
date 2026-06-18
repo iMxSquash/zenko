@@ -26,6 +26,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
     muted,
     toggleMute,
     isSupported,
+    voiceError,
   } = useAssistant(sessionId);
 
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -92,6 +93,8 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
           <MicButton
             isListening={isListening}
             disabled={isLoading}
+            hasError={!!voiceError}
+            errorMessage={voiceError ?? undefined}
             onClick={() => (isListening ? stopListening() : startListening())}
           />
         )}

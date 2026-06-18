@@ -105,11 +105,13 @@ export function useAssistant(sessionId?: string) {
   const stableVoiceTextRef = useRef('');
 
   const handleStartListening = () => {
+    voice.primeTTS();
     stableVoiceTextRef.current = chat.input;
     voice.startListening();
   };
 
   const handleSubmit: typeof chat.handleSubmit = (e) => {
+    voice.primeTTS();
     stableVoiceTextRef.current = '';
     voice.stopListening();
     chat.handleSubmit(e);
