@@ -2,6 +2,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SpeechToText, TextToSpeech } from './types';
 import { WebSpeechSTT, WebSpeechTTS, isWebSpeechSupported } from './webspeech';
 
+const STT_ERRORS: Record<string, string> = {
+  'not-allowed':
+    'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.',
+  'audio-capture': 'Aucun microphone détecté.',
+  'network': 'Connexion réseau requise pour la reconnaissance vocale (Chrome envoie l'audio à Google).',
+  'service-not-allowed':
+    'Service de reconnaissance vocale non disponible. Essayez Chrome sur HTTPS ou vérifiez votre connexion.',
+  'language-not-supported': 'Langue non supportée par ce navigateur pour la reconnaissance vocale.',
+};
+
+// Errors that are expected during normal continuous use — let onEnd handle restarts
+const BENIGN_STT_ERRORS = new Set(['no-speech', 'aborted']);
+
 export function useVoice() {
   const isSupported = isWebSpeechSupported();
 
@@ -15,6 +28,8 @@ export function useVoice() {
   const sttRef = useRef<SpeechToText | null>(null);
   const ttsRef = useRef<TextToSpeech | null>(null);
   const isListeningRef = useRef(false);
+  const hasReceivedResultRef = useRef(false);
+  const noResultTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const restartIfListening = useCallback(() => {
     if (!isListeningRef.current || !sttRef.current) return;
@@ -38,27 +53,23 @@ export function useVoice() {
       ttsRef.current = new WebSpeechTTS();
 
       sttRef.current.onResult((text) => {
+        hasReceivedResultRef.current = true;
         setTranscript(text);
         setInterimTranscript('');
       });
 
       sttRef.current.onInterimResult((text) => {
+        hasReceivedResultRef.current = true;
         setInterimTranscript(text);
       });
 
       sttRef.current.onError((err) => {
         setInterimTranscript('');
-        // Fatal errors: stop and surface a message
-        if (err === 'not-allowed' || err === 'audio-capture' || err === 'network') {
+        if (!BENIGN_STT_ERRORS.has(err)) {
           isListeningRef.current = false;
           setIsListening(false);
-          setVoiceError(
-            err === 'audio-capture'
-              ? 'Aucun microphone détecté.'
-              : err === 'network'
-                ? 'Connexion réseau requise pour la reconnaissance vocale.'
-                : 'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.'
-          );
+          setVoiceError(STT_ERRORS[err] ?? `Erreur reconnaissance vocale (${err}).`);
+          console.error('[voice] STT error:', err);
         }
         // no-speech / aborted: benign — onEnd will restart if still listening
       });
@@ -81,12 +92,29 @@ export function useVoice() {
     setTranscript('');
     setInterimTranscript('');
     setVoiceError(null);
+    hasReceivedResultRef.current = false;
     isListeningRef.current = true;
     setIsListening(true);
     sttRef.current.start();
+
+    // If no audio is picked up at all after 8s, surface a hint
+    noResultTimeoutRef.current = setTimeout(() => {
+      if (isListeningRef.current && !hasReceivedResultRef.current) {
+        isListeningRef.current = false;
+        setIsListening(false);
+        sttRef.current?.stop();
+        setVoiceError(
+          'Aucun son capté après 8 secondes. Vérifiez que le micro est autorisé pour ce navigateur dans Réglages système, et que vous utilisez Chrome ou Safari.'
+        );
+      }
+    }, 8000);
   };
 
   const stopListening = () => {
+    if (noResultTimeoutRef.current) {
+      clearTimeout(noResultTimeoutRef.current);
+      noResultTimeoutRef.current = null;
+    }
     isListeningRef.current = false;
     sttRef.current?.stop();
     setIsListening(false);
