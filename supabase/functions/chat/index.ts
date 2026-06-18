@@ -12,10 +12,7 @@ function requireEnv(key: string): string {
   return val;
 }
 
-const ALLOWED_ORIGINS = [
-  'https://zenko.fr',
-  'https://www.zenko.fr',
-];
+const ALLOWED_ORIGINS = ['https://zenko.fr', 'https://www.zenko.fr'];
 
 function getCorsHeaders(req: Request): Record<string, string> {
   const origin = req.headers.get('Origin') ?? '';
@@ -91,26 +88,26 @@ Deno.serve(async (req) => {
     const { messages } = body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
-      return new Response(
-        JSON.stringify({ error: '"messages" doit être un tableau non vide.' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: '"messages" doit être un tableau non vide.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (messages.length > 50) {
-      return new Response(
-        JSON.stringify({ error: 'Trop de messages dans la requête (max 50).' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Trop de messages dans la requête (max 50).' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const lastContent: string = messages.at(-1)?.content ?? '';
 
     if (lastContent.length > 4000) {
-      return new Response(
-        JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!lastContent) {
