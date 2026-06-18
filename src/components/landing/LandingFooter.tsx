@@ -1,17 +1,6 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { Link } from '@tanstack/react-router';
 
-const FOOTER_LINKS = {
-  PRODUIT: [
-    'Comment ça marche',
-    'Pour les enseignants',
-    'Pour les parents',
-    'Pour les spécialistes',
-  ],
-  RESSOURCES: ['Blog', "Centre d'aide", 'API'],
-  AGENCE: ['À propos', 'Notre approche', 'Contact'],
-} as const;
-
 export function LandingFooter() {
   return (
     <footer className="bg-dark px-8 py-16 text-white md:px-16">
@@ -25,18 +14,6 @@ export function LandingFooter() {
           </p>
           <ZenkoLogo width={110} />
         </div>
-
-        {/* Link columns */}
-        {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-          <div key={section} className="flex flex-col gap-3.5">
-            <p className="text-label font-semibold tracking-label opacity-50">{section}</p>
-            {links.map((l) => (
-              <p key={l} className="text-body-sm font-medium opacity-90">
-                {l}
-              </p>
-            ))}
-          </div>
-        ))}
       </div>
 
       {/* Bottom bar */}
