@@ -16,7 +16,7 @@ function AppLayout() {
     <div className="flex h-screen overflow-hidden bg-background">
       <a
         href="#main-content"
-        className="fixed left-2 top-2 z-[9999] -translate-y-full rounded bg-brand px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[9999] focus:rounded focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Passer au contenu principal
       </a>
