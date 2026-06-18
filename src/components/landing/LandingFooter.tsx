@@ -1,15 +1,5 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
-
-const FOOTER_LINKS = {
-  PRODUIT: [
-    'Comment ça marche',
-    'Pour les enseignants',
-    'Pour les parents',
-    'Pour les spécialistes',
-  ],
-  RESSOURCES: ['Blog', "Centre d'aide", 'API'],
-  AGENCE: ['À propos', 'Notre approche', 'Contact'],
-} as const;
+import { Link } from '@tanstack/react-router';
 
 export function LandingFooter() {
   return (
@@ -24,18 +14,6 @@ export function LandingFooter() {
           </p>
           <ZenkoLogo width={110} />
         </div>
-
-        {/* Link columns */}
-        {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-          <div key={section} className="flex flex-col gap-3.5">
-            <p className="text-label font-semibold tracking-label opacity-50">{section}</p>
-            {links.map((l) => (
-              <p key={l} className="text-body-sm font-medium opacity-90">
-                {l}
-              </p>
-            ))}
-          </div>
-        ))}
       </div>
 
       {/* Bottom bar */}
@@ -43,7 +21,19 @@ export function LandingFooter() {
         <p className="text-label opacity-50">
           © 2026 ZENKO - Conçu par Alem Agency. L&apos;humain d&apos;abord.
         </p>
-        <p className="text-label opacity-50">Mentions légales • RGPD • Cookies</p>
+        <div className="flex gap-4 text-label opacity-50">
+          <Link to="/legal/mentions-legales" className="hover:opacity-100 hover:underline">
+            Mentions légales
+          </Link>
+          <span aria-hidden="true">•</span>
+          <Link to="/legal/confidentialite" className="hover:opacity-100 hover:underline">
+            RGPD
+          </Link>
+          <span aria-hidden="true">•</span>
+          <Link to="/legal/cgu" className="hover:opacity-100 hover:underline">
+            CGU
+          </Link>
+        </div>
       </div>
     </footer>
   );

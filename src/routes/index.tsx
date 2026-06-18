@@ -1,4 +1,5 @@
 import { CTABanner } from '@/components/landing/CTABanner';
+import { FAQSection } from '@/components/landing/FAQSection';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import { LandingNav } from '@/components/landing/LandingNav';
@@ -46,6 +47,7 @@ function LandingSections() {
       <ProblemSection />
       <SolutionSection />
       <TestimonialsSection />
+      <FAQSection />
       <CTABanner />
       <LandingFooter />
     </div>

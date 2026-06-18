@@ -1,4 +1,5 @@
 import { ChatAssistant } from '@/components/assistant/ChatAssistant';
+import { ChatNotice } from '@/components/assistant/ChatNotice';
 import { ClockCounterClockwise } from '@phosphor-icons/react';
 import { Link, createFileRoute } from '@tanstack/react-router';
 
@@ -19,6 +20,7 @@ function AssistantPage() {
           <ClockCounterClockwise size={18} />
         </Link>
       </div>
+      <ChatNotice />
       <ChatAssistant />
     </div>
   );

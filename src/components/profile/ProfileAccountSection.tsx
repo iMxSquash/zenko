@@ -1,6 +1,6 @@
 import { Button, ConfirmDialog } from '@/components/ui';
 import type { FieldStatus as FieldStatusValue } from '@/hooks/useEditableField';
-import { useDeleteAccount } from '@/hooks/useProfile';
+import { useDeleteAccount, useExportData } from '@/hooks/useProfile';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { FieldStatus } from './FieldStatus';
@@ -11,6 +11,7 @@ interface ProfileAccountSectionProps {
 
 export function ProfileAccountSection({ className }: ProfileAccountSectionProps) {
   const deleteAccount = useDeleteAccount();
+  const exportData = useExportData();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [status, setStatus] = useState<FieldStatusValue>('idle');
   const [error, setError] = useState<string>();
@@ -35,10 +36,34 @@ export function ProfileAccountSection({ className }: ProfileAccountSectionProps)
       )}
     >
       <h2 className="text-h3 font-bold text-text-primary">Compte</h2>
-      <p className="text-body-sm text-text-secondary">
-        La suppression de votre compte est définitive et entraîne la perte de toutes vos données.
-      </p>
-      <div>
+
+      <div className="flex flex-col gap-2">
+        <p className="text-body-sm font-medium text-text-primary">Mes données personnelles</p>
+        <p className="text-body-sm text-text-secondary">
+          Téléchargez une copie de toutes vos données (profil, conversations, forum, progression).
+        </p>
+        <div>
+          <Button
+            variant="outline"
+            onClick={() => exportData.mutate()}
+            disabled={exportData.isPending}
+          >
+            {exportData.isPending ? 'Préparation…' : 'Télécharger mes données'}
+          </Button>
+        </div>
+        {exportData.isError && (
+          <p className="text-body-sm text-danger">
+            {exportData.error instanceof Error
+              ? exportData.error.message
+              : 'Une erreur est survenue.'}
+          </p>
+        )}
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <p className="mb-3 text-body-sm text-text-secondary">
+          La suppression de votre compte est définitive et entraîne la perte de toutes vos données.
+        </p>
         <Button
           variant="danger"
           onClick={() => setConfirmOpen(true)}

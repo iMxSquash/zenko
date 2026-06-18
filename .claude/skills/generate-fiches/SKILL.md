@@ -3,7 +3,7 @@
 ## Invocation
 
 ```bash
-/generate-fiches <count> "<thème>" [category:<TSA|TDAH|DYS|TDI>] [user:<user_id>]
+/generate-fiches <count> "<thème>" [category:<TSA|TDAH|DYS|TDI>] [user:<user_id>] [image:<avec|sans>]
 ```
 
 Exemples :
@@ -13,6 +13,8 @@ Exemples :
 /generate-fiches 5 "sommeil et régulation" category:TDAH
 /generate-fiches 2 "communication non verbale" user:53474062-1445-4ea9-a637-bb7a1c28313c
 /generate-fiches 4 "autonomie scolaire" category:DYS user:53474062-1445-4ea9-a637-bb7a1c28313c
+ /generate-fiches 1 "Préparer une transition sans crise" category:TSA
+  user:53474062-1445-4ea9-a637-bb7a1c28313c image:sans
 ```
 
 ---
@@ -25,7 +27,7 @@ Exemples :
 | `thème`     | Oui         | Sujet global (entre guillemets si plusieurs mots)                      |
 | `category:` | Non         | Restreindre à une catégorie. Sinon répartir sur TSA / TDAH / DYS / TDI |
 | `user:`     | Non         | `author_user_id` à assigner. Si absent, laisser `null`                 |
-
+| `image:`    | Non         | Défini si je veux chercher une image sur unsplash ou non               |
 ---
 
 ## Étapes
@@ -43,7 +45,7 @@ Pour chaque fiche, définir :
 
 ### 2. Trouver des images Unsplash
 
-Pour chaque fiche, trouver **une image libre** (domaine `images.unsplash.com`, pas `plus.unsplash.com`).
+Pour chaque fiche, trouver **une image libre** si `image` n'est pas `sans` (domaine `images.unsplash.com`, pas `plus.unsplash.com`).
 
 **Méthode :**
 

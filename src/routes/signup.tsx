@@ -2,8 +2,35 @@ import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signUpWithPassword } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import { Link, createFileRoute, redirect } from '@tanstack/react-router';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
+
+function ConsentCheckbox({
+  id,
+  checked,
+  onChange,
+  children,
+}: {
+  id: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <label htmlFor={id} className="flex cursor-pointer items-start gap-3">
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-brand-green"
+      />
+      <span className="text-text-secondary" style={{ fontSize: 'var(--text-body-sm)' }}>
+        {children}
+      </span>
+    </label>
+  );
+}
 
 export const Route = createFileRoute('/signup')({
   beforeLoad: async () => {
@@ -19,9 +46,13 @@ function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
+  const [consentCgu, setConsentCgu] = useState(false);
+  const [consentData, setConsentData] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,10 +60,17 @@ function SignupPage() {
       setError('Les mots de passe ne correspondent pas');
       return;
     }
+    if (!consentCgu || !consentData || !ageConfirmed) {
+      setError('Veuillez accepter toutes les cases obligatoires pour continuer.');
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
-      await signUpWithPassword(email, password);
+      await signUpWithPassword(email, password, {
+        consent_given_at: new Date().toISOString(),
+        age_confirmed: true,
+      });
       setSuccess(true);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Impossible de créer le compte';
@@ -81,7 +119,8 @@ function SignupPage() {
     );
   }
 
-  const isFormFilled = !!email && !!password && !!confirmation;
+  const isFormFilled =
+    !!email && !!password && !!confirmation && consentCgu && consentData && ageConfirmed;
 
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-white">
@@ -110,7 +149,7 @@ function SignupPage() {
             alt=""
             aria-hidden="true"
             className="block size-full max-w-none"
-            animate={{ y: [0, -10, 0] }}
+            animate={prefersReduced ? {} : { y: [0, -10, 0] }}
             transition={{
               duration: 5,
               repeat: Number.POSITIVE_INFINITY,
@@ -139,7 +178,7 @@ function SignupPage() {
           alt=""
           aria-hidden="true"
           className="block w-full h-full"
-          animate={{ y: [0, -8, 0] }}
+          animate={prefersReduced ? {} : { y: [0, -8, 0] }}
           transition={{
             duration: 7,
             repeat: Number.POSITIVE_INFINITY,
@@ -163,7 +202,7 @@ function SignupPage() {
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
-              animate={{ x: [0, 6, 0], y: [0, -8, 0] }}
+              animate={prefersReduced ? {} : { x: [0, 6, 0], y: [0, -8, 0] }}
               transition={{
                 duration: 9,
                 repeat: Number.POSITIVE_INFINITY,
@@ -186,7 +225,7 @@ function SignupPage() {
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
-              animate={{ y: [0, -10, 0] }}
+              animate={prefersReduced ? {} : { y: [0, -10, 0] }}
               transition={{
                 duration: 6,
                 repeat: Number.POSITIVE_INFINITY,
@@ -208,7 +247,7 @@ function SignupPage() {
             alt=""
             aria-hidden="true"
             className="block w-full h-full"
-            animate={{ scale: [1, 1.04, 1] }}
+            animate={prefersReduced ? {} : { scale: [1, 1.04, 1] }}
             transition={{
               duration: 8,
               repeat: Number.POSITIVE_INFINITY,
@@ -282,9 +321,19 @@ function SignupPage() {
             {/* Form */}
             <div className="flex flex-col gap-4">
               {error && (
-                <div className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3">
-                  <span className="text-sm">⚠️</span>
-                  <p className="text-danger" style={{ fontSize: 'var(--text-body-sm)' }}>
+                <div
+                  role="alert"
+                  aria-live="assertive"
+                  className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3"
+                >
+                  <span className="text-sm" aria-hidden="true">
+                    ⚠️
+                  </span>
+                  <p
+                    id="signup-error"
+                    className="text-danger"
+                    style={{ fontSize: 'var(--text-body-sm)' }}
+                  >
                     {error}
                   </p>
                 </div>
@@ -312,7 +361,9 @@ function SignupPage() {
                     placeholder="mail@exemple.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -338,7 +389,9 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={password !== '' && password !== confirmation ? true : undefined}
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -365,9 +418,49 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={confirmation}
                     onChange={(e) => setConfirmation(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={
+                      confirmation !== '' && password !== confirmation ? true : undefined
+                    }
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
+                </div>
+
+                {/* Consentement RGPD */}
+                <div className="flex flex-col gap-3 rounded-xl bg-stone-50 p-4">
+                  <ConsentCheckbox id="consent-cgu" checked={consentCgu} onChange={setConsentCgu}>
+                    J&apos;accepte les{' '}
+                    <Link to="/legal/cgu" className="font-semibold text-brand hover:underline">
+                      Conditions Générales d&apos;Utilisation
+                    </Link>{' '}
+                    et la{' '}
+                    <Link
+                      to="/legal/confidentialite"
+                      className="font-semibold text-brand hover:underline"
+                    >
+                      politique de confidentialité
+                    </Link>{' '}
+                    <span className="text-danger">*</span>
+                  </ConsentCheckbox>
+                  <ConsentCheckbox
+                    id="consent-data"
+                    checked={consentData}
+                    onChange={setConsentData}
+                  >
+                    J&apos;accepte que Zenko traite mes données personnelles, y compris des
+                    informations relatives à ma situation familiale ou à l&apos;accompagnement
+                    d&apos;un enfant neurodivergent, conformément à l&apos;art. 9.2.a RGPD{' '}
+                    <span className="text-danger">*</span>
+                  </ConsentCheckbox>
+                  <ConsentCheckbox
+                    id="consent-age"
+                    checked={ageConfirmed}
+                    onChange={setAgeConfirmed}
+                  >
+                    Je certifie avoir 15 ans ou plus, ou disposer du consentement de mes parents
+                    pour créer ce compte <span className="text-danger">*</span>
+                  </ConsentCheckbox>
                 </div>
 
                 {/* Actions */}

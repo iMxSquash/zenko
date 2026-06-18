@@ -26,6 +26,7 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
     muted,
     toggleMute,
     isSupported,
+    voiceError,
   } = useAssistant(sessionId);
 
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -59,17 +60,17 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="rounded-card bg-neutral-100 px-4 py-2.5 text-sm">
+                <div className="rounded-card bg-neutral-100 px-4 py-2.5 text-sm" aria-hidden="true">
                   <span className="inline-flex gap-1">
-                    <span className="animate-bounce">·</span>
-                    <span className="animate-bounce [animation-delay:0.1s]">·</span>
-                    <span className="animate-bounce [animation-delay:0.2s]">·</span>
+                    <span className="motion-safe:animate-bounce">·</span>
+                    <span className="motion-safe:animate-bounce [animation-delay:0.1s]">·</span>
+                    <span className="motion-safe:animate-bounce [animation-delay:0.2s]">·</span>
                   </span>
                 </div>
               </div>
             )}
             {error && (
-              <div className="flex justify-start">
+              <div role="alert" className="flex justify-start">
                 <div className="rounded-card bg-red-50 px-4 py-2.5 text-sm text-red-600">
                   {error.message || 'Une erreur est survenue, veuillez réessayer.'}
                 </div>
@@ -80,6 +81,10 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
         )}
       </div>
 
+      <span aria-live="polite" className="sr-only">
+        {isLoading ? 'Réponse en cours…' : ''}
+      </span>
+
       <form
         onSubmit={handleSubmit}
         className="flex items-center gap-2 border-t border-border px-4 py-3"
@@ -88,16 +93,22 @@ export function ChatAssistant({ sessionId }: ChatAssistantProps) {
           <MicButton
             isListening={isListening}
             disabled={isLoading}
+            hasError={!!voiceError}
+            errorMessage={voiceError ?? undefined}
             onClick={() => (isListening ? stopListening() : startListening())}
           />
         )}
 
+        <label htmlFor="chat-input" className="sr-only">
+          Votre message
+        </label>
         <input
+          id="chat-input"
           value={input}
           onChange={handleInputChange}
           placeholder="Posez votre question…"
           disabled={isLoading}
-          className="flex-1 rounded-full border border-border bg-transparent px-4 py-2 text-sm outline-none focus:border-brand disabled:opacity-50"
+          className="flex-1 rounded-full border border-border bg-transparent px-4 py-2 text-sm outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand disabled:opacity-50"
         />
 
         <button
