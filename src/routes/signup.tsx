@@ -2,7 +2,7 @@ import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
 import { signUpWithPassword } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import { Link, createFileRoute, redirect } from '@tanstack/react-router';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 
 function ConsentCheckbox({
@@ -52,6 +52,7 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -148,7 +149,7 @@ function SignupPage() {
             alt=""
             aria-hidden="true"
             className="block size-full max-w-none"
-            animate={{ y: [0, -10, 0] }}
+            animate={prefersReduced ? {} : { y: [0, -10, 0] }}
             transition={{
               duration: 5,
               repeat: Number.POSITIVE_INFINITY,
@@ -177,7 +178,7 @@ function SignupPage() {
           alt=""
           aria-hidden="true"
           className="block w-full h-full"
-          animate={{ y: [0, -8, 0] }}
+          animate={prefersReduced ? {} : { y: [0, -8, 0] }}
           transition={{
             duration: 7,
             repeat: Number.POSITIVE_INFINITY,
@@ -201,7 +202,7 @@ function SignupPage() {
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
-              animate={{ x: [0, 6, 0], y: [0, -8, 0] }}
+              animate={prefersReduced ? {} : { x: [0, 6, 0], y: [0, -8, 0] }}
               transition={{
                 duration: 9,
                 repeat: Number.POSITIVE_INFINITY,
@@ -224,7 +225,7 @@ function SignupPage() {
               alt=""
               aria-hidden="true"
               className="block size-full max-w-none"
-              animate={{ y: [0, -10, 0] }}
+              animate={prefersReduced ? {} : { y: [0, -10, 0] }}
               transition={{
                 duration: 6,
                 repeat: Number.POSITIVE_INFINITY,
@@ -246,7 +247,7 @@ function SignupPage() {
             alt=""
             aria-hidden="true"
             className="block w-full h-full"
-            animate={{ scale: [1, 1.04, 1] }}
+            animate={prefersReduced ? {} : { scale: [1, 1.04, 1] }}
             transition={{
               duration: 8,
               repeat: Number.POSITIVE_INFINITY,
@@ -320,9 +321,19 @@ function SignupPage() {
             {/* Form */}
             <div className="flex flex-col gap-4">
               {error && (
-                <div className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3">
-                  <span className="text-sm">⚠️</span>
-                  <p className="text-danger" style={{ fontSize: 'var(--text-body-sm)' }}>
+                <div
+                  role="alert"
+                  aria-live="assertive"
+                  className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3"
+                >
+                  <span className="text-sm" aria-hidden="true">
+                    ⚠️
+                  </span>
+                  <p
+                    id="signup-error"
+                    className="text-danger"
+                    style={{ fontSize: 'var(--text-body-sm)' }}
+                  >
                     {error}
                   </p>
                 </div>
@@ -350,7 +361,9 @@ function SignupPage() {
                     placeholder="mail@exemple.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -376,7 +389,9 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={password !== '' && password !== confirmation ? true : undefined}
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>
@@ -403,7 +418,11 @@ function SignupPage() {
                     placeholder="••••••••••••••"
                     value={confirmation}
                     onChange={(e) => setConfirmation(e.target.value)}
-                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline  -outline-offset-1 outline-border-default transition-all focus:outline-brand-green"
+                    aria-invalid={
+                      confirmation !== '' && password !== confirmation ? true : undefined
+                    }
+                    aria-describedby={error ? 'signup-error' : undefined}
+                    className="w-full rounded-xl bg-stone-50 p-3 text-text-primary outline -outline-offset-1 outline-border-default transition-all focus:outline-brand-green focus-visible:ring-2 focus-visible:ring-brand-green"
                     style={{ fontSize: 'var(--text-body-sm)' }}
                   />
                 </div>

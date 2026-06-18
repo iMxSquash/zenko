@@ -4,7 +4,7 @@ import { getProfile } from '@/lib/profile/profile';
 import { signInWithPassword } from '@/lib/supabase/auth';
 import { supabase } from '@/lib/supabase/client';
 import { Link, createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 
 type Search = { mode?: 'login' | 'signup' };
@@ -30,6 +30,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -79,7 +80,7 @@ function LoginPage() {
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
-            animate={{ y: [0, -14, 0] }}
+            animate={prefersReduced ? {} : { y: [0, -14, 0] }}
             transition={{
               duration: 5,
               repeat: Number.POSITIVE_INFINITY,
@@ -108,7 +109,7 @@ function LoginPage() {
             alt=""
             aria-hidden="true"
             className="absolute block inset-0 max-w-none size-full"
-            animate={{ y: [0, 12, 0] }}
+            animate={prefersReduced ? {} : { y: [0, 12, 0] }}
             transition={{
               duration: 7,
               repeat: Number.POSITIVE_INFINITY,
@@ -128,7 +129,7 @@ function LoginPage() {
           aria-hidden="true"
           className="pointer-events-none absolute select-none"
           style={{ left: -104, top: 188, width: 207, height: 215 }}
-          animate={{ x: [0, 8, 0], y: [0, -6, 0] }}
+          animate={prefersReduced ? {} : { x: [0, 8, 0], y: [0, -6, 0] }}
           transition={{
             duration: 9,
             repeat: Number.POSITIVE_INFINITY,
@@ -148,7 +149,7 @@ function LoginPage() {
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-15.98% -16.6%' }}
-            animate={{ rotate: [0, 8, 0] }}
+            animate={prefersReduced ? {} : { rotate: [0, 8, 0] }}
             transition={{
               duration: 10,
               repeat: Number.POSITIVE_INFINITY,
@@ -169,7 +170,7 @@ function LoginPage() {
             aria-hidden="true"
             className="absolute block max-w-none size-full"
             style={{ inset: '-6.43% -6.07%' }}
-            animate={{ scale: [1, 1.08, 1] }}
+            animate={prefersReduced ? {} : { scale: [1, 1.08, 1] }}
             transition={{
               duration: 6,
               repeat: Number.POSITIVE_INFINITY,
@@ -244,9 +245,19 @@ function LoginPage() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
                 {error && (
-                  <div className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3">
-                    <span className="text-sm">⚠️</span>
-                    <p className="text-danger" style={{ fontSize: 'var(--text-body-sm)' }}>
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3"
+                  >
+                    <span className="text-sm" aria-hidden="true">
+                      ⚠️
+                    </span>
+                    <p
+                      id="login-error"
+                      className="text-danger"
+                      style={{ fontSize: 'var(--text-body-sm)' }}
+                    >
                       {error}
                     </p>
                   </div>
@@ -274,7 +285,9 @@ function LoginPage() {
                       placeholder="mail@exemple.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none"
+                      aria-invalid={!!error}
+                      aria-describedby={error ? 'login-error' : undefined}
+                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                       style={{ fontSize: 'var(--text-body-sm)' }}
                     />
                   </div>
@@ -300,7 +313,9 @@ function LoginPage() {
                       placeholder="••••••••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none"
+                      aria-invalid={!!error}
+                      aria-describedby={error ? 'login-error' : undefined}
+                      className="w-full rounded-xl bg-stone-50 p-3 text-text-primary border border-border-default transition-all focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                       style={{ fontSize: 'var(--text-body-sm)' }}
                     />
                   </div>
