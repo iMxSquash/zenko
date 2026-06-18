@@ -95,13 +95,10 @@ Deno.serve(async (req) => {
     const lastContent: string = messages.at(-1)?.content ?? '';
 
     if (lastContent.length > 4000) {
-      return new Response(
-        JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!lastContent) {
