@@ -16,9 +16,28 @@ import {
 } from '@/lib/seo/jsonld';
 import { useAuth } from '@/lib/supabase/use-auth';
 import { cn } from '@/lib/utils';
-import { Bookmark, Clock } from '@phosphor-icons/react';
+import { useVoice } from '@/lib/voice/useVoice';
+import { Bookmark, Clock, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
+
+function stripMarkdown(md: string): string {
+  return md
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`]+`/g, '')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^>\s+/gm, '')
+    .replace(/^[-*+]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\n{2,}/g, '. ')
+    .replace(/\n/g, ' ')
+    .trim();
+}
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -61,6 +80,30 @@ function SaveButton({
   );
 }
 
+function ReadButton({ isSpeaking, onRead }: { isSpeaking: boolean; onRead: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onRead}
+      aria-pressed={isSpeaking}
+      aria-label={isSpeaking ? 'Arrêter la lecture' : 'Lire la fiche à voix haute'}
+      className={cn(
+        'flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-medium transition-colors',
+        isSpeaking
+          ? 'border border-brand bg-brand/10 text-brand hover:bg-brand/15'
+          : 'border border-border bg-surface text-text-secondary hover:bg-neutral-100'
+      )}
+    >
+      {isSpeaking ? (
+        <SpeakerSlash size={15} aria-hidden="true" />
+      ) : (
+        <SpeakerHigh size={15} aria-hidden="true" />
+      )}
+      {isSpeaking ? 'Arrêter la lecture' : 'Lire la fiche'}
+    </button>
+  );
+}
+
 function FicheDetailPage() {
   const { slug } = Route.useParams();
   const { user } = useAuth();
@@ -72,6 +115,8 @@ function FicheDetailPage() {
   const { mutate: startReading } = useStartReading();
   const { mutate: markCompleted } = useMarkFicheCompleted();
   const { mutate: saveResource, isPending: isSaving } = useSaveResource();
+
+  const { speak, isSpeaking, stopSpeaking, primeTTS, isSupported } = useVoice();
 
   const isCompleted = !!progress?.completedAt;
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -86,6 +131,25 @@ function FicheDetailPage() {
       : null,
     'fiche-breadcrumb-jsonld'
   );
+
+  // Stop TTS when navigating away
+  useEffect(() => {
+    return () => stopSpeaking();
+  }, [stopSpeaking]);
+
+  const handleRead = () => {
+    primeTTS();
+    if (isSpeaking) {
+      stopSpeaking();
+    } else if (fiche) {
+      const parts = [
+        fiche.title,
+        fiche.description,
+        fiche.content ? stripMarkdown(fiche.content) : '',
+      ].filter(Boolean);
+      speak(parts.join('. '));
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -198,22 +262,24 @@ function FicheDetailPage() {
                 </p>
               </div>
 
-              {user ? (
-                <SaveButton
-                  isSaved={isSaved}
-                  isSaving={isSaving}
-                  onToggle={() => saveResource({ slug, save: !isSaved })}
-                  className="self-start"
-                />
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-4 py-2.5 text-[13px] font-medium text-text-active transition-colors hover:bg-neutral-100"
-                >
-                  <Bookmark size={15} />
-                  Se connecter pour enregistrer
-                </Link>
-              )}
+              <div className="flex flex-wrap items-center gap-3">
+                {user ? (
+                  <SaveButton
+                    isSaved={isSaved}
+                    isSaving={isSaving}
+                    onToggle={() => saveResource({ slug, save: !isSaved })}
+                  />
+                ) : (
+                  <Link
+                    to="/login"
+                    className="flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-4 py-2.5 text-[13px] font-medium text-text-active transition-colors hover:bg-neutral-100"
+                  >
+                    <Bookmark size={15} />
+                    Se connecter pour enregistrer
+                  </Link>
+                )}
+                {isSupported && <ReadButton isSpeaking={isSpeaking} onRead={handleRead} />}
+              </div>
             </div>
 
             {/* Cover image */}
