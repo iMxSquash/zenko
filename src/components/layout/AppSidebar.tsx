@@ -18,7 +18,7 @@ import {
   X,
 } from '@phosphor-icons/react';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function getInitials(name: string) {
   return name
@@ -61,17 +61,18 @@ const iconLinkBase =
 const iconActiveClass = 'bg-teacher-bg text-teacher';
 const iconInactiveClass = 'hover:bg-neutral-100 hover:text-text-primary';
 
-function IconNavLink({ to, icon: Icon, title }: { to: string; icon: PhosphorIcon; title: string }) {
+function IconNavLink({ to, icon: Icon, label }: { to: string; icon: PhosphorIcon; label: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = pathname === to || pathname.startsWith(`${to}/`);
 
   return (
     <Link
       to={to}
-      title={title}
+      aria-label={label}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(iconLinkBase, isActive ? iconActiveClass : iconInactiveClass)}
     >
-      <Icon size={20} weight={isActive ? 'fill' : 'regular'} />
+      <Icon size={20} weight={isActive ? 'fill' : 'regular'} aria-hidden="true" />
     </Link>
   );
 }
@@ -86,7 +87,46 @@ export function AppSidebar() {
   const { sidebarCollapsed, toggleSidebarCollapsed } = useUIStore();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const close = () => setMobileOpen(false);
+  const close = useCallback(() => setMobileOpen(false), []);
+  const panelRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const focusableSelector =
+      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const getFocusable = () => Array.from(panel.querySelectorAll<HTMLElement>(focusableSelector));
+
+    getFocusable()[0]?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [mobileOpen, close]);
 
   const profileName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
   const displayName =
@@ -104,10 +144,14 @@ export function AppSidebar() {
   }
 
   const navContent = (
-    <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
+    <nav aria-label="Navigation principale" className="flex flex-1 flex-col gap-6 overflow-y-auto">
       {/* Fiches section */}
-      <div className="flex flex-col gap-1">
-        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+      {/* biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context */}
+      <div role="group" aria-labelledby="nav-section-fiches" className="flex flex-col gap-1">
+        <p
+          id="nav-section-fiches"
+          className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted"
+        >
           Fiches
         </p>
 
@@ -157,8 +201,12 @@ export function AppSidebar() {
       </div>
 
       {/* Forum section */}
-      <div className="flex flex-col gap-1">
-        <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+      {/* biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context */}
+      <div role="group" aria-labelledby="nav-section-forum" className="flex flex-col gap-1">
+        <p
+          id="nav-section-forum"
+          className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted"
+        >
           Forum
         </p>
 
@@ -175,8 +223,12 @@ export function AppSidebar() {
 
       {/* Assistant section */}
       {user && (
-        <div className="flex flex-col gap-1">
-          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+        // biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context
+        <div role="group" aria-labelledby="nav-section-assistant" className="flex flex-col gap-1">
+          <p
+            id="nav-section-assistant"
+            className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted"
+          >
             Assistant
           </p>
 
@@ -194,8 +246,12 @@ export function AppSidebar() {
 
       {/* Administration section */}
       {isAdmin && (
-        <div className="flex flex-col gap-1">
-          <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted">
+        // biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context
+        <div role="group" aria-labelledby="nav-section-admin" className="flex flex-col gap-1">
+          <p
+            id="nav-section-admin"
+            className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-[0.88px] text-text-muted"
+          >
             Administration
           </p>
 
@@ -279,9 +335,9 @@ export function AppSidebar() {
         type="button"
         onClick={handleLogout}
         aria-label="Déconnexion"
-        className="flex size-9 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
+        className="flex size-11 shrink-0 items-center justify-center rounded-nav text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary"
       >
-        <SignOut size={18} />
+        <SignOut size={18} aria-hidden="true" />
       </button>
     </div>
   ) : (
@@ -323,10 +379,14 @@ export function AppSidebar() {
         onClick={close}
       />
 
-      {/* ── Mobile full-screen panel ── */}
-      <aside
+      {/* ── Mobile full-screen panel — <dialog open> so CSS transitions work (showModal not used, no browser backdrop/focus trap) */}
+      <dialog
+        ref={panelRef}
+        open
+        aria-label="Menu de navigation"
+        aria-hidden={!mobileOpen}
         className={cn(
-          'fixed inset-0 z-50 flex flex-col bg-surface px-4 py-6 transition-transform duration-300 lg:hidden',
+          'fixed inset-0 z-50 m-0 flex max-h-none max-w-none flex-col border-0 bg-surface p-0 px-4 py-6 transition-transform duration-300 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -345,29 +405,35 @@ export function AppSidebar() {
         </div>
         {navContent}
         {userSection}
-      </aside>
+      </dialog>
 
       {/* ── Desktop collapsed sidebar ── */}
       {sidebarCollapsed ? (
-        <aside className="hidden h-screen w-14.25 shrink-0 flex-col items-center gap-8 border-r border-border bg-surface py-6 lg:flex">
+        <aside
+          aria-label="Barre latérale"
+          className="hidden h-screen w-14.25 shrink-0 flex-col items-center gap-8 border-r border-border bg-surface py-6 lg:flex"
+        >
           <button
             type="button"
             onClick={toggleSidebarCollapsed}
-            aria-label="Déplier la sidebar"
-            className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+            aria-label="Déplier la barre latérale"
+            className="flex h-10 w-10 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
           >
             <ChevronIcon className="rotate-180" />
           </button>
 
-          <nav className="flex flex-1 flex-col items-center gap-6">
-            <IconNavLink to="/bibliotheque" icon={BookOpen} title="Fiches" />
-            <IconNavLink to="/forum" icon={ChatCircle} title="Forum" />
-            {user && <IconNavLink to="/assistant" icon={Microphone} title="Assistant vocal" />}
-            {isAdmin && <IconNavLink to="/admin" icon={Shield} title="Administration" />}
+          <nav
+            aria-label="Navigation principale"
+            className="flex flex-1 flex-col items-center gap-6"
+          >
+            <IconNavLink to="/bibliotheque" icon={BookOpen} label="Fiches" />
+            <IconNavLink to="/forum" icon={ChatCircle} label="Forum" />
+            {user && <IconNavLink to="/assistant" icon={Microphone} label="Assistant vocal" />}
+            {isAdmin && <IconNavLink to="/admin" icon={Shield} label="Administration" />}
           </nav>
 
           {user ? (
-            <Link to="/profile" title={displayName}>
+            <Link to="/profile" aria-label={`Profil de ${displayName}`}>
               {profile?.avatarUrl ? (
                 <img
                   src={profile.avatarUrl}
@@ -383,16 +449,19 @@ export function AppSidebar() {
           ) : (
             <Link
               to="/login"
-              title="Se connecter"
+              aria-label="Se connecter"
               className={cn(iconLinkBase, 'text-brand hover:bg-neutral-100')}
             >
-              <SignIn size={20} />
+              <SignIn size={20} aria-hidden="true" />
             </Link>
           )}
         </aside>
       ) : (
         /* ── Desktop expanded sidebar ── */
-        <aside className="hidden h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6 lg:flex">
+        <aside
+          aria-label="Barre latérale"
+          className="hidden h-screen w-62 shrink-0 flex-col border-r border-border bg-surface px-4 py-6 lg:flex"
+        >
           <div className="flex items-center justify-between px-2 pb-6 pt-1">
             <Link to={user ? '/bibliotheque' : '/'} className="block">
               <ZenkoLogo width={110} />
@@ -400,8 +469,8 @@ export function AppSidebar() {
             <button
               type="button"
               onClick={toggleSidebarCollapsed}
-              aria-label="Réduire la sidebar"
-              className="flex h-10 w-5 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
+              aria-label="Réduire la barre latérale"
+              className="flex h-10 w-10 items-center justify-center text-text-muted transition-colors hover:text-text-primary"
             >
               <ChevronIcon />
             </button>

@@ -42,6 +42,7 @@ function SaveButton({
       type="button"
       disabled={isSaving}
       onClick={onToggle}
+      aria-pressed={isSaved}
       className={cn(
         'flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-medium transition-colors',
         isSaved
@@ -50,7 +51,11 @@ function SaveButton({
         className
       )}
     >
-      {isSaved ? <Bookmark weight="fill" size={15} /> : <Bookmark size={15} />}
+      {isSaved ? (
+        <Bookmark weight="fill" size={15} aria-hidden="true" />
+      ) : (
+        <Bookmark size={15} aria-hidden="true" />
+      )}
       {isSaved ? 'Fiche enregistrée' : 'Enregistrer cette fiche'}
     </button>
   );
@@ -174,7 +179,9 @@ function FicheDetailPage() {
                 to="/bibliotheque"
                 className="flex w-fit items-center gap-2 text-[15px] font-semibold text-text-secondary transition-opacity hover:opacity-70"
               >
-                <span className="rotate-180 font-bold">→</span>
+                <span className="rotate-180 font-bold" aria-hidden="true">
+                  →
+                </span>
                 Retour
               </Link>
 
@@ -269,19 +276,19 @@ function FicheDetailPage() {
                     remarkPlugins={[remarkGfm]}
                     components={{
                       h1: ({ node: _, ...props }) => (
-                        <h1
+                        <h2
                           className="mb-4 mt-8 text-[24px] font-bold leading-tight text-text-primary"
                           {...props}
                         />
                       ),
                       h2: ({ node: _, ...props }) => (
-                        <h2
+                        <h3
                           className="mb-3 mt-6 text-[20px] font-bold leading-snug text-text-primary"
                           {...props}
                         />
                       ),
                       h3: ({ node: _, ...props }) => (
-                        <h3
+                        <h4
                           className="mb-2 mt-4 text-[17px] font-semibold text-text-primary"
                           {...props}
                         />
