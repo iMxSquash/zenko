@@ -84,6 +84,7 @@ export class WebSpeechSTT implements SpeechToText {
 export class WebSpeechTTS implements TextToSpeech {
   private synth = window.speechSynthesis;
   private muted = false;
+  private primed = false;
 
   speak(text: string, onEnd?: () => void) {
     if (this.muted) {
@@ -110,6 +111,16 @@ export class WebSpeechTTS implements TextToSpeech {
   setMuted(muted: boolean) {
     this.muted = muted;
     if (muted) this.synth.cancel();
+  }
+
+  prime() {
+    if (this.primed) return;
+    this.primed = true;
+    // iOS blocks speechSynthesis from async contexts unless it was first called
+    // from a synchronous user gesture. A silent utterance unlocks it for the session.
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 0;
+    this.synth.speak(u);
   }
 }
 

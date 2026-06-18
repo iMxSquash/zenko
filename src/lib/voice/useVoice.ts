@@ -10,6 +10,7 @@ export function useVoice() {
   const [interimTranscript, setInterimTranscript] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const sttRef = useRef<SpeechToText | null>(null);
   const ttsRef = useRef<TextToSpeech | null>(null);
@@ -41,10 +42,20 @@ export function useVoice() {
         setInterimTranscript(text);
       });
 
-      sttRef.current.onError(() => {
+      sttRef.current.onError((err) => {
         setInterimTranscript('');
         isListeningRef.current = false;
         setIsListening(false);
+        if (err === 'not-allowed' || err === 'audio-capture') {
+          setVoiceError(
+            err === 'audio-capture'
+              ? 'Aucun microphone détecté.'
+              : 'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.'
+          );
+        } else if (err === 'network') {
+          setVoiceError('Connexion réseau requise pour la reconnaissance vocale.');
+        }
+        // no-speech / aborted sont normaux, pas d'erreur à afficher
       });
 
       // Chrome/Mac arrête la reconnaissance silencieusement après silence :
@@ -64,6 +75,7 @@ export function useVoice() {
     if (!sttRef.current) return;
     setTranscript('');
     setInterimTranscript('');
+    setVoiceError(null);
     isListeningRef.current = true;
     setIsListening(true);
     sttRef.current.start();
@@ -89,6 +101,8 @@ export function useVoice() {
     });
   };
 
+  const primeTTS = () => ttsRef.current?.prime();
+
   return {
     isSupported,
     isListening,
@@ -100,5 +114,7 @@ export function useVoice() {
     isSpeaking,
     muted,
     toggleMute,
+    voiceError,
+    primeTTS,
   };
 }

@@ -11,4 +11,6 @@ export interface TextToSpeech {
   speak(text: string, onEnd?: () => void): void;
   cancel(): void;
   setMuted(muted: boolean): void;
+  // Must be called from a user gesture to unlock iOS speechSynthesis
+  prime(): void;
 }
