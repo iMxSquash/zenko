@@ -1,3 +1,4 @@
+import { env } from '@/lib/env';
 import {
   type ProfileUpdate,
   deleteAccount,
@@ -7,6 +8,7 @@ import {
   updateRole,
 } from '@/lib/profile/profile';
 import { updateEmail, updatePassword } from '@/lib/supabase/auth';
+import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/supabase/use-auth';
 import type { ForumUserRole } from '@/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -59,6 +61,29 @@ export function useUpdatePassword() {
 export function useDeleteAccount() {
   return useMutation({
     mutationFn: deleteAccount,
+  });
+}
+
+export function useExportData() {
+  return useMutation({
+    mutationFn: async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error('Non authentifié');
+
+      const res = await fetch(`${env.supabaseUrl}/functions/v1/export-user-data`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Erreur lors de l'export");
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `zenko-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
   });
 }
 

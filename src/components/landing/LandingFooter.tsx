@@ -1,4 +1,5 @@
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
+import { Link } from '@tanstack/react-router';
 
 const FOOTER_LINKS = {
   PRODUIT: [
@@ -43,7 +44,19 @@ export function LandingFooter() {
         <p className="text-label opacity-50">
           © 2026 ZENKO - Conçu par Alem Agency. L&apos;humain d&apos;abord.
         </p>
-        <p className="text-label opacity-50">Mentions légales • RGPD • Cookies</p>
+        <div className="flex gap-4 text-label opacity-50">
+          <Link to="/legal/mentions-legales" className="hover:opacity-100 hover:underline">
+            Mentions légales
+          </Link>
+          <span aria-hidden="true">•</span>
+          <Link to="/legal/confidentialite" className="hover:opacity-100 hover:underline">
+            RGPD
+          </Link>
+          <span aria-hidden="true">•</span>
+          <Link to="/legal/cgu" className="hover:opacity-100 hover:underline">
+            CGU
+          </Link>
+        </div>
       </div>
     </footer>
   );
