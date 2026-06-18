@@ -30,7 +30,7 @@ export function OnboardingRoleStep({
       </div>
 
       {/* Panneau gauche - branding (desktop only) */}
-      <div className="relative z-10 hidden flex-col items-center justify-center self-stretch bg-[#fafaf9] lg:flex lg:w-1/2">
+      <div className="relative z-10 hidden flex-col items-center justify-center self-stretch bg-background lg:flex lg:w-1/2">
         <img
           src="/assets/role_blob.svg"
           alt=""
@@ -82,7 +82,7 @@ export function OnboardingRoleStep({
           <ZenkoLogo width={120} />
         </div>
 
-        <div className="relative z-10 flex w-full max-w-[442px] flex-col items-center gap-8 lg:items-start">
+        <div className="relative z-10 flex w-full max-w-110.5 flex-col items-center gap-8 lg:items-start">
           {/* Header */}
           <div className="flex w-full flex-col gap-2.5">
             <h1
@@ -129,7 +129,7 @@ export function OnboardingRoleStep({
                   type="button"
                   onClick={() => onSelectRole(role.id)}
                   aria-pressed={selected}
-                  className="flex w-full items-center justify-between rounded-2xl bg-[#fafaf9] p-2.5 text-left transition-all lg:rounded-[32px] lg:p-8"
+                  className="flex w-full items-center justify-between rounded-2xl bg-background p-2.5 text-left transition-all lg:rounded-4xl lg:p-8"
                   style={{
                     outline: selected ? `2px solid ${selColor}` : '1px solid transparent',
                     outlineOffset: selected ? '-2px' : '-1px',
@@ -146,7 +146,7 @@ export function OnboardingRoleStep({
                       {role.label}
                     </p>
                     <p
-                      className={`text-[10px] leading-3 lg:text-[var(--text-body-sm)] lg:leading-5 ${
+                      className={`text-capsule leading-3 lg:text-(--text-body-sm) lg:leading-5 ${
                         role.id === 'expert' ? 'text-text-secondary' : 'text-text-primary'
                       }`}
                     >
@@ -155,7 +155,7 @@ export function OnboardingRoleStep({
                   </div>
                   <span
                     aria-hidden="true"
-                    className="flex size-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors lg:size-[30px]"
+                    className="flex size-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors lg:size-7.5"
                     style={{ borderColor: selected ? selColor : 'var(--color-border-default)' }}
                   >
                     {selected && (
@@ -186,7 +186,7 @@ export function OnboardingRoleStep({
                 value={doctolibUrl}
                 onChange={(e) => onDoctolibUrlChange(e.target.value)}
                 placeholder="https://www.doctolib.fr/..."
-                className="w-full rounded-2xl border border-border-default bg-white px-4 py-3 text-sm text-text-primary outline-none transition-colors focus:border-[#f7a4c0] focus:ring-2 focus:ring-[#f7a4c0]/30"
+                className="w-full rounded-2xl border border-border-default bg-white px-4 py-3 text-sm text-text-primary outline-none transition-colors focus:border-brand-rose focus:ring-2 focus:ring-brand-rose/30"
               />
             </div>
           )}
@@ -207,7 +207,7 @@ export function OnboardingRoleStep({
               type="button"
               onClick={onContinue}
               disabled={!selectedRole || isPending}
-              className="hidden items-center justify-center gap-2 rounded-full border border-[#a6a39b] px-6 py-4 font-display text-base font-semibold text-text-primary transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40 lg:flex"
+              className="hidden items-center justify-center gap-2 rounded-full border border-text-muted px-6 py-4 font-display text-base font-semibold text-text-primary transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40 lg:flex"
             >
               {isPending ? 'Enregistrement…' : 'Continuer'}
             </button>
