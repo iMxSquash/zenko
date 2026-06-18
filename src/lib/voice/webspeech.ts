@@ -10,6 +10,7 @@ interface ISpeechRecognition extends EventTarget {
   stop(): void;
   onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
   onerror: ((event: SpeechRecognitionErrEvent) => void) | null;
+  onend: (() => void) | null;
 }
 
 interface SpeechRecognitionResultEvent {
@@ -74,11 +75,16 @@ export class WebSpeechSTT implements SpeechToText {
   onError(cb: (err: string) => void) {
     this.recognition.onerror = (event: SpeechRecognitionErrEvent) => cb(event.error);
   }
+
+  onEnd(cb: () => void) {
+    this.recognition.onend = cb;
+  }
 }
 
 export class WebSpeechTTS implements TextToSpeech {
   private synth = window.speechSynthesis;
   private muted = false;
+  private primed = false;
 
   speak(text: string, onEnd?: () => void) {
     if (this.muted) {
@@ -105,6 +111,16 @@ export class WebSpeechTTS implements TextToSpeech {
   setMuted(muted: boolean) {
     this.muted = muted;
     if (muted) this.synth.cancel();
+  }
+
+  prime() {
+    if (this.primed) return;
+    this.primed = true;
+    // iOS blocks speechSynthesis from async contexts unless it was first called
+    // from a synchronous user gesture. A silent utterance unlocks it for the session.
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 0;
+    this.synth.speak(u);
   }
 }
 
