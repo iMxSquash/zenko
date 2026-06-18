@@ -12,8 +12,9 @@ function requireEnv(key: string): string {
   return val;
 }
 
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') ?? '*';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': allowedOrigin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
@@ -84,7 +85,24 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (messages.length > 50) {
+      return new Response(JSON.stringify({ error: 'Trop de messages dans la requête (max 50).' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const lastContent: string = messages.at(-1)?.content ?? '';
+
+    if (lastContent.length > 4000) {
+      return new Response(
+        JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     if (!lastContent) {
       return new Response(

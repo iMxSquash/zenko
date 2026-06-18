@@ -2,8 +2,9 @@
 // Génère un embedding gte-small (384 dims) via Supabase AI - sans clé API externe.
 // Appelé en interne par /chat, /autoembed et le script de backfill (service_role uniquement).
 
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') ?? '*';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': allowedOrigin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
