@@ -1,5 +1,6 @@
 import { OnboardingRoleStep } from '@/components/onboarding/OnboardingRoleStep';
 import { useUpdateRole } from '@/hooks/useProfile';
+import { assertValidSocialUrl } from '@/lib/profile/socialLinks';
 import { supabase } from '@/lib/supabase/client';
 import type { ForumUserRole } from '@/types';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
@@ -33,6 +34,19 @@ function OnboardingPage() {
 
   const handleContinue = () => {
     if (!selectedRole) return;
+
+    if (selectedRole === 'expert') {
+      if (!doctolibUrl) {
+        setError('Le lien Doctolib est requis pour le rôle expert.');
+        return;
+      }
+      try {
+        assertValidSocialUrl(doctolibUrl, 'doctolib', 'Doctolib');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Lien Doctolib invalide.');
+        return;
+      }
+    }
 
     setError(undefined);
     updateRole.mutate(
