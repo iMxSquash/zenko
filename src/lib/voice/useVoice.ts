@@ -127,6 +127,11 @@ export function useVoice() {
     ttsRef.current.speak(text, () => setIsSpeaking(false));
   };
 
+  const stopSpeaking = useCallback(() => {
+    ttsRef.current?.cancel();
+    setIsSpeaking(false);
+  }, []);
+
   const toggleMute = () => {
     setMuted((prev) => {
       const next = !prev;
@@ -146,6 +151,7 @@ export function useVoice() {
     stopListening,
     speak,
     isSpeaking,
+    stopSpeaking,
     muted,
     toggleMute,
     voiceError,
