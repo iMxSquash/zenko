@@ -74,7 +74,7 @@ function CguPage() {
           </ul>
         </Section>
 
-        <Section title="6. Assistant IA — avertissement">
+        <Section title="6. Assistant IA - avertissement">
           <p>
             L'assistant IA de Zenko fournit des informations générales basées sur les fiches et
             discussions de la plateforme. Il ne remplace en aucun cas l'avis d'un professionnel de

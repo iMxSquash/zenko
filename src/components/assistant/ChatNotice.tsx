@@ -24,7 +24,7 @@ export function ChatNotice() {
       <Info size={16} className="mt-0.5 shrink-0 text-brand" aria-hidden="true" />
       <p className="flex-1 leading-5">
         Vos conversations sont <strong>privées</strong> et supprimées après 12 mois. Les messages
-        sont transmis à Google Gemini pour générer les réponses — n'incluez pas de données médicales
+        sont transmis à Google Gemini pour générer les réponses, n'incluez pas de données médicales
         nominatives (nom de l'enfant, numéro de dossier).
       </p>
       <button

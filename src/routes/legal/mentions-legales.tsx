@@ -34,8 +34,8 @@ function MentionsLegalesPage() {
             </li>
             <li>
               <strong>Email</strong> :{' '}
-              <a href="mailto:contact@zenko.fr" className="text-brand hover:underline">
-                contact@zenko.fr
+              <a href="mailto:alemagency@outlook.fr" className="text-brand hover:underline">
+                alemagency@outlook.fr
               </a>
             </li>
             <li>
@@ -47,12 +47,12 @@ function MentionsLegalesPage() {
         <Section title="Hébergement">
           <ul className="list-none space-y-1 text-text-secondary">
             <li>
-              <strong>Frontend</strong> : Vercel Inc. — 340 Pine Street, Suite 1702, San Francisco,
+              <strong>Frontend</strong> : Vercel Inc. - 340 Pine Street, Suite 1702, San Francisco,
               CA 94104, États-Unis. vercel.com
             </li>
             <li>
-              <strong>Base de données & authentification</strong> : Supabase Inc. — 970 Toa Payoh
-              North #07-04, Singapore 318992. supabase.com — Données hébergées en région EU.
+              <strong>Base de données & authentification</strong> : Supabase Inc. - 970 Toa Payoh
+              North #07-04, Singapore 318992. supabase.com - Données hébergées en région EU.
             </li>
           </ul>
         </Section>

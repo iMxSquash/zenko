@@ -22,8 +22,8 @@ function ConfidentialitePage() {
           <p>
             Zenko est édité par Alem Agency. Pour toute question relative à vos données
             personnelles, contactez-nous à :{' '}
-            <a href="mailto:contact@zenko.fr" className="text-brand hover:underline">
-              contact@zenko.fr
+            <a href="mailto:alemagency@outlook.fr" className="text-brand hover:underline">
+              alemagency@outlook.fr
             </a>
             .
           </p>
@@ -79,17 +79,17 @@ function ConfidentialitePage() {
         <Section title="4. Sous-traitants et transferts de données">
           <ul className="list-disc space-y-2 pl-5 text-text-secondary">
             <li>
-              <strong>Supabase Inc.</strong> — hébergement de la base de données et
+              <strong>Supabase Inc.</strong> - hébergement de la base de données et
               authentification. Région : EU (Europe de l'Ouest). DPA disponible sur supabase.com.
             </li>
             <li>
-              <strong>Google LLC (Gemini API)</strong> — traitement des messages de l'assistant IA
+              <strong>Google LLC (Gemini API)</strong> - traitement des messages de l'assistant IA
               pour générer des réponses. Les messages sont transmis aux serveurs Google. Google
               Cloud dispose d'un DPA conforme au RGPD et de clauses contractuelles types (SCC). Les
               données ne sont pas utilisées pour entraîner les modèles Google sans opt-in explicite.
             </li>
             <li>
-              <strong>Vercel Inc.</strong> — hébergement de l'application web. Région : EU
+              <strong>Vercel Inc.</strong> - hébergement de l'application web. Région : EU
               disponible. DPA disponible sur vercel.com.
             </li>
           </ul>
@@ -112,8 +112,8 @@ function ConfidentialitePage() {
         <Section title="6. Vos droits">
           <p className="mb-3">
             Conformément au RGPD, vous disposez des droits suivants, exerçables à{' '}
-            <a href="mailto:contact@zenko.fr" className="text-brand hover:underline">
-              contact@zenko.fr
+            <a href="mailto:alemagency@outlook.fr" className="text-brand hover:underline">
+              alemagency@outlook.fr
             </a>{' '}
             :
           </p>
