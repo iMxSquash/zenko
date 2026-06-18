@@ -12,12 +12,22 @@ function requireEnv(key: string): string {
   return val;
 }
 
-const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') ?? '*';
-const corsHeaders = {
-  'Access-Control-Allow-Origin': allowedOrigin,
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+const ALLOWED_ORIGINS = [
+  'https://zenko.fr',
+  'https://www.zenko.fr',
+];
+
+function getCorsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('Origin') ?? '';
+  const isVercelPreview = /^https:\/\/[^.]+\.vercel\.app$/.test(origin);
+  const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(origin);
+  const isAllowed = ALLOWED_ORIGINS.includes(origin) || isVercelPreview || isLocalhost;
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+}
 
 const SYSTEM_PROMPT = `Tu es un assistant bienveillant qui aide les familles et professionnels accompagnant des enfants neurodivergents (TSA, TDAH, DYS, TDI).
 
@@ -42,6 +52,8 @@ type VectorMatch = MatchedDoc & { similarity: number };
 type KeywordMatch = MatchedDoc & { rank: number };
 
 Deno.serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -79,35 +91,32 @@ Deno.serve(async (req) => {
     const { messages } = body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
-      return new Response(JSON.stringify({ error: '"messages" doit être un tableau non vide.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ error: '"messages" doit être un tableau non vide.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (messages.length > 50) {
-      return new Response(JSON.stringify({ error: 'Trop de messages dans la requête (max 50).' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ error: 'Trop de messages dans la requête (max 50).' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const lastContent: string = messages.at(-1)?.content ?? '';
 
     if (lastContent.length > 4000) {
-      return new Response(JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ error: 'Message trop long (max 4000 caractères).' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (!lastContent) {
       return new Response(
         JSON.stringify({ error: 'Le dernier message ne contient pas de contenu.' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
