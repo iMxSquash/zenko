@@ -6,8 +6,16 @@ export async function signInWithPassword(email: string, password: string) {
   return data;
 }
 
-export async function signUpWithPassword(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+export async function signUpWithPassword(
+  email: string,
+  password: string,
+  consentMeta: { consent_given_at: string; age_confirmed: boolean }
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: consentMeta },
+  });
   if (error) throw error;
   return data;
 }
