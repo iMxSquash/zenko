@@ -6,7 +6,8 @@ const STT_ERRORS: Record<string, string> = {
   'not-allowed':
     'Accès au micro refusé. Vérifiez les autorisations dans Réglages système > Confidentialité > Microphone.',
   'audio-capture': 'Aucun microphone détecté.',
-  'network': 'Connexion réseau requise pour la reconnaissance vocale (Chrome envoie l'audio à Google).',
+  network:
+    "Connexion réseau requise pour la reconnaissance vocale (Chrome envoie l'audio à Google).",
   'service-not-allowed':
     'Service de reconnaissance vocale non disponible. Essayez Chrome sur HTTPS ou vérifiez votre connexion.',
   'language-not-supported': 'Langue non supportée par ce navigateur pour la reconnaissance vocale.',

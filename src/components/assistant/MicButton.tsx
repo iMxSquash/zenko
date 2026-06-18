@@ -9,7 +9,13 @@ interface MicButtonProps {
   onClick: () => void;
 }
 
-export function MicButton({ isListening, disabled, hasError, errorMessage, onClick }: MicButtonProps) {
+export function MicButton({
+  isListening,
+  disabled,
+  hasError,
+  errorMessage,
+  onClick,
+}: MicButtonProps) {
   return (
     <div className="relative">
       <button
