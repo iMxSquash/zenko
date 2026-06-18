@@ -10,6 +10,7 @@ interface ISpeechRecognition extends EventTarget {
   stop(): void;
   onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
   onerror: ((event: SpeechRecognitionErrEvent) => void) | null;
+  onend: (() => void) | null;
 }
 
 interface SpeechRecognitionResultEvent {
@@ -73,6 +74,10 @@ export class WebSpeechSTT implements SpeechToText {
 
   onError(cb: (err: string) => void) {
     this.recognition.onerror = (event: SpeechRecognitionErrEvent) => cb(event.error);
+  }
+
+  onEnd(cb: () => void) {
+    this.recognition.onend = cb;
   }
 }
 

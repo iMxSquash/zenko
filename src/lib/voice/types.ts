@@ -4,6 +4,7 @@ export interface SpeechToText {
   onResult(cb: (text: string) => void): void;
   onInterimResult(cb: (text: string) => void): void;
   onError(cb: (err: string) => void): void;
+  onEnd(cb: () => void): void;
 }
 
 export interface TextToSpeech {

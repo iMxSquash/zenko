@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SpeechToText, TextToSpeech } from './types';
 import { WebSpeechSTT, WebSpeechTTS, isWebSpeechSupported } from './webspeech';
 
@@ -13,6 +13,17 @@ export function useVoice() {
 
   const sttRef = useRef<SpeechToText | null>(null);
   const ttsRef = useRef<TextToSpeech | null>(null);
+  const isListeningRef = useRef(false);
+
+  const restartIfListening = useCallback(() => {
+    if (isListeningRef.current && sttRef.current) {
+      try {
+        sttRef.current.start();
+      } catch {
+        // ignore - peut arriver si stop() a été appelé entre-temps
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!isSupported) return;
@@ -24,7 +35,6 @@ export function useVoice() {
       sttRef.current.onResult((text) => {
         setTranscript(text);
         setInterimTranscript('');
-        // continuous mode - isListening stays true until stopListening() is called
       });
 
       sttRef.current.onInterimResult((text) => {
@@ -33,8 +43,13 @@ export function useVoice() {
 
       sttRef.current.onError(() => {
         setInterimTranscript('');
+        isListeningRef.current = false;
         setIsListening(false);
       });
+
+      // Chrome/Mac arrête la reconnaissance silencieusement après silence :
+      // onend redémarre tant que l'utilisateur n'a pas cliqué sur stop.
+      sttRef.current.onEnd(restartIfListening);
     } catch {
       // Navigateur ne supporte pas l'API même si la détection a passé
     }
@@ -43,17 +58,19 @@ export function useVoice() {
       sttRef.current?.stop();
       ttsRef.current?.cancel();
     };
-  }, [isSupported]);
+  }, [isSupported, restartIfListening]);
 
   const startListening = () => {
     if (!sttRef.current) return;
     setTranscript('');
     setInterimTranscript('');
+    isListeningRef.current = true;
     setIsListening(true);
     sttRef.current.start();
   };
 
   const stopListening = () => {
+    isListeningRef.current = false;
     sttRef.current?.stop();
     setIsListening(false);
   };
