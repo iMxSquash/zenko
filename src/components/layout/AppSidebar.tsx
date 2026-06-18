@@ -88,12 +88,14 @@ export function AppSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const close = useCallback(() => setMobileOpen(false), []);
-  const panelRef = useRef<HTMLDialogElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mobileOpen) return;
     const panel = panelRef.current;
     if (!panel) return;
+
+    document.body.style.overflow = 'hidden';
 
     const focusableSelector =
       'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -125,7 +127,10 @@ export function AppSidebar() {
     }
 
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, [mobileOpen, close]);
 
   const profileName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
@@ -146,7 +151,6 @@ export function AppSidebar() {
   const navContent = (
     <nav aria-label="Navigation principale" className="flex flex-1 flex-col gap-6 overflow-y-auto">
       {/* Fiches section */}
-      {/* biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context */}
       <div role="group" aria-labelledby="nav-section-fiches" className="flex flex-col gap-1">
         <p
           id="nav-section-fiches"
@@ -201,7 +205,6 @@ export function AppSidebar() {
       </div>
 
       {/* Forum section */}
-      {/* biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context */}
       <div role="group" aria-labelledby="nav-section-forum" className="flex flex-col gap-1">
         <p
           id="nav-section-forum"
@@ -223,7 +226,6 @@ export function AppSidebar() {
 
       {/* Assistant section */}
       {user && (
-        // biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context
         <div role="group" aria-labelledby="nav-section-assistant" className="flex flex-col gap-1">
           <p
             id="nav-section-assistant"
@@ -246,7 +248,6 @@ export function AppSidebar() {
 
       {/* Administration section */}
       {isAdmin && (
-        // biome-ignore lint/a11y/useSemanticElements: role="group" has no HTML equivalent in nav context
         <div role="group" aria-labelledby="nav-section-admin" className="flex flex-col gap-1">
           <p
             id="nav-section-admin"
@@ -379,14 +380,15 @@ export function AppSidebar() {
         onClick={close}
       />
 
-      {/* ── Mobile full-screen panel — <dialog open> so CSS transitions work (showModal not used, no browser backdrop/focus trap) */}
-      <dialog
+      {/* ── Mobile full-screen panel — div intentional: <dialog> UA styles break fixed inset-0 on iOS Safari */}
+      <div
+        role="dialog"
         ref={panelRef}
-        open
+        aria-modal="true"
         aria-label="Menu de navigation"
         aria-hidden={!mobileOpen}
         className={cn(
-          'fixed inset-0 z-50 m-0 flex max-h-none max-w-none flex-col border-0 bg-surface p-0 px-4 py-6 transition-transform duration-300 lg:hidden',
+          'fixed inset-0 z-50 flex flex-col bg-surface px-4 py-6 transition-transform duration-300 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -405,7 +407,7 @@ export function AppSidebar() {
         </div>
         {navContent}
         {userSection}
-      </dialog>
+      </div>
 
       {/* ── Desktop collapsed sidebar ── */}
       {sidebarCollapsed ? (
