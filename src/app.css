@@ -6,7 +6,7 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
 
-  /* === Colors — neutrals === */
+  /* === Colors - neutrals === */
   --color-background: #fafaf9;
   --color-surface: #ffffff;
   --color-neutral-100: #f4f4f2;
@@ -14,25 +14,25 @@
   --color-border-default: #d3d1cb;
   --color-dark: #171614;
 
-  /* === Colors — text === */
+  /* === Colors - text === */
   --color-text-primary: #171614;
   --color-text-active: #3f3d38;
   --color-text-secondary: #5a5750;
   --color-text-muted: #a6a39b;
 
-  /* === Colors — brand === */
+  /* === Colors - brand === */
   --color-brand: #2f9dd4;
   --color-brand-100: #419fd7;
   --color-brand-orange: #ee6b2d;
   --color-brand-green: #52c46a;
   --color-brand-rose: #f7a4c0;
 
-  /* === Colors — semantic === */
+  /* === Colors - semantic === */
   --color-danger: #e04e4e;
   --color-success: #52c46a;
   --color-info: #4fb4e5;
 
-  /* === Colors — role tints (hero cards) === */
+  /* === Colors - role tints (hero cards) === */
   --color-teacher-bg: #e2f2fb;
   --color-teacher: #176a99;
   --color-parent-bg: #fceaf0;
@@ -42,14 +42,14 @@
   --color-specialist-bg: #fce2d2;
   --color-specialist: #a03f0e;
 
-  /* === Colors — card tints (25%) === */
+  /* === Colors - card tints (25%) === */
   --color-orange-25: #fbdac8;
   --color-rose-25: #fde8ef;
   --color-vert-25: #c7f2dc;
   --color-bleu-25: #cfe7f5;
   --color-jaune-50: #fdeb83;
 
-  /* === Colors — fiche covers (75%) === */
+  /* === Colors - fiche covers (75%) === */
   --color-orange-75: #f4924a;
   --color-jaune-75: #fcd234;
   --color-vert-75: #58d796;

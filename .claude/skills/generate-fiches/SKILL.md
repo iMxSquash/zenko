@@ -7,6 +7,7 @@
 ```
 
 Exemples :
+
 ```bash
 /generate-fiches 3 "gestion des émotions"
 /generate-fiches 5 "sommeil et régulation" category:TDAH
@@ -18,12 +19,12 @@ Exemples :
 
 ## Ce que tu reçois
 
-| Paramètre | Obligatoire | Description |
-|---|---|---|
-| `count` | Oui | Nombre de fiches à générer (1 à 20) |
-| `thème` | Oui | Sujet global (entre guillemets si plusieurs mots) |
-| `category:` | Non | Restreindre à une catégorie. Sinon répartir sur TSA / TDAH / DYS / TDI |
-| `user:` | Non | `author_user_id` à assigner. Si absent, laisser `null` |
+| Paramètre   | Obligatoire | Description                                                            |
+| ----------- | ----------- | ---------------------------------------------------------------------- |
+| `count`     | Oui         | Nombre de fiches à générer (1 à 20)                                    |
+| `thème`     | Oui         | Sujet global (entre guillemets si plusieurs mots)                      |
+| `category:` | Non         | Restreindre à une catégorie. Sinon répartir sur TSA / TDAH / DYS / TDI |
+| `user:`     | Non         | `author_user_id` à assigner. Si absent, laisser `null`                 |
 
 ---
 
@@ -53,17 +54,17 @@ Pour chaque fiche, trouver **une image libre** (domaine `images.unsplash.com`, p
 2. Pour chaque ID candidat, vérifier que l'image est libre avec `WebFetch` sur `https://unsplash.com/photos/<id>`. Conserver seulement les URLs commençant par `images.unsplash.com` (les `plus.unsplash.com` sont payantes, les ignorer).
 3. Construire l'URL finale : `https://images.unsplash.com/photo-<id>?w=800&auto=format&fit=crop&q=80`
 
-Si aucune image satisfaisante n'est trouvée après 2-3 tentatives, utiliser `null` pour `cover_image_url` — ne pas bloquer l'insertion.
+Si aucune image satisfaisante n'est trouvée après 2-3 tentatives, utiliser `null` pour `cover_image_url` - ne pas bloquer l'insertion.
 
 **Images de secours connues libres** (à utiliser si les recherches échouent) :
 
-| Usage | URL |
-|---|---|
-| Enfant qui dessine / crée | `https://images.unsplash.com/photo-1769720205873-6a73e0698093?w=800&auto=format&fit=crop&q=80` |
+| Usage                        | URL                                                                                            |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| Enfant qui dessine / crée    | `https://images.unsplash.com/photo-1769720205873-6a73e0698093?w=800&auto=format&fit=crop&q=80` |
 | Enfant en méditation / calme | `https://images.unsplash.com/photo-1769095207794-02ffab1e2376?w=800&auto=format&fit=crop&q=80` |
-| Enfant qui écrit / travaille | `https://images.unsplash.com/photo-1560785477-d43d2b34e0df?w=800&auto=format&fit=crop&q=80` |
-| Enfant avec blocs / jeu | `https://images.unsplash.com/photo-1495900593237-22dc861b231d?w=800&auto=format&fit=crop&q=80` |
-| Adolescent / autonomie | `https://images.unsplash.com/photo-1526662092594-e98c1e356d6a?w=800&auto=format&fit=crop&q=80` |
+| Enfant qui écrit / travaille | `https://images.unsplash.com/photo-1560785477-d43d2b34e0df?w=800&auto=format&fit=crop&q=80`    |
+| Enfant avec blocs / jeu      | `https://images.unsplash.com/photo-1495900593237-22dc861b231d?w=800&auto=format&fit=crop&q=80` |
+| Adolescent / autonomie       | `https://images.unsplash.com/photo-1526662092594-e98c1e356d6a?w=800&auto=format&fit=crop&q=80` |
 
 ### 3. Générer le contenu markdown de chaque fiche
 
@@ -86,7 +87,7 @@ Chaque fiche doit avoir un `content` **complet, structuré et utile** (400-700 m
 
 ### <Sous-section si nécessaire>
 
-<Contenu actionnable — ce que le parent / prof / expert peut faire>
+<Contenu actionnable - ce que le parent / prof / expert peut faire>
 
 ## <Section 3 : conseils pratiques / ressources / mise en œuvre>
 
@@ -94,10 +95,11 @@ Chaque fiche doit avoir un `content` **complet, structuré et utile** (400-700 m
 ```
 
 **Règles de contenu :**
+
 - Toujours ancré dans la réalité quotidienne d'un parent, d'un enseignant ou d'un expert.
 - Exemples concrets, pas de jargon clinique non expliqué.
 - Cohérent avec le ton des fiches existantes (bienveillant, pratique, non culpabilisant).
-- Pas de liste à puces unique pour tout — mélanger paragraphes, listes et sous-titres.
+- Pas de liste à puces unique pour tout - mélanger paragraphes, listes et sous-titres.
 
 ### 4. Insérer via le MCP Supabase
 
@@ -127,7 +129,8 @@ ON CONFLICT (slug) DO NOTHING;
 ```
 
 **Points critiques :**
-- Utiliser le **dollar-quoting PostgreSQL** (`$c1$...$c1$`, `$c2$...$c2$`, etc.) pour le champ `content` — ne jamais escape les apostrophes manuellement dans du markdown.
+
+- Utiliser le **dollar-quoting PostgreSQL** (`$c1$...$c1$`, `$c2$...$c2$`, etc.) pour le champ `content` - ne jamais escape les apostrophes manuellement dans du markdown.
 - Chaque tag de dollar-quoting doit être **unique par fiche** dans le même INSERT.
 - `ON CONFLICT (slug) DO NOTHING` pour éviter les erreurs sur les slugs déjà existants.
 - Si `user_id` non fourni : écrire `NULL` (sans guillemets) pour `author_user_id`.
@@ -151,7 +154,7 @@ Si certaines fiches manquent (slug déjà existant ou erreur), en informer l'uti
 
 - **Slugs uniques** : toujours vérifier avant d'insérer.
 - **Catégories valides** : uniquement `TSA`, `TDAH`, `DYS`, `TDI`.
-- **Images libres uniquement** : domaine `images.unsplash.com` — jamais `plus.unsplash.com`.
+- **Images libres uniquement** : domaine `images.unsplash.com` - jamais `plus.unsplash.com`.
 - **Contenu en français**, sans commentaire de code ni mention de l'outil utilisé.
 - **Pas de console.log** dans le code généré (n'est pas pertinent ici, mais rappel de convention).
 - **Pas de Co-Authored-By** dans les commits éventuels liés à ce skill.

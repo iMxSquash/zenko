@@ -123,7 +123,7 @@ export function FicheForm({ initial, isCreating, isPending, onSubmit, onCancel }
         </div>
       </fieldset>
 
-      {/* Author — linked to a user profile */}
+      {/* Author - linked to a user profile */}
       <div className="flex flex-col gap-1.5">
         <span className="text-label font-semibold uppercase tracking-label text-text-secondary">
           Auteur

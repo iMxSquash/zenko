@@ -127,7 +127,7 @@ export const HERO_DECOR: DecorShape[] = [
   },
 ];
 
-// ── Problem (Figma frame 1:370) — orange scribbles both corners ─────────────
+// ── Problem (Figma frame 1:370) - orange scribbles both corners ─────────────
 export const PROBLEM_DECOR: DecorShape[] = [
   {
     node: 'Group 2',
@@ -140,8 +140,20 @@ export const PROBLEM_DECOR: DecorShape[] = [
     node: 'Group 1',
     parallax: 200,
     src: 'https://www.figma.com/api/mcp/asset/27d2b653-31b6-45ff-b118-e6982c511d3a',
-    style: { left: -130, bottom: -50, width: 320, height: 313, transform: 'scaleX(-1)' },
-    mobileStyle: { left: -160, bottom: -70, width: 320, height: 313, transform: 'scaleX(-1)' },
+    style: {
+      left: -130,
+      bottom: -50,
+      width: 320,
+      height: 313,
+      transform: 'scaleX(-1)',
+    },
+    mobileStyle: {
+      left: -160,
+      bottom: -70,
+      width: 320,
+      height: 313,
+      transform: 'scaleX(-1)',
+    },
   },
   {
     node: 'Group 3',
@@ -195,7 +207,7 @@ export const SOLUTION_DECOR: DecorShape[] = [
   },
 ];
 
-// ── Testimonials (Figma frame 10:164) — two large blobs ─────────────────────
+// ── Testimonials (Figma frame 10:164) - two large blobs ─────────────────────
 export const TESTIMONIALS_DECOR: DecorShape[] = [
   {
     node: 'Vector 21',
@@ -235,7 +247,7 @@ function ParallaxShape({
     offset: ['start end', 'end start'],
   });
   const distance = s.parallax ?? 0;
-  // Parallax is desktop-only — motion on mobile causes disorientation and hurts perf
+  // Parallax is desktop-only - motion on mobile causes disorientation and hurts perf
   const y = useTransform(scrollYProgress, [0, 1], isDesktop ? [-distance, distance] : [0, 0]);
   const motionStyle = { ...style, y };
 

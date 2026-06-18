@@ -2,7 +2,7 @@
 -- current_setting() est lisible par tout rôle ayant accès à la DB.
 -- On remplace net.http_post + clé manuelle par supabase_functions.http_request(),
 -- qui gère l'Authorization en interne sans exposer la clé dans la session SQL.
--- Seul app.settings.supabase_url reste en GUC — c'est une URL publique, pas un secret.
+-- Seul app.settings.supabase_url reste en GUC - c'est une URL publique, pas un secret.
 
 create or replace function public.trigger_autoembed_thread()
 returns trigger

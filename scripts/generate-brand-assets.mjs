@@ -1,5 +1,5 @@
 // Génère apple-touch-icon.png, pwa-192x192.png, pwa-512x512.png et assets/og-image.png
-// à partir du logo public/favicon.svg. Script ponctuel — peut être supprimé une fois
+// à partir du logo public/favicon.svg. Script ponctuel - peut être supprimé une fois
 // les assets remplacés par un design final (Figma/Canva).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -41,7 +41,7 @@ function ogImageSvg() {
   <text x="540" y="290" font-family="Arial, sans-serif" font-size="96" font-weight="700" fill="#ffffff">Zenko</text>
   <text x="540" y="360" font-family="Arial, sans-serif" font-size="34" fill="#ffffff" opacity="0.92">
     <tspan x="540" dy="0">Accompagner les enfants neurodivergents,</tspan>
-    <tspan x="540" dy="46">ensemble — école, famille, spécialistes.</tspan>
+    <tspan x="540" dy="46">ensemble - école, famille, spécialistes.</tspan>
   </text>
   <rect x="540" y="430" width="60" height="8" fill="${ACCENT}" />
 </svg>`;

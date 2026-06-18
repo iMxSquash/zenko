@@ -181,12 +181,12 @@ function FicheDetailPage() {
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-start gap-3">
                   <CapsuleFiche category={fiche.category} size="lg" className="self-center" />
-                  <h1 className="text-[44px] font-bold leading-[52px] tracking-[-0.44px] text-text-primary">
+                  <h1 className="text-display-md font-bold leading-13 tracking-[-0.44px] text-text-primary">
                     {fiche.title}
                   </h1>
                 </div>
 
-                <p className="max-w-4xl text-[18px] font-normal leading-7 text-text-secondary">
+                <p className="max-w-4xl text-body-lg font-normal leading-7 text-text-secondary">
                   {fiche.description}
                 </p>
               </div>
@@ -211,15 +211,12 @@ function FicheDetailPage() {
 
             {/* Cover image */}
             {fiche.coverImageUrl ? (
-              <div className="h-[300px] w-full overflow-hidden rounded-[32px] lg:h-[428px]">
+              <div className="h-75 w-full overflow-hidden rounded-4xl lg:h-107">
                 <img src={fiche.coverImageUrl} alt="" className="h-full w-full object-cover" />
               </div>
             ) : (
               <div
-                className={cn(
-                  'h-[180px] w-full rounded-[32px] lg:h-[280px]',
-                  CATEGORY_COVER_BG[fiche.category]
-                )}
+                className={cn('h-45 w-full rounded-4xl lg:h-70', CATEGORY_COVER_BG[fiche.category])}
               />
             )}
 
@@ -235,7 +232,7 @@ function FicheDetailPage() {
                   />
                 ) : (
                   <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-neutral-100">
-                    <span className="text-[22px] font-bold text-text-muted">
+                    <span className="text-h3 font-bold text-text-muted">
                       {fiche.author[0]?.toUpperCase() ?? '?'}
                     </span>
                   </div>
@@ -257,7 +254,7 @@ function FicheDetailPage() {
                   {fiche.readingTimeMinutes && (
                     <div className="flex items-center gap-1.5">
                       <Clock size={13} className="shrink-0 text-text-muted" />
-                      <span className="text-[12px] font-medium text-text-muted">
+                      <span className="text-label font-medium text-text-muted">
                         {fiche.readingTimeMinutes} min
                       </span>
                     </div>
@@ -355,7 +352,7 @@ function FicheDetailPage() {
                   </div>
                 )}
 
-                {/* Sentinel — IntersectionObserver fires when this is visible */}
+                {/* Sentinel - IntersectionObserver fires when this is visible */}
                 <div ref={bottomRef} className="h-px" />
               </div>
             </div>
@@ -375,7 +372,7 @@ function FicheDetailSkeleton() {
         <div className="h-6 w-full max-w-2xl rounded bg-neutral-100" />
         <div className="h-10 w-40 rounded-full bg-neutral-100" />
       </div>
-      <div className="h-[280px] w-full rounded-[32px] bg-neutral-100" />
+      <div className="h-70 w-full rounded-4xl bg-neutral-100" />
       <div className="flex gap-12">
         <div className="flex w-44 flex-col gap-2">
           <div className="size-16 rounded-full bg-neutral-100" />

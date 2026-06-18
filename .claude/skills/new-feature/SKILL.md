@@ -3,6 +3,7 @@
 ## Auto-invoke
 
 Invoquer automatiquement quand l'utilisateur demande de :
+
 - Créer une nouvelle fonctionnalité complète (`"crée la feature …"`, `"ajoute la fonctionnalité …"`)
 - Implémenter une section entière de l'app (ex: système de notifications, gestion du profil)
 - Scaffolder plusieurs fichiers liés (route + composant + hook ensemble)
@@ -61,20 +62,18 @@ export function <NomPascalCase>() {
 `src/hooks/use<NomPascalCase>.ts`
 
 ```ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase/client'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase/client";
 
 export function use<NomPascalCase>() {
   return useQuery({
-    queryKey: ['<nom>'],
+    queryKey: ["<nom>"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('<table>')
-        .select('*')
-      if (error) throw error
-      return data
+      const { data, error } = await supabase.from("<table>").select("*");
+      if (error) throw error;
+      return data;
     },
-  })
+  });
 }
 ```
 
@@ -93,8 +92,8 @@ export interface <NomPascalCase> {
 ## Conventions
 
 - La route assemble, le composant affiche, le hook récupère les données
-- Jamais d'appel Supabase direct dans un composant — passer par le hook
-- Jamais de `useEffect` pour fetcher — utiliser `useQuery`
+- Jamais d'appel Supabase direct dans un composant - passer par le hook
+- Jamais de `useEffect` pour fetcher - utiliser `useQuery`
 - Mutations via `useMutation` avec `invalidateQueries` dans `onSuccess`
 - Imports avec `@/`
 - Nommage : fichiers kebab-case, composants et hooks PascalCase/camelCase

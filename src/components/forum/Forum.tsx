@@ -34,7 +34,10 @@ function ThreadCard({ thread }: { thread: ForumThread }) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              navigate({ to: '/profile/$userId', params: { userId: thread.author.userId } });
+              navigate({
+                to: '/profile/$userId',
+                params: { userId: thread.author.userId },
+              });
             }}
             className="font-medium text-text-secondary hover:underline"
           >
@@ -123,7 +126,7 @@ export function Forum() {
             placeholder="Rechercher une discussion..."
           />
 
-          {/* Category filter — scroll horizontal sur mobile, inline sur desktop */}
+          {/* Category filter - scroll horizontal sur mobile, inline sur desktop */}
           <div className="-mx-4 overflow-x-auto overscroll-x-contain px-4 md:mx-0 md:overflow-visible md:px-0 scrollbar-none [&::-webkit-scrollbar]:hidden">
             <div className="flex gap-2.5 pb-0.5 md:pb-0">
               {CATEGORIES.map((cat) => (

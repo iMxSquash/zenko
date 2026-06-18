@@ -3,6 +3,7 @@
 ## Auto-invoke
 
 Invoquer automatiquement quand l'utilisateur demande de :
+
 - Créer une nouvelle table en base de données
 - Modifier le schéma Supabase (`"ajoute une colonne …"`, `"crée une table …"`)
 - Écrire une migration SQL
@@ -18,7 +19,7 @@ L'utilisateur décrit la migration à créer (ex: `/new-migration ajouter table 
 
 ### 1. Générer le timestamp
 
-Les migrations sont nommées avec un timestamp `YYYYMMDDHHMMSS` (UTC), pas un numéro séquentiel —
+Les migrations sont nommées avec un timestamp `YYYYMMDDHHMMSS` (UTC), pas un numéro séquentiel -
 c'est ce format que Supabase utilise pour suivre les migrations appliquées au projet distant.
 Utiliser l'heure actuelle (`date -u +%Y%m%d%H%M%S`), supérieure à la dernière migration existante.
 
@@ -94,7 +95,7 @@ create policy "<table>_select_role"
 
 ### Migration ALTER (modification de table existante)
 
-Ne pas utiliser le template de création — juste l'instruction ALTER :
+Ne pas utiliser le template de création - juste l'instruction ALTER :
 
 ```sql
 -- Ajoute la colonne <colonne> à <table>
@@ -107,5 +108,5 @@ alter table public.<table>
 - Toujours activer RLS sur chaque nouvelle table
 - Toujours ajouter `created_at` (et `updated_at` + trigger si la table est mutable)
 - Utiliser `if not exists` pour l'idempotence
-- La fonction `handle_updated_at()` existe depuis la migration `init` — ne pas la recréer
+- La fonction `handle_updated_at()` existe depuis la migration `init` - ne pas la recréer
 - Noms de politiques en snake_case, descriptifs et uniques

@@ -26,11 +26,12 @@ chaque point de l'audit : le niveau d'exigence est plus élevé que pour une app
 ## Ce que tu dois produire
 
 Un rapport markdown structuré, avec pour chaque point :
-- **Constat** (ce qui existe / n'existe pas dans le code actuel — cite les fichiers)
+
+- **Constat** (ce qui existe / n'existe pas dans le code actuel - cite les fichiers)
 - **Sévérité** : 🔴 Critique / 🟠 Majeur / 🟡 Mineur / 🟢 Conforme
 - **Recommandation** actionnable
 
-Ne corrige rien sans demande explicite — l'audit est un état des lieux. Si l'utilisateur
+Ne corrige rien sans demande explicite - l'audit est un état des lieux. Si l'utilisateur
 demande ensuite de corriger, traite les points un par un en respectant les skills
 existants (`/supabase-rls`, `/react-vite-best-practices`, etc.).
 
@@ -44,12 +45,12 @@ Ici, vérifier concrètement dans `src/components/` et `src/routes/` :
 - **Formulaires** (`login.tsx`, `signup.tsx`, `signup.role.tsx`, onboarding) : labels
   associés, messages d'erreur avec `aria-invalid`/`aria-describedby`/`role="alert"`,
   `autocomplete` sur les champs de mot de passe.
-- **Navigation** : `Sidebar`, `Header`, `BottomNav` — landmarks (`nav`, `aria-label`),
+- **Navigation** : `Sidebar`, `Header`, `BottomNav` - landmarks (`nav`, `aria-label`),
   ordre de focus logique, lien d'évitement ("skip to content").
 - **Composants interactifs** : boutons icône sans texte (`MicButton`, actions de
   l'assistant) → `aria-label`. États du micro/voix annoncés via `aria-live`
   (cohérent avec `useVoice`).
-- **Contraste** : palette Tailwind utilisée (vérifier `tailwind.config` / tokens) —
+- **Contraste** : palette Tailwind utilisée (vérifier `tailwind.config` / tokens) -
   contrôler les couleurs de texte sur fond clair/sombre (4.5:1 texte normal, 3:1 UI).
 - **Focus visible** : pas de `outline: none` global sans `:focus-visible` de
   remplacement (`globals.css` / styles partagés).
@@ -63,6 +64,7 @@ Ici, vérifier concrètement dans `src/components/` et `src/routes/` :
   `bibliotheque/$slug.tsx`, `ReadingProgress` annoncée aux lecteurs d'écran.
 
 Outils suggérés (à mentionner, pas forcément à lancer) :
+
 ```bash
 npx lighthouse http://localhost:5173 --only-categories=accessibility
 npx @axe-core/cli http://localhost:5173
@@ -81,7 +83,7 @@ Lire `supabase/migrations/` (notamment `00001_init.sql`, `00021_extend_profiles.
 - Quelles tables contiennent des données personnelles (`profiles`, `chat_sessions`,
   messages de forum, `reading_progress`, avatars dans `00022_avatars_storage_bucket.sql`).
 - Si des colonnes laissent deviner des informations sensibles (diagnostic, âge,
-  handicap, nom de l'enfant) — vérifier si elles sont nécessaires (principe de
+  handicap, nom de l'enfant) - vérifier si elles sont nécessaires (principe de
   minimisation, art. 5.1.c).
 - Si des transcripts de l'assistant vocal (`chat_sessions`) contiennent potentiellement
   des données de santé en clair, et comment ils sont protégés (RLS, rétention).
@@ -99,6 +101,7 @@ Lire `supabase/migrations/` (notamment `00001_init.sql`, `00021_extend_profiles.
 ### 2.3 Droits des personnes concernées
 
 Vérifier dans le code (profil, paramètres) si l'utilisateur peut :
+
 - Accéder à ses données (export).
 - Les rectifier (édition de profil).
 - Demander leur **effacement** (suppression de compte → cascade sur `profiles`,
@@ -111,7 +114,7 @@ S'il n'existe aucune route/feature pour ça → 🔴 manquant, à signaler comme
 
 - **Supabase** : préciser la région d'hébergement du projet (EU recommandé pour RGPD).
 - **Anthropic (`ANTHROPIC_API_KEY`, Edge Function `/chat`)** : les transcripts/messages
-  envoyés au LLM transitent vers un sous-traitant tiers (potentiellement hors UE) —
+  envoyés au LLM transitent vers un sous-traitant tiers (potentiellement hors UE) -
   vérifier qu'un DPA / clauses contractuelles types (SCC) couvrent ce transfert, et que
   la politique de confidentialité le mentionne.
 - **Vercel** (hébergement frontend) : idem, mentionner dans le registre des traitements.
@@ -140,11 +143,12 @@ S'il n'existe aucune route/feature pour ça → 🔴 manquant, à signaler comme
 ### 2.7 Documents légaux
 
 Vérifier l'existence de pages/routes pour :
+
 - Politique de confidentialité
 - CGU / CGV
 - Mentions légales
 
-Chercher dans `src/routes/` — si absentes, lister comme 🔴 (obligatoire avant mise en
+Chercher dans `src/routes/` - si absentes, lister comme 🔴 (obligatoire avant mise en
 production publique), avec recommandation de créer une route publique (`/legal/*`)
 et de les lier dans le footer/sidebar.
 
@@ -153,7 +157,7 @@ et de les lier dans le footer/sidebar.
 ## 3. Sécurité applicative (complément)
 
 - `.env.local` non commité (vérifier `.gitignore`).
-- Headers de sécurité (CSP, `X-Frame-Options`, etc.) — configuration Vercel ou
+- Headers de sécurité (CSP, `X-Frame-Options`, etc.) - configuration Vercel ou
   `vite.config.ts`.
 - Dépendances : `npm audit` pour vulnérabilités connues.
 - Validation des entrées utilisateur côté Edge Functions (`/chat`, `/embed`) avant
@@ -164,25 +168,30 @@ et de les lier dans le footer/sidebar.
 ## Format de sortie attendu
 
 ```markdown
-# Audit de conformité — Zenko (date)
+# Audit de conformité - Zenko (date)
 
 ## Résumé exécutif
+
 (3-5 lignes : nombre de points critiques/majeurs/mineurs, verdict global)
 
 ## 1. Accessibilité
+
 | Sévérité | Constat | Fichier(s) | Recommandation |
-|---|---|---|---|
-| 🔴 | ... | ... | ... |
+| -------- | ------- | ---------- | -------------- |
+| 🔴       | ...     | ...        | ...            |
 
 ## 2. RGPD
+
 | Sévérité | Constat | Fichier(s) | Recommandation |
-|---|---|---|---|
+| -------- | ------- | ---------- | -------------- |
 
 ## 3. Sécurité
+
 | Sévérité | Constat | Fichier(s) | Recommandation |
-|---|---|---|---|
+| -------- | ------- | ---------- | -------------- |
 
 ## Plan d'action priorisé
+
 1. ...
 2. ...
 ```

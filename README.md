@@ -1,7 +1,7 @@
-# Zenko — V2
+# Zenko - V2
 
 PWA + assistant vocal pour l'accompagnement des enfants neurodivergents.
-V2 d'[AlemAgency](../AlemAgency) — même Supabase, architecture revisitée pour le mobile-first et l'offline.
+V2 d'[AlemAgency](../AlemAgency) - même Supabase, architecture revisitée pour le mobile-first et l'offline.
 
 ---
 
@@ -12,7 +12,7 @@ V2 d'[AlemAgency](../AlemAgency) — même Supabase, architecture revisitée pou
 Next.js (stack AlemAgency) n'est pas retenu pour la V2 pour une raison principale : **les PWA et Next.js App Router se frottent**.
 Le service worker Workbox et le routing Next.js entrent en conflit sur les assets et les routes. Avec Vite, le service worker est généré proprement autour du build, sans interférence.
 
-L'app est entièrement connectée (toutes les pages protégées) — il n'y a pas de besoin de SSR ni de SEO sur les pages applicatives. Une SPA suffit.
+L'app est entièrement connectée (toutes les pages protégées) - il n'y a pas de besoin de SSR ni de SEO sur les pages applicatives. Une SPA suffit.
 
 ### TanStack Router
 
@@ -21,7 +21,7 @@ Préféré à React Router v7 pour deux raisons :
 - **Type-safety totale** : routes, paramètres URL, search params et loaders sont tous typés. Aucun `useParams()` avec `string | undefined`.
 - **Loaders intégrés** : pre-fetching des données Supabase au niveau de la route, sans boilerplate.
 
-Le file-based routing (`src/routes/`) suit la même logique que Next.js App Router — la transition depuis AlemAgency est naturelle.
+Le file-based routing (`src/routes/`) suit la même logique que Next.js App Router - la transition depuis AlemAgency est naturelle.
 
 ### vite-plugin-pwa + Workbox
 
@@ -30,7 +30,7 @@ Meilleur outil PWA de l'écosystème Vite. Il gère :
 - Génération du service worker à partir du build Vite
 - Stratégies de cache configurables par pattern d'URL :
   - `NetworkFirst` pour les API Supabase (données fraîches en priorité, cache en fallback)
-  - `NetworkOnly` pour l'auth et les Edge Functions (streaming, tokens — jamais mis en cache)
+  - `NetworkOnly` pour l'auth et les Edge Functions (streaming, tokens - jamais mis en cache)
   - `CacheFirst` pour les assets statiques (JS, CSS, fonts)
 - Manifest PWA intégré dans `vite.config.ts`
 - Install prompt natif (Android/Chrome, iOS Safari)
@@ -40,7 +40,7 @@ Meilleur outil PWA de l'écosystème Vite. Il gère :
 La DB n'est pas dupliquée. Zenko lit la même instance Supabase :
 
 - Les tables `forum_threads`, `forum_replies`, `documents` (pgvector) sont partagées
-- Les politiques RLS sont identiques — pas de double maintenance
+- Les politiques RLS sont identiques - pas de double maintenance
 - Les Edge Functions (`/embed`, `/chat`) sont déployées une seule fois, utilisées par les deux apps
 
 ### Vercel AI SDK + `@ai-sdk/google`
@@ -49,8 +49,8 @@ Le chatbot RAG tourne dans une **Supabase Edge Function** (Deno), pas dans un ro
 
 - `ai` + `@ai-sdk/google` dans l'Edge Function pour `streamText` avec **Gemini 2.5 Flash Lite**
 - `@ai-sdk/react` côté client pour `useChat` (gestion du stream, historique messages)
-- La clé `GEMINI_API_KEY` reste dans les secrets Supabase — **jamais exposée au client**
-- Les embeddings sont générés par **`gte-small`** via `Supabase.ai.Session` — sans clé API externe
+- La clé `GEMINI_API_KEY` reste dans les secrets Supabase - **jamais exposée au client**
+- Les embeddings sont générés par **`gte-small`** via `Supabase.ai.Session` - sans clé API externe
 
 ### Web Speech API (couche abstraite)
 
@@ -60,16 +60,16 @@ Défaut voix : `SpeechRecognition` (STT) + `SpeechSynthesis` (TTS) natifs du nav
 - `fr-FR` natif sur Chrome, Edge, Safari iOS
 - Interfaces abstraites `SpeechToText` / `TextToSpeech` dans `src/lib/voice/` : Magnific ou ElevenLabs se branchent sans toucher à l'UI
 
-### Lenis + Motion — scroll et animations
+### Lenis + Motion - scroll et animations
 
 La landing page utilise deux librairies pour l'expérience de scroll :
 
-- **Lenis** (`lenis`) : smooth scroll rapide (`lerp: 0.3, duration: 1`) avec snapping magnétique via `lenis/snap`. Chaque section de 100 vh snap automatiquement en vue — l'utilisateur ne peut jamais rester bloqué entre deux sections. La navbar et la section hero sont groupées dans un seul snap target pour éviter le recouvrement sticky.
+- **Lenis** (`lenis`) : smooth scroll rapide (`lerp: 0.3, duration: 1`) avec snapping magnétique via `lenis/snap`. Chaque section de 100 vh snap automatiquement en vue - l'utilisateur ne peut jamais rester bloqué entre deux sections. La navbar et la section hero sont groupées dans un seul snap target pour éviter le recouvrement sticky.
 - **Motion** (`motion`) : parallaxe verticale sur les éléments décoratifs SVG de la landing (`useScroll` + `useTransform`). Les formes en bordure de section flottent devant le contenu ; les accents intérieurs passent derrière. La navbar reste toujours au premier plan (z-50).
 
 Encapsulés dans `src/lib/scroll/` :
-- `SmoothScrollProvider.tsx` — wrapper `<ReactLenis>` à poser sur la page
-- `useSectionSnap.ts` — enregistre les éléments `[data-snap-section]` auprès de `Snap`
+- `SmoothScrollProvider.tsx` - wrapper `<ReactLenis>` à poser sur la page
+- `useSectionSnap.ts` - enregistre les éléments `[data-snap-section]` auprès de `Snap`
 
 ### Tailwind CSS v4 + `@tailwindcss/vite`
 
@@ -83,7 +83,7 @@ Même config qu'AlemAgency. Lint + format en une commande, 10× plus rapide qu'E
 
 ## Architecture des API
 
-Zenko est une SPA — pas de route handlers côté Vite. Toute la logique serveur est dans Supabase :
+Zenko est une SPA - pas de route handlers côté Vite. Toute la logique serveur est dans Supabase :
 
 ```
 Client (Zenko PWA)
@@ -96,9 +96,9 @@ Client (Zenko PWA)
 
 ---
 
-## SEO / GEO — pré-rendu pour les bots
+## SEO / GEO - pré-rendu pour les bots
 
-`SEOHead` met à jour titre/description/canonical/OG/JSON-LD côté client (`useEffect`) — invisible
+`SEOHead` met à jour titre/description/canonical/OG/JSON-LD côté client (`useEffect`) - invisible
 pour les crawlers sans JS. Pour les pages publiques indexables (`/`, `/bibliotheque`,
 `/bibliotheque/:slug`, `/forum`, `/forum/:threadId`), `vercel.json` détecte les user-agents bots
 (Googlebot, GPTBot, ClaudeBot, PerplexityBot, etc. via `has: user-agent`) et les redirige vers
@@ -114,22 +114,22 @@ continuent de recevoir la SPA normale.
 src/
   routes/                        # TanStack Router (file-based)
     __root.tsx                   # Layout racine
-    index.tsx                    # / — landing page (publique)
+    index.tsx                    # / - landing page (publique)
     login.tsx                    # /login
     signup.tsx                   # /signup
-    signup.role.tsx              # /signup/role — choix du rôle
+    signup.role.tsx              # /signup/role - choix du rôle
     _protected.tsx               # Layout auth-guard (redirect si non connecté)
     _protected/
       bibliotheque/
         index.tsx                # /bibliotheque
-        $slug.tsx                # /bibliotheque/:slug — détail + progression lecture
+        $slug.tsx                # /bibliotheque/:slug - détail + progression lecture
       forum/
         index.tsx                # /forum
-        $threadId.tsx            # /forum/:threadId — messages temps réel
+        $threadId.tsx            # /forum/:threadId - messages temps réel
       assistant/
-        index.tsx                # /assistant — chat vocal principal
-        history.tsx              # /assistant/history — historique des sessions
-        $sessionId.tsx           # /assistant/:sessionId — replay d'une session
+        index.tsx                # /assistant - chat vocal principal
+        history.tsx              # /assistant/history - historique des sessions
+        $sessionId.tsx           # /assistant/:sessionId - replay d'une session
   components/
     layout/                      # Sidebar, Header, BottomNav (mobile)
     ui/                          # Button, Card, Badge, etc.
@@ -142,7 +142,7 @@ src/
     useForum.ts                  # Threads, replies, Supabase Realtime
     useAssistant.ts              # useChat (AI SDK) + état vocal
   store/
-    ui.ts                        # Zustand — sidebar, mic actif, mute
+    ui.ts                        # Zustand - sidebar, mic actif, mute
   lib/
     supabase/
       client.ts                  # createClient() browser
@@ -170,7 +170,7 @@ src/
 ### Tables
 
 #### `profiles`
-Extension de `auth.users` — créée automatiquement à l'inscription via trigger.
+Extension de `auth.users` - créée automatiquement à l'inscription via trigger.
 
 | Colonne | Type | Notes |
 |---|---|---|
@@ -192,7 +192,7 @@ Vue publique `public_profiles` : expose toutes les colonnes sauf `email`.
 ---
 
 #### `fiches`
-Bibliothèque de fiches — contenu géré par les admins, lecture seule pour les utilisateurs.
+Bibliothèque de fiches - contenu géré par les admins, lecture seule pour les utilisateurs.
 
 | Colonne | Type | Notes |
 |---|---|---|

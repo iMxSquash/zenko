@@ -157,7 +157,7 @@ export function useStartReading() {
       const { error } = await supabase
         .from('reading_progress')
         .insert({ user_id: user.id, resource_slug: slug });
-      // 23505 = unique_violation: already started reading this fiche — not an error
+      // 23505 = unique_violation: already started reading this fiche - not an error
       if (error && error.code !== '23505') throw error;
     },
     onSuccess: (_data, slug) => {

@@ -21,33 +21,41 @@ React/Vite SPA, Nuxt, Astro, HTML statique...).
 ### Next.js (App Router)
 
 ```tsx
-// app/ma-page/page.tsx — page statique
+// app/ma-page/page.tsx - page statique
 export const metadata: Metadata = {
   title: "Titre orienté requête (≤ 60 caractères) | Marque",
-  description: "Description claire, 120-160 caractères, qui donne envie de cliquer et reprend le mot-clé principal.",
+  description:
+    "Description claire, 120-160 caractères, qui donne envie de cliquer et reprend le mot-clé principal.",
   alternates: { canonical: "https://example.com/ma-page" },
   openGraph: {
     title: "...",
     description: "...",
     url: "https://example.com/ma-page",
     type: "website",
-    images: [{ url: "https://example.com/og/ma-page.jpg", width: 1200, height: 630 }],
+    images: [
+      { url: "https://example.com/og/ma-page.jpg", width: 1200, height: 630 },
+    ],
   },
   twitter: { card: "summary_large_image" },
 };
 ```
 
 ```tsx
-// app/produits/[slug]/page.tsx — page dynamique
+// app/produits/[slug]/page.tsx - page dynamique
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getItem(params.slug);
-  const title = `${item.name} — ${item.shortPitch} | Marque`;
+  const title = `${item.name} - ${item.shortPitch} | Marque`;
   const description = item.metaDescription ?? item.excerpt.slice(0, 155);
   return {
     title,
     description,
     alternates: { canonical: `https://example.com/produits/${item.slug}` },
-    openGraph: { title, description, type: "website", images: [item.image ?? "/og-default.jpg"] },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: [item.image ?? "/og-default.jpg"],
+    },
   };
 }
 ```
@@ -60,7 +68,7 @@ Sans SSR, il faut injecter les balises côté client (au minimum) ET idéalement
 crawlers qui n'exécutent pas JS (voir section GEO).
 
 ```tsx
-// components/SEOHead.tsx — composant générique réutilisable
+// components/SEOHead.tsx - composant générique réutilisable
 import { useEffect } from "react";
 
 interface SEOProps {
@@ -77,7 +85,11 @@ export default function SEOHead(props: SEOProps) {
   useEffect(() => {
     document.title = props.title;
 
-    const setMeta = (name: string, content?: string, attr: "name" | "property" = "name") => {
+    const setMeta = (
+      name: string,
+      content?: string,
+      attr: "name" | "property" = "name",
+    ) => {
       if (!content) return;
       let el = document.querySelector(`meta[${attr}="${name}"]`);
       if (!el) {
@@ -92,7 +104,9 @@ export default function SEOHead(props: SEOProps) {
     if (props.keywords?.length) setMeta("keywords", props.keywords.join(", "));
     if (props.robots) setMeta("robots", props.robots);
 
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    let canonical = document.querySelector(
+      'link[rel="canonical"]',
+    ) as HTMLLinkElement | null;
     if (!canonical) {
       canonical = document.createElement("link");
       canonical.rel = "canonical";
@@ -120,7 +134,7 @@ Usage : `<SEOHead title="..." description="..." canonical="https://example.com/p
 
 ### Astro / Nuxt / HTML statique
 
-Injecter directement dans le `<head>` du layout — pas de hook nécessaire, c'est déjà du SSR/SSG :
+Injecter directement dans le `<head>` du layout - pas de hook nécessaire, c'est déjà du SSR/SSG :
 
 ```html
 <title>Titre orienté requête | Marque</title>
@@ -135,10 +149,11 @@ Injecter directement dans le `<head>` du layout — pas de hook nécessaire, c'e
 
 ---
 
-## 2. JSON-LD (schema.org) — catalogue de templates
+## 2. JSON-LD (schema.org) - catalogue de templates
 
 Règles générales :
-- Toujours `JSON.stringify(obj)` pour l'injection — jamais d'interpolation de string brute (échappe `<`, `"`, etc. et évite l'injection de script).
+
+- Toujours `JSON.stringify(obj)` pour l'injection - jamais d'interpolation de string brute (échappe `<`, `"`, etc. et évite l'injection de script).
 - Un objet par schéma logique, ou un `@graph` unique combinant plusieurs entités liées par `@id`.
 - Ne mettre que des champs avec une vraie valeur (utiliser des spreads conditionnels `...(value && {...})`).
 
@@ -146,10 +161,20 @@ Règles générales :
 
 ```ts
 function generateOrganizationJsonLd(config: {
-  name: string; url: string; logo?: string; description?: string;
-  address?: { street?: string; city?: string; postalCode?: string; country?: string; region?: string };
+  name: string;
+  url: string;
+  logo?: string;
+  description?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
+    region?: string;
+  };
   geo?: { lat: number | string; lng: number | string };
-  phone?: string; email?: string;
+  phone?: string;
+  email?: string;
   openingHours?: { dayOfWeek: string[]; opens: string; closes: string }[];
   sameAs?: string[]; // réseaux sociaux
   areaServed?: string | string[];
@@ -169,13 +194,21 @@ function generateOrganizationJsonLd(config: {
         "@type": "PostalAddress",
         ...(config.address.street && { streetAddress: config.address.street }),
         ...(config.address.city && { addressLocality: config.address.city }),
-        ...(config.address.postalCode && { postalCode: config.address.postalCode }),
+        ...(config.address.postalCode && {
+          postalCode: config.address.postalCode,
+        }),
         ...(config.address.region && { addressRegion: config.address.region }),
-        ...(config.address.country && { addressCountry: config.address.country }),
+        ...(config.address.country && {
+          addressCountry: config.address.country,
+        }),
       },
     }),
     ...(config.geo && {
-      geo: { "@type": "GeoCoordinates", latitude: config.geo.lat, longitude: config.geo.lng },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: config.geo.lat,
+        longitude: config.geo.lng,
+      },
     }),
     ...(config.openingHours?.length && {
       openingHoursSpecification: config.openingHours.map((h) => ({
@@ -202,7 +235,10 @@ function generateOrganizationJsonLd(config: {
 ### WebSite (page d'accueil, avec sitelinks search box)
 
 ```ts
-function generateWebSiteJsonLd(siteUrl: string, searchPath = "/recherche?q={search_term_string}") {
+function generateWebSiteJsonLd(
+  siteUrl: string,
+  searchPath = "/recherche?q={search_term_string}",
+) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -219,7 +255,13 @@ function generateWebSiteJsonLd(siteUrl: string, searchPath = "/recherche?q={sear
 ### WebPage générique
 
 ```ts
-function generatePageJsonLd(title: string, description: string, url: string, siteUrl: string, image?: string) {
+function generatePageJsonLd(
+  title: string,
+  description: string,
+  url: string,
+  siteUrl: string,
+  image?: string,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -236,9 +278,16 @@ function generatePageJsonLd(title: string, description: string, url: string, sit
 
 ```ts
 function generateArticleJsonLd(article: {
-  title: string; description?: string; url: string; image?: string;
-  datePublished: string; dateModified?: string; authorName?: string;
-  publisherName: string; publisherLogo?: string; keywords?: string[];
+  title: string;
+  description?: string;
+  url: string;
+  image?: string;
+  datePublished: string;
+  dateModified?: string;
+  authorName?: string;
+  publisherName: string;
+  publisherLogo?: string;
+  keywords?: string[];
   type?: "Article" | "BlogPosting" | "NewsArticle";
 }) {
   return {
@@ -249,11 +298,15 @@ function generateArticleJsonLd(article: {
     ...(article.image && { image: [article.image] }),
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
-    ...(article.authorName && { author: { "@type": "Person", name: article.authorName } }),
+    ...(article.authorName && {
+      author: { "@type": "Person", name: article.authorName },
+    }),
     publisher: {
       "@type": "Organization",
       name: article.publisherName,
-      ...(article.publisherLogo && { logo: { "@type": "ImageObject", url: article.publisherLogo } }),
+      ...(article.publisherLogo && {
+        logo: { "@type": "ImageObject", url: article.publisherLogo },
+      }),
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": article.url },
     ...(article.keywords?.length && { keywords: article.keywords.join(", ") }),
@@ -264,7 +317,10 @@ function generateArticleJsonLd(article: {
 ### BreadcrumbList
 
 ```ts
-function generateBreadcrumbJsonLd(items: { name: string; url?: string }[], siteUrl: string) {
+function generateBreadcrumbJsonLd(
+  items: { name: string; url?: string }[],
+  siteUrl: string,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -272,7 +328,9 @@ function generateBreadcrumbJsonLd(items: { name: string; url?: string }[], siteU
       "@type": "ListItem",
       position: i + 1,
       name: item.name,
-      ...(item.url && { item: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}` }),
+      ...(item.url && {
+        item: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}`,
+      }),
     })),
   };
 }
@@ -294,10 +352,14 @@ function generateFAQJsonLd(faqs: { question: string; answer: string }[]) {
 }
 ```
 
-### HowTo (guides procéduraux — fort impact GEO)
+### HowTo (guides procéduraux - fort impact GEO)
 
 ```ts
-function generateHowToJsonLd(howTo: { name: string; description?: string; steps: { name: string; text: string; image?: string }[] }) {
+function generateHowToJsonLd(howTo: {
+  name: string;
+  description?: string;
+  steps: { name: string; text: string; image?: string }[];
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -316,7 +378,14 @@ function generateHowToJsonLd(howTo: { name: string; description?: string; steps:
 ### Product / Service + Offer
 
 ```ts
-function generateProductJsonLd(product: { name: string; description?: string; image?: string; price?: string; currency?: string; url: string }) {
+function generateProductJsonLd(product: {
+  name: string;
+  description?: string;
+  image?: string;
+  price?: string;
+  currency?: string;
+  url: string;
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -335,7 +404,13 @@ function generateProductJsonLd(product: { name: string; description?: string; im
   };
 }
 
-function generateServiceJsonLd(service: { name: string; description?: string; providerName: string; areaServed?: string | string[]; url: string }) {
+function generateServiceJsonLd(service: {
+  name: string;
+  description?: string;
+  providerName: string;
+  areaServed?: string | string[];
+  url: string;
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -351,7 +426,10 @@ function generateServiceJsonLd(service: { name: string; description?: string; pr
 ### ItemList (listes : articles, produits, résultats d'annuaire)
 
 ```ts
-function generateItemListJsonLd(items: { name: string; url: string; description?: string; image?: string }[], siteUrl: string) {
+function generateItemListJsonLd(
+  items: { name: string; url: string; description?: string; image?: string }[],
+  siteUrl: string,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -370,8 +448,18 @@ function generateItemListJsonLd(items: { name: string; url: string; description?
 ### AggregateRating (à fusionner dans Organization/Product si avis dispo)
 
 ```ts
-function generateAggregateRatingJsonLd(ratingValue: number | string, reviewCount: number | string, bestRating = "5") {
-  return { "@type": "AggregateRating", ratingValue, reviewCount, bestRating, worstRating: "1" };
+function generateAggregateRatingJsonLd(
+  ratingValue: number | string,
+  reviewCount: number | string,
+  bestRating = "5",
+) {
+  return {
+    "@type": "AggregateRating",
+    ratingValue,
+    reviewCount,
+    bestRating,
+    worstRating: "1",
+  };
 }
 ```
 
@@ -381,8 +469,14 @@ function generateAggregateRatingJsonLd(ratingValue: number | string, reviewCount
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    { ...generateOrganizationJsonLd({ ...config, isLocalBusiness: true }), "@id": `${pageUrl}#business` },
-    { ...generateBreadcrumbJsonLd(breadcrumbs, siteUrl), "@id": `${pageUrl}#breadcrumb` },
+    {
+      ...generateOrganizationJsonLd({ ...config, isLocalBusiness: true }),
+      "@id": `${pageUrl}#business`,
+    },
+    {
+      ...generateBreadcrumbJsonLd(breadcrumbs, siteUrl),
+      "@id": `${pageUrl}#breadcrumb`,
+    },
     { ...generateFAQJsonLd(faqs), "@id": `${pageUrl}#faq` },
   ],
 };
@@ -391,8 +485,11 @@ const jsonLd = {
 ### Injection
 
 ```tsx
-// Next.js / Astro / SSR — dans le JSX du <head> ou du body
-<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+// Next.js / Astro / SSR - dans le JSX du <head> ou du body
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+/>
 ```
 
 ```ts
@@ -422,8 +519,18 @@ import { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://example.com";
   return [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
     // ...pages dynamiques via fetch/DB, en respectant la limite de 50 000 URL/sitemap
   ];
 }
@@ -437,8 +544,15 @@ export default function robots(): MetadataRoute.Robots {
   const baseUrl = "https://example.com";
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/api/", "/admin/", "/_next/", "/private/"] },
-      { userAgent: ["GPTBot", "PerplexityBot", "ClaudeBot", "Google-Extended"], allow: "/" },
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/admin/", "/_next/", "/private/"],
+      },
+      {
+        userAgent: ["GPTBot", "PerplexityBot", "ClaudeBot", "Google-Extended"],
+        allow: "/",
+      },
     ],
     sitemap: [`${baseUrl}/sitemap.xml`],
   };
@@ -453,25 +567,50 @@ un `sitemap_index.xml` qui les référence.
 Générer le XML programmatiquement au build (script Node) et l'écrire dans `dist/`/`public/` :
 
 ```ts
-function generateSitemapXml(urls: { loc: string; lastmod?: string; changefreq?: string; priority?: number }[]) {
-  const items = urls.map((u) => `
+function generateSitemapXml(
+  urls: {
+    loc: string;
+    lastmod?: string;
+    changefreq?: string;
+    priority?: number;
+  }[],
+) {
+  const items = urls
+    .map(
+      (u) => `
   <url>
     <loc>${u.loc}</loc>
     ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}
     ${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}
     ${u.priority !== undefined ? `<priority>${u.priority}</priority>` : ""}
-  </url>`).join("");
+  </url>`,
+    )
+    .join("");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${items}
 </urlset>`;
 }
 
-function generateRobotsTxt(opts: { sitemapUrl: string; disallow?: string[]; allowAiCrawlers?: boolean }) {
+function generateRobotsTxt(opts: {
+  sitemapUrl: string;
+  disallow?: string[];
+  allowAiCrawlers?: boolean;
+}) {
   const lines = ["User-agent: *", "Allow: /"];
   for (const path of opts.disallow ?? []) lines.push(`Disallow: ${path}`);
   if (opts.allowAiCrawlers) {
-    lines.push("", "User-agent: GPTBot", "Allow: /", "", "User-agent: PerplexityBot", "Allow: /", "", "User-agent: ClaudeBot", "Allow: /");
+    lines.push(
+      "",
+      "User-agent: GPTBot",
+      "Allow: /",
+      "",
+      "User-agent: PerplexityBot",
+      "Allow: /",
+      "",
+      "User-agent: ClaudeBot",
+      "Allow: /",
+    );
   }
   lines.push("", `Sitemap: ${opts.sitemapUrl}`);
   return lines.join("\n");
@@ -483,7 +622,7 @@ pages légales `0.3/yearly`.
 
 ---
 
-## 4. GEO — Generative Engine Optimization (référencement IA)
+## 4. GEO - Generative Engine Optimization (référencement IA)
 
 Le GEO consiste à optimiser pour être **cité comme source par les moteurs IA** (ChatGPT/SearchGPT, Perplexity,
 Google AI Overviews, Claude). Ces moteurs valorisent : contenu structuré (schema.org), réponses directes et
@@ -491,7 +630,7 @@ autonomes, fraîcheur, et un accès non bloqué pour leurs crawlers.
 
 ### 4.1 `llms.txt`
 
-Fichier `public/llms.txt` (ou route dédiée en SSR) : résumé Markdown du site pour les LLM — qui est l'entité,
+Fichier `public/llms.txt` (ou route dédiée en SSR) : résumé Markdown du site pour les LLM - qui est l'entité,
 pages clés avec description courte.
 
 ```
@@ -511,21 +650,22 @@ Sauf besoin explicite de bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-Sea
 
 ### 4.3 Contenu citable
 
-- Réponse directe en 1-3 phrases dès le début de chaque page de contenu (definition/réponse), avant les détails —
+- Réponse directe en 1-3 phrases dès le début de chaque page de contenu (definition/réponse), avant les détails -
   c'est ce que les IA extraient en priorité pour citer la source.
 - `FAQPage` JSON-LD sur toute section FAQ, avec des questions formulées comme de vraies recherches utilisateur.
 - `HowTo` JSON-LD pour le contenu procédural, avec les mêmes étapes numérotées dans le texte et dans le schema.
-- Toujours renseigner `datePublished`/`dateModified` — les IA pondèrent la fraîcheur.
+- Toujours renseigner `datePublished`/`dateModified` - les IA pondèrent la fraîcheur.
 - Hiérarchie de titres propre (`h1` unique par page, `h2`/`h3` logiques) : les IA segmentent par heading pour
   citer la bonne section.
 - Sur les SPA sans SSR : si le contenu critique n'apparaît qu'après exécution JS, les crawlers non-JS (et
-  certains bots IA) ne le verront pas — prioriser le pré-rendu/SSG/SSR pour les pages de contenu indexable.
+  certains bots IA) ne le verront pas - prioriser le pré-rendu/SSG/SSR pour les pages de contenu indexable.
 
 ---
 
 ## 5. Checklist par type de page
 
 ### Page de contenu (service/produit/landing)
+
 1. Title (≤60c, mot-clé devant) + description (120-160c) + canonical.
 2. Open Graph + Twitter card.
 3. JSON-LD `WebPage`/`Product`/`Service` + `Organization` lié.
@@ -533,6 +673,7 @@ Sauf besoin explicite de bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-Sea
 5. Ajout au sitemap avec priorité cohérente + lien interne depuis une page parente.
 
 ### Page géo-localisée (ville/région/zone)
+
 1. Title/description incluant la zone + intention de recherche.
 2. `ItemList` + `LocalBusiness`/`Organization` avec `geo`/`address`/`areaServed`.
 3. `FAQPage` avec questions géo-spécifiques.
@@ -540,6 +681,7 @@ Sauf besoin explicite de bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-Sea
 5. Sitemap dédié si volume important, `lastmod` réel si data dynamique.
 
 ### Article de blog
+
 1. JSON-LD `Article`/`BlogPosting` avec dates et auteur.
 2. OG type `article` (published/modified time, tags).
 3. `BreadcrumbList`.
@@ -547,6 +689,7 @@ Sauf besoin explicite de bloquer, autoriser : `GPTBot`, `ChatGPT-User`, `OAI-Sea
 5. Réponse directe en intro + structure de titres claire (GEO).
 
 ### Site entier (one-time)
+
 1. `robots.txt` avec règles + crawlers IA + sitemap(s).
 2. `sitemap.xml` (ou index) couvrant toutes les pages indexables.
 3. `Organization`/`WebSite` JSON-LD global (layout).
