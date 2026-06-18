@@ -1,5 +1,6 @@
 import { SEOHead } from '@/components/seo/SEOHead';
 import { ZenkoLogo } from '@/components/ui/ZenkoLogo';
+import { getProfile } from '@/lib/profile/profile';
 import { signInWithPassword } from '@/lib/supabase/auth';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
@@ -28,8 +29,9 @@ function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await signInWithPassword(email, password);
-      navigate({ to: '/bibliotheque' });
+      const { user } = await signInWithPassword(email, password);
+      const profile = user ? await getProfile(user.id) : null;
+      navigate({ to: profile?.role ? '/bibliotheque' : '/onboarding' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Identifiants incorrects');
     } finally {
