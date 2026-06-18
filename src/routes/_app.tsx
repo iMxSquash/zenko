@@ -24,7 +24,11 @@ function AppLayout() {
 
       <div className="relative flex-1 pt-14 lg:pt-0">
         {showBlob && <BlobBackground />}
-        <main id="main-content" tabIndex={-1} className="relative z-10 h-full overflow-y-auto outline-none">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="relative z-10 h-full overflow-y-auto outline-none"
+        >
           <Outlet />
         </main>
       </div>
